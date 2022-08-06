@@ -1,0 +1,36 @@
+(define-module (wlroots))
+
+(eval-when (eval load compile)
+  (begin
+    (define %public-modules
+      (map (lambda (a) (cons 'wlroots a))
+           '((backend)
+             (util box)
+             (util log)
+             (render allocator)
+             (render renderer)
+             (types cursor)
+             (types data-device)
+             (types input-device)
+             (types layer-shell)
+             (types output)
+             (types output-layout)
+             (types pointer)
+             (types scene)
+             (types seat)
+             (types surface)
+             (types xcursor)
+             (types xdg-shell)
+             (types compositor)
+             (types keyboard)
+
+             )))
+
+    (let* ((current-module (current-module))
+           (current-module-interface (resolve-interface (module-name current-module))))
+      (for-each
+       (lambda (submodule)
+         (let ((submodule-interface (resolve-interface submodule)))
+           (module-use! current-module submodule-interface)
+           (module-use! current-module-interface submodule-interface)))
+       %public-modules))))

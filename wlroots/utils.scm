@@ -55,6 +55,7 @@
 (define-syntax-rule (define-enumeration code->name name->code
                       (tag value) ...)
   (begin
+    (define tag value) ...
     (define code->name
       (let ((table (make-hash-table)))
         (hashv-set! table value 'tag)

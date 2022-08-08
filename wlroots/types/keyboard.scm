@@ -1,5 +1,17 @@
 (define-module (wlroots types keyboard)
-  #:use-module (wlroots utils))
+  #:use-module (wlroots utils)
+  #:export (WLR_LED_NUM_LOCK
+            WLR_LED_CAPS_LOCK
+            WLR_LED_SCROLL_LOCK
+
+            WLR_MODIFIER_SHIFT
+            WLR_MODIFIER_CAPS
+            WLR_MODIFIER_CTRL
+            WLR_MODIFIER_ALT
+            WLR_MODIFIER_MOD2
+            WLR_MODIFIER_MOD3
+            WLR_MODIFIER_LOGO
+            WLR_MODIFIER_MOD5))
 
 (define-enumeration wlr-keyboard-led->value value->wlr-keyboard-led
   (WLR_LED_NUM_LOCK 1)

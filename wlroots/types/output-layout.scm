@@ -12,9 +12,16 @@
   #:export (wrap-wlr-output-layout
             unwrap-wlr-output-layout
             wlr-output-layout-create
+            wlr-direction->value value->wlr-direction
             get-event-signal))
 
 (define-wlr-types-class wlr-output-layout)
+
+(define-enumeration wlr-direction->value value->wlr-direction
+  (WLR_DIRECTION_UP 1)
+  (WLR_DIRECTION_DOWN 2)
+  (WLR_DIRECTION_LEFT 4)
+  (WLR_DIRECTION_RIGHT 8))
 
 (define %wlr-output-layout-struct
   (bs:struct

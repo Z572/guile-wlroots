@@ -6,6 +6,7 @@
                           (void . ffi:void)))
   #:use-module (wlroots render allocator)
   #:use-module (wlroots render renderer)
+  #:use-module (wlroots backend)
   #:use-module (wlroots util addon)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
@@ -16,7 +17,6 @@
   #:use-module (wayland signal)
   #:use-module (bytestructures guile)
   #:export (%wlr-output-state-struct
-            %wlr-output-struct
             wrap-wlr-output
             unwrap-wlr-output
             wlr-output-init-render
@@ -25,7 +25,16 @@
             wlr-output-set-mode
             wlr-output-enable
             wlr-output-commit
+            wlr-output-backend
+            wlr-output-width
+            wlr-output-height
+            wlr-output-modes
+
             %pixman-region32-t-struct))
+
+(load-extension "libguile-wlroots" "scm_init_wlr_output")
+(define (wlr-output-backend o)
+  (wrap-wlr-backend(%wlr-output-backend o)))
 (define %pixman-box32-struct
   (bs:struct `((x1 ,int32)
                (y1 ,int32)
@@ -57,82 +66,25 @@
                                 (refresh ,int32))))
                (gamma-lut ,(bs:pointer '*))
                (gamma-lut-size ,size_t))))
-(define %wlr-output-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (backend ,(bs:pointer '*))
-               (display ,(bs:pointer '*))
-               (global ,(bs:pointer '*))
-               (resources ,%wl-list)
-               (name ,cstring-pointer)
-               (description ,(bs:pointer '*))
-               (make ,(bs:vector 56 cstring-pointer))
-               (modle ,(bs:vector 16 (bs:pointer '*)))
-               (serial ,(bs:vector 16 (bs:pointer '*)))
-               (phys-width ,int32)
-               (phys-height ,int32)
-               (modes ,%wl-list)
-               (curent-mode ,(bs:pointer '*))
-               (width ,int32)
-               (height ,int32)
-               (refresh ,int32)
-               (enabled ,int)
-               (scale ,float)
-               (subpixel ,int)
-               (transform ,int)
-               (adaptive-sync-status ,int)
-               (render-format ,uint32)
-               (needs-frame ,int)
-               (frame-pending ,int)
-               (transform-matrix ,(bs:vector 9 float))
-               (non-desktop ,int)
-               (pending ,%wlr-output-state-struct)
-               (commit-seq ,uint32)
-               (events ,(bs:struct (map (cut cons <> (list %wl-signal-struct))
-                                        '(frame
-                                          damage
-                                          needs-frame
-                                          precommit
-                                          commit
-                                          present
-                                          bind
-                                          enable
-                                          mode
-                                          description
-                                          destroy))))
-               (idle-frame ,(bs:pointer '*))
-               (idle-done ,(bs:pointer '*))
-               (attach-render-locks ,int)
-               (cursors ,%wl-list)
-               (hardware-cursor ,(bs:pointer '*))
-               (cursor-swapchain ,(bs:pointer '*))
-               (cursor-front-buffer ,(bs:pointer '*))
-               (software-cursor-locks ,int)
-               (allocator ,(bs:pointer '*))
-               (renderer ,(bs:pointer '*))
-               (swapchain ,(bs:pointer '*))
-               (back-buffer ,(bs:pointer '*))
-               (display-destroy ,%wl-listener)
-               (addons ,%wlr-addon-set-struct)
-               (data ,(bs:pointer 'void)))))
 (define-class <wlr-output-mode> ()
   (pointer #:accessor .pointer #:init-keyword #:pointer))
 (define (wrap-wlr-output-mode p)
   (make <wlr-output-mode> #:pointer p))
 (define (unwrap-wlr-output-mode o)
   (.pointer o))
-(define-class <wlr-output> ()
-  (bytestructure #:accessor .bytestructure #:init-keyword #:bytestructure)
-  (modes #:allocation #:virtual
-         #:accessor .modes
-         #:slot-ref (lambda (a) (wrap-wl-list (bytestructure-ref (.bytestructure a) 'modes)))
-         #:slot-set! (lambda (instance new-val)
-                       (bytestructure-set!
-                        (.bytestructure instance)
-                        'modes new-val))))
-(define (wrap-wlr-output p)
-  (make <wlr-output> #:bytestructure (pointer->bytestructure p %wlr-output-struct)))
-(define (unwrap-wlr-output o)
-  (bytestructure->pointer (.bytestructure o)))
+;; (define-class <wlr-output> ()
+;;   (bytestructure #:accessor .bytestructure #:init-keyword #:bytestructure)
+;;   (modes #:allocation #:virtual
+;;          #:accessor .modes
+;;          #:slot-ref (lambda (a) (wrap-wl-list (bytestructure-ref (.bytestructure a) 'modes)))
+;;          #:slot-set! (lambda (instance new-val)
+;;                        (bytestructure-set!
+;;                         (.bytestructure instance)
+;;                         'modes new-val))))
+(define (wlr-output-modes o)
+  (wrap-wl-list (%wlr-output-modes o)))
+(define .modes wlr-output-modes)
+
 (define wlr-output-init-render
   (let ((proc (wlr->procedure ffi:int "wlr_output_init_render" '(* * *))))
     (lambda (output allocator renderer)

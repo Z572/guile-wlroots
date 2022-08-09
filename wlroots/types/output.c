@@ -3,7 +3,7 @@
 #include "../helper.c"
 #define WRAP(o) (scm_make_foreign_object_1(output_type,o))
 #define UNWRAP(o) (struct wlr_output*)(scm_foreign_object_ref(o, 0))
-
+#define CHECK_TYPE(o) scm_assert_foreign_object_type(output_type, o)
 static SCM output_type;
 void
 init_output_type (void)
@@ -21,28 +21,37 @@ init_output_type (void)
 
 SCM_DEFINE(scm_wlr_output_backend,"%wlr-output-backend",1,0,0,(SCM o),"")
 {
+  CHECK_TYPE(o);
   return FROM_P((UNWRAP(o))->backend);
 }
 SCM_DEFINE(scm_wrap_wlr_output,"wrap-wlr-output",1,0,0,(SCM o),"")
+  #define FUNC_NAME s_scm_wrap_wlr_output
 {
+  SCM_VALIDATE_POINTER(1, o);
   return WRAP(TO_P(o));
 }
+#undef FUNC_NAME
+
 SCM_DEFINE(scm_unwrap_wlr_output,"unwrap-wlr-output",1,0,0,(SCM o),"")
 {
+  CHECK_TYPE(o);
   return FROM_P(UNWRAP(o));
 }
 
 SCM_DEFINE(scm_wlr_output_modes,"%wlr-output-modes",1,0,0,(SCM o),"")
 {
+  CHECK_TYPE(o);
   return FROM_P(&((UNWRAP(o))->modes));
 }
 
 SCM_DEFINE(scm_wlr_output_width,"wlr-output-width",1,0,0,(SCM o),"")
 {
+  CHECK_TYPE(o);
   return scm_from_int((UNWRAP(o))->width);
 }
 SCM_DEFINE(scm_wlr_output_height,"wlr-output-height",1,0,0,(SCM o),"")
 {
+  CHECK_TYPE(o);
   return scm_from_int((UNWRAP(o))->height);
 }
 

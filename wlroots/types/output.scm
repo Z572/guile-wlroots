@@ -32,7 +32,8 @@
 
             %pixman-region32-t-struct))
 
-(load-extension "libguile-wlroots" "scm_init_wlr_output")
+(eval-when (expand load eval)
+  (load-extension "libguile-wlroots" "scm_init_wlr_output"))
 (define (wlr-output-backend o)
   (wrap-wlr-backend(%wlr-output-backend o)))
 (define %pixman-box32-struct

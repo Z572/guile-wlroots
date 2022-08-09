@@ -97,25 +97,22 @@
                         #:select? (git-predicate (dirname (current-filename)))))
     (build-system gnu-build-system)
     (arguments (list
-                #:modules `(((guix build guile-build-system)
-                             #:select (target-guile-effective-version))
-                            ,@%gnu-build-system-modules)
-                #:imported-modules `((guix build guile-build-system)
-                                     ,@%gnu-build-system-modules)
                 #:make-flags '(list "GUILE_AUTO_COMPILE=0")
                 #:phases
                 #~(modify-phases %standard-phases
-                    (add-after 'install 'load-extension
+                    (add-after 'build 'load-extension
                       (lambda* (#:key outputs #:allow-other-keys)
                         (substitute*
-                            (find-files (string-append
-                                         (assoc-ref outputs "out")
-                                         "/share/guile/site/"
-                                         (target-guile-effective-version))
-                                        ".*\\.scm")
-                          (("load-extension \"libguile-wlroots\"")
-                           (format #f "load-extension \"~a/lib/libguile-wlroots.so\""
-                                   (assoc-ref outputs "out")))))))))
+                            (find-files "." ".*\\.scm")
+                          (("\\(load-extension \"libguile-wlroots\" *\"(.*)\"\\)" _ o)
+                           (string-append
+                            (object->string
+                             `(or (false-if-exception (load-extension "libguile-wlroots" ,o))
+                                  (load-extension
+                                   ,(string-append
+                                     (assoc-ref outputs "out")
+                                     "/lib/libguile-wlroots.so")
+                                   ,o)))))))))))
     (native-inputs
      (list autoconf
            automake

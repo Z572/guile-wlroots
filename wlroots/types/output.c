@@ -19,6 +19,19 @@ init_output_type (void)
     scm_make_foreign_object_type (name, slots, finalizer);
 }
 
+SCM_DEFINE(scm_wlr_output_name,"wlr-output-name",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  return scm_from_utf8_string((UNWRAP(o))->name);
+}
+
+SCM_DEFINE(scm_wlr_output_description,"wlr-output-description",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  char *c = (UNWRAP(o))->description;
+  return ((c) ? scm_from_utf8_string(c): SCM_BOOL_F) ;
+}
+
 SCM_DEFINE(scm_wlr_output_backend,"%wlr-output-backend",1,0,0,(SCM o),"")
 {
   CHECK_TYPE(o);
@@ -53,6 +66,36 @@ SCM_DEFINE(scm_wlr_output_height,"wlr-output-height",1,0,0,(SCM o),"")
 {
   CHECK_TYPE(o);
   return scm_from_int((UNWRAP(o))->height);
+}
+
+SCM_DEFINE(scm_wlr_output_phys_width,"wlr-output-physical-width",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  return scm_from_int((UNWRAP(o))->phys_width);
+}
+
+SCM_DEFINE(scm_wlr_output_phys_height,"wlr-output-physical-height",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  return scm_from_int((UNWRAP(o))->phys_height);
+}
+
+SCM_DEFINE(scm_wlr_output_refresh,"wlr-output-refresh",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  return scm_from_int((UNWRAP(o))->refresh);
+}
+
+SCM_DEFINE(scm_wlr_output_enabled,"wlr-output-enabled",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  return scm_from_bool((UNWRAP(o))->enabled);
+}
+
+SCM_DEFINE(scm_wlr_output_scale,"wlr-output-scale",1,0,0,(SCM o),"")
+{
+  CHECK_TYPE(o);
+  return scm_from_double((UNWRAP(o))->scale);
 }
 
 void

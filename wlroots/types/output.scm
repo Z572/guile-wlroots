@@ -25,7 +25,14 @@
             wlr-output-set-mode
             wlr-output-enable
             wlr-output-commit
+            wlr-output-name
+            wlr-output-description
             wlr-output-backend
+            wlr-output-physical-width
+            wlr-output-physical-height
+            wlr-output-refresh
+            wlr-output-enabled
+            wlr-output-scale
             wlr-output-width
             wlr-output-height
             wlr-output-modes

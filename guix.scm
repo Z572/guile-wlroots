@@ -119,8 +119,8 @@
            libtool
            pkg-config
            texinfo
-           ))
-    (inputs (list guile-3.0 wlroots-next))
+           guile-3.0-latest))
+    (inputs (list guile-3.0-latest wlroots-next))
     (propagated-inputs
      (list guile-bytestructures
            (primitive-load

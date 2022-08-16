@@ -21,6 +21,7 @@
             wlr-xdg-surface-from-wlr-surface
             wlr-xdg-toplevel-set-activated
             wlr-xdg-toplevel-set-tiled
+            wlr-xdg-toplevel-set-fullscreen
             .edges
             get-event-signal))
 (define-wlr-types-class wlr-xdg-shell)
@@ -104,3 +105,7 @@
 (define-wlr-procedure (wlr-xdg-toplevel-set-tiled surface tiled-edges)
   (ffi:uint32 "wlr_xdg_toplevel_set_tiled" (list '* ffi:uint32))
   (% (unwrap-wlr-xdg-surface surface) tiled-edges))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-fullscreen surface fullscreen)
+  (ffi:uint32 "wlr_xdg_toplevel_set_fullscreen" (list '* ffi:int))
+  (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))

@@ -2,10 +2,12 @@
   #:use-module (wayland signal)
   #:use-module (wlroots types)
   #:use-module (bytestructures guile)
+  #:use-module (wayland util)
   #:use-module (wlroots utils)
   #:export (%wlr-input-device-struct
             wrap-wlr-input-device
-            unwrap-wlr-input-device))
+            unwrap-wlr-input-device
+            wlr-input-device-name))
 
 (define-wlr-types-class wlr-input-device)
 (define %wlr-input-device-struct
@@ -25,3 +27,8 @@
                                    (tablet ,(bs:pointer '*))
                                    (tablet-pad ,(bs:pointer '*)))))
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
+(define (wlr-input-device-name device)
+  (bytestructure-ref
+   (pointer->bytestructure (unwrap-wlr-input-device device) %wlr-input-device-struct)
+   'name))

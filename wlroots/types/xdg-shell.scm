@@ -6,7 +6,8 @@
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
   #:use-module ((system foreign) #:select ((uint32 . ffi:uint32)
-                                           (int . ffi:int)))
+                                           (int . ffi:int)
+                                           (void . ffi:void)))
   #:use-module (wlroots utils)
   #:export (%wlr-xdg-shell-struct
             %wlr-xdg-surface-struct
@@ -22,6 +23,7 @@
             wlr-xdg-toplevel-set-activated
             wlr-xdg-toplevel-set-tiled
             wlr-xdg-toplevel-set-fullscreen
+            wlr-xdg-toplevel-send-close
             .edges
             get-event-signal))
 (define-wlr-types-class wlr-xdg-shell)
@@ -101,6 +103,12 @@
   (ffi:uint32 "wlr_xdg_toplevel_set_activated" (list '* ffi:int))
   "Returns the associated configure serial."
   (% (unwrap-wlr-xdg-surface surface) (if activated 1 0)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-send-close surface)
+  (ffi:void "wlr_xdg_toplevel_send_close" (list '*))
+  "Request that this xdg toplevel closes."
+  (% (unwrap-wlr-xdg-surface surface)))
+
 
 (define-wlr-procedure (wlr-xdg-toplevel-set-tiled surface tiled-edges)
   (ffi:uint32 "wlr_xdg_toplevel_set_tiled" (list '* ffi:uint32))

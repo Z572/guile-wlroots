@@ -1,8 +1,9 @@
-SOURCES = %D%/config.scm \
- %D%/../wlroots.scm \
- %D%/backend.scm  \
- %D%/backend/session.scm  \
- %D%/utils.scm \
+SOURCES = %D%/config.scm     \
+ %D%/../wlroots.scm          \
+ %D%/backend.scm             \
+ %D%/backend/session.scm     \
+ %D%/utils.scm               \
+ %D%/xwayland.scm            \
  %D%/render/allocator.scm    \
  %D%/render/renderer.scm     \
  %D%/types.scm               \

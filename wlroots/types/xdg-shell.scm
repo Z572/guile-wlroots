@@ -7,7 +7,10 @@
   #:use-module (oop goops)
   #:use-module ((system foreign) #:select ((uint32 . ffi:uint32)
                                            (int . ffi:int)
-                                           (void . ffi:void)))
+                                           (void . ffi:void)
+                                           null-pointer?
+                                           pointer->string
+                                           make-pointer))
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:export (%wlr-xdg-shell-struct
@@ -33,6 +36,10 @@
             .edges
             wlr-xdg-surface-toplevel
             get-event-signal))
+
+(eval-when (expand load eval)
+  (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
+
 (define-wlr-types-class wlr-xdg-shell)
 (define %wlr-xdg-shell-struct
   (bs:struct `((global ,(bs:pointer '*))
@@ -62,7 +69,9 @@
                (surface ,(bs:pointer '*))
                (link ,%wl-list)
                (role ,int)
-               (union ,(bs:union `((toplevel ,(bs:pointer '*))
+               (union ,(bs:union `((toplevel
+                                    ,(bs:pointer
+                                      (delay %wlr-xdg-toplevel-struct)))
                                    (popup ,(bs:pointer '*)))))
                (popups ,%wl-list)
                (added ,int)
@@ -83,21 +92,6 @@
                                      (configure ,%wl-signal-struct)
                                      (ack-configure ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
-
-(define (wlr-xdg-surface-toplevel o)
-  (wrap-wlr-xdg-toplevel
-   (bytestructure-ref
-    (pointer->bytestructure
-     (unwrap-wlr-xdg-surface o)
-     %wlr-xdg-surface-struct)
-    'union
-    '* 'toplevel)))
-
-(define (wlr-xdg-toplevel-appid o)
-  (bytestructure-ref (pointer->bytestructure
-                      (unwrap-wlr-xdg-toplevel o)
-                      %wlr-xdg-toplevel-struct)
-                     'app-id))
 
 (define %wlr-xdg-surface-configure-struct
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))

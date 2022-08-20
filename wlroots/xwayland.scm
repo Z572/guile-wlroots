@@ -10,7 +10,8 @@
   #:export (%wlr-xwayland-surface-struct
             wrap-wlr-xwayland-surface
             unwrap-wlr-xwayland-surface
-            wlr-xwayland-surface-close))
+            wlr-xwayland-surface-close
+            wlr-xwayland-surface-class))
 
 (define-wlr-types-class wlr-xwayland-surface)
 
@@ -80,6 +81,12 @@
                                 ))))
                (surface-destroy ,%wl-listener)
                (data ,(bs:pointer 'void)))))
+
+(define (wlr-xwayland-surface-class x)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-xwayland-surface x)
+    %wlr-xwayland-surface-struct) 'class))
 ;; wlr_xwayland_surface_set_fullscreen
 (define-wlr-procedure (wlr-xwayland-surface-close surface)
   (ffi:void "wlr_xwayland_surface_close" (list '*))

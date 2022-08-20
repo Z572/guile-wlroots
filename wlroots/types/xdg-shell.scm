@@ -9,9 +9,12 @@
                                            (int . ffi:int)
                                            (void . ffi:void)))
   #:use-module (wlroots utils)
+  #:use-module (wayland util)
   #:export (%wlr-xdg-shell-struct
             %wlr-xdg-surface-struct
             %wlr-xdg-toplevel-resize-event-struct
+            %wlr-xdg-surface-configure-struct
+            %wlr-xdg-toplevel-struct
             wlr-xdg-shell-create
             wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
@@ -19,12 +22,16 @@
             unwrap-wlr-xdg-surface
             wrap-wlr-xdg-toplevel-resize-event
             unwrap-wlr-xdg-toplevel-resize-event
+            wrap-wlr-xdg-toplevel
+            unwrap-wlr-xdg-toplevel
             wlr-xdg-surface-from-wlr-surface
             wlr-xdg-toplevel-set-activated
             wlr-xdg-toplevel-set-tiled
             wlr-xdg-toplevel-set-fullscreen
             wlr-xdg-toplevel-send-close
+            wlr-xdg-toplevel-appid
             .edges
+            wlr-xdg-surface-toplevel
             get-event-signal))
 (define-wlr-types-class wlr-xdg-shell)
 (define %wlr-xdg-shell-struct
@@ -36,6 +43,7 @@
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
+
 (define-method (get-event-signal (b <wlr-xdg-shell>) (signal-name <symbol>))
   (let* ((unwrap-b (unwrap-wlr-xdg-shell b))
          (o (bytestructure-ref
@@ -44,8 +52,6 @@
               %wlr-xdg-shell-struct)
              'events signal-name)))
     (wrap-wl-signal (+ o 48))))
-;; (define (wrap-wlr-xdg-shell p)
-;;   )
 
 (define %wlr-xdg-surface-state-struct
   (bs:struct `((configure-serial ,uint32)
@@ -78,12 +84,69 @@
                                      (ack-configure ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 
+(define (wlr-xdg-surface-toplevel o)
+  (wrap-wlr-xdg-toplevel
+   (bytestructure-ref
+    (pointer->bytestructure
+     (unwrap-wlr-xdg-surface o)
+     %wlr-xdg-surface-struct)
+    'union
+    '* 'toplevel)))
+
+(define (wlr-xdg-toplevel-appid o)
+  (bytestructure-ref (pointer->bytestructure
+                      (unwrap-wlr-xdg-toplevel o)
+                      %wlr-xdg-toplevel-struct)
+                     'app-id))
+
+(define %wlr-xdg-surface-configure-struct
+  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
+               (link ,%wl-list)
+               (serial ,uint32))))
+
+(define %wlr-xdg-toplevel-configure-struct
+  (bs:struct `(,@(map (lambda (a) (list a int8))
+                      '(maximized fullscreen resizing activated))
+               ,@(map (lambda (a) (list a uint32))
+                      '(titled width height)))))
+(define %wlr-xdg-toplevel-requested-struct
+  (bs:struct `(,@(map (lambda (a) (list a int8))
+                      '(maximized minimized fullscreen))
+               (fullscreen-output ,(bs:pointer '*))
+               (fullscreen-output-destroy ,%wl-listener))))
+(define-wlr-types-class wlr-xdg-toplevel)
+(define %wlr-xdg-toplevel-struct
+  (bs:struct `((resource ,(bs:pointer '*))
+               (base ,(bs:pointer %wlr-xdg-surface-struct))
+               (added ,uint8)
+               (parent ,(bs:pointer %wlr-xdg-surface-struct))
+               (parent-unmap ,%wl-listener)
+               (current ,%wlr-xdg-surface-state-struct)
+               (pending ,%wlr-xdg-surface-state-struct)
+               (scheduled ,%wlr-xdg-toplevel-configure-struct)
+               (requested ,%wlr-xdg-toplevel-requested-struct)
+               (title ,cstring-pointer)
+               (app-id ,cstring-pointer)
+               (event ,(bs:struct (map (lambda (a) (list a %wl-signal-struct))
+                                       '(request-maximize;
+                                         request-fullscreen;
+                                         request-minimize;
+                                         request-move;
+                                         request-resize;
+                                         request-show-window-menu;
+                                         set-parent;
+                                         set-title;
+                                         set-app-id
+                                         )))))))
+
 (define %wlr-xdg-toplevel-resize-event-struct
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
                (seat ,(bs:pointer %wlr-seat-client-struct))
                (serial ,uint32)
                (edges ,uint32))))
 (define-wlr-types-class wlr-xdg-toplevel-resize-event)
+
+
 (define-method (.edges (o <wlr-xdg-toplevel-resize-event>))
   (bytestructure-ref
    (pointer->bytestructure (unwrap-wlr-xdg-toplevel-resize-event o) %wlr-xdg-toplevel-resize-event-struct)

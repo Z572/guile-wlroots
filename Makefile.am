@@ -1,6 +1,6 @@
 GOBJECTS = $(SOURCES:%.scm=%.go) $(NODIST_SOURCES:%.scm=%.go)
 
-nobase_mod_DATA = $(SOURCES) $(NOCOMP_SOURCES) $(NODIST_SOURCES)
+nobase_mod_DATA = $(SOURCES) $(NODIST_SOURCES)
 nobase_go_DATA = $(GOBJECTS)
 
 snarfcppopts =  $(INCLUDES) $(CPPFLAGS) $(libguile_wlroots_la_CFLAGS)

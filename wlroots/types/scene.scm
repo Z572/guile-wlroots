@@ -87,14 +87,20 @@
 (define-wlr-procedure (wlr-scene-tree-create parent)
   ('* "wlr_scene_tree_create" '(*))
   (wrap-wlr-scene-tree (% (pk 's (unwrap-wlr-scene-node parent)))))
-(define-wlr-procedure (wlr-scene-node-at node lx ly
-                                         #:optional
-                                         (nx (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
-                                         (ny (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*)))))
+(define-wlr-procedure (wlr-scene-node-at node lx ly)
   ('* "wlr_scene_node_at" (list '* ffi:double ffi:double '* '*))
-  (values (% (get-pointer node) lx ly nx ny)
-          (cons (bytevector-ieee-double-native-ref (ffi:pointer->bytevector nx (ffi:sizeof double)) 0)
-                (bytevector-ieee-double-native-ref (ffi:pointer->bytevector ny (ffi:sizeof double)) 0))))
+  (define (ref-double-pointer p)
+    (bytevector-ieee-double-native-ref
+     (ffi:pointer->bytevector
+      p (ffi:sizeof ffi:double)) 0))
+  (let* ((nx (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
+         (ny (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
+         (value (% (get-pointer node) lx ly nx ny)))
+    (and (not (ffi:null-pointer? value))
+         (values
+          (wrap-wlr-scene-node values)
+          `(,(ref-double-pointer nx) .
+            ,(ref-double-pointer ny))))))
 
 (define-wlr-procedure (wlr-scene-node-raise-to-top node)
   (ffi:void "wlr_scene_node_raise_to_top" '(*))

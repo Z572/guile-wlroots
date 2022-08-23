@@ -1,3 +1,11 @@
+*.lo
+*.o
+.deps/
+*.la
+*.x
+/libtool
+.dirstamp
+/xdg-shell-protocol.h
 *.eps
 *.go
 *.log
@@ -29,6 +37,8 @@
 /configure
 /doc/*.1
 /doc/.dirstamp
+/.ccls-cache/
+.libs/
 /doc/contributing.*.texi
 /doc/*.aux
 /doc/*.cp

@@ -8,6 +8,7 @@
   #:use-module (wlroots render renderer)
   #:use-module (wlroots backend)
   #:use-module (wlroots util addon)
+  #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:use-module (wayland listener)
@@ -21,6 +22,7 @@
             unwrap-wlr-output
             wlr-output-init-render
             .modes
+            <wlr-output>
             wlr-output-preferred-mode
             wlr-output-set-mode
             wlr-output-enable
@@ -38,6 +40,8 @@
             wlr-output-modes
 
             %pixman-region32-t-struct))
+
+(define-wlr-types-class wlr-output)
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_output"))

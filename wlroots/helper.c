@@ -13,3 +13,5 @@
 #define UNWRAP_WLR_XDG_SURFACE(p) (TO_P(REF_CALL_1("wlroots types xdg-shell", "unwrap-wlr-xdg-surface",p)))
 #define WRAP_WLR_XDG_TOPLEVEL(p) (REF_CALL_1("wlroots types xdg-shell", "wrap-wlr-xdg-toplevel",FROM_P(p)))
 #define UNWRAP_WLR_XDG_TOPLEVEL(p) (TO_P(REF_CALL_1("wlroots types xdg-shell", "unwrap-wlr-xdg-toplevel",p)))
+#define WRAP_WLR_OUTPUT(p) (REF_CALL_1("wlroots types output", "wrap-wlr-output",FROM_P(p)))
+#define UNWRAP_WLR_OUTPUT(p) (TO_P(REF_CALL_1("wlroots types output", "unwrap-wlr-output",p)))

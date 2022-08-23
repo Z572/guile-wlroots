@@ -8,6 +8,7 @@
   ;; #:use-module (wlroots types output-layout)
   #:use-module (wlroots types)
   #:use-module (wlroots types data-device)
+  #:use-module (wlroots types input-device)
   #:use-module (wlroots types surface)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
@@ -35,6 +36,7 @@
             wrap-wlr-seat-pointer-request-set-cursor-event
             unwrap-wlr-seat-pointer-request-set-cursor-event
             wlr-seat-set-selection
+            wlr-seat-set-keyboard
             %wlr-seat-struct
             %wlr-seat-client-struct
             wrap-wlr-seat-client
@@ -181,6 +183,10 @@
 (define-wlr-procedure (wlr-seat-set-selection seat source serial)
   (ffi:void "wlr_seat_set_selection" `(* * ,ffi:uint32))
   (% (unwrap-wlr-seat seat) (unwrap-wlr-data-source source) serial))
+
+(define-wlr-procedure (wlr-seat-set-keyboard seat dev)
+  (ffi:void "wlr_seat_set_keyboard" `(* *))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-input-device dev)))
 
 (define-wlr-procedure (wlr-seat-pointer-notify-axis wlr-seat time-msec orientation value value-discrete source)
   (ffi:void "wlr_seat_pointer_notify_axis" (list '* ffi:uint32 ffi:int ffi:double ffi:int32 ffi:int))

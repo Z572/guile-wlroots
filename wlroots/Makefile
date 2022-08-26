@@ -9,6 +9,7 @@ SOURCES = %D%/config.scm     \
  %D%/types.scm               \
  %D%/types/output.scm        \
  %D%/types/keyboard.scm      \
+ %D%/types/idle.scm          \
  %D%/types/output-layout.scm \
  %D%/types/layer-shell.scm   \
  %D%/types/input-device.scm  \

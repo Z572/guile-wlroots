@@ -1,4 +1,5 @@
 (define-module (wlroots types keyboard)
+  #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:export (WLR_LED_NUM_LOCK
             WLR_LED_CAPS_LOCK
@@ -11,7 +12,9 @@
             WLR_MODIFIER_MOD2
             WLR_MODIFIER_MOD3
             WLR_MODIFIER_LOGO
-            WLR_MODIFIER_MOD5))
+            WLR_MODIFIER_MOD5
+            wrap-wlr-event-keyboard-key
+            unwrap-wlr-event-keyboard-key))
 
 (define-enumeration wlr-keyboard-led->value value->wlr-keyboard-led
   (WLR_LED_NUM_LOCK 1)
@@ -27,3 +30,5 @@
   (WLR_MODIFIER_MOD3 32)
   (WLR_MODIFIER_LOGO 64)
   (WLR_MODIFIER_MOD5 128))
+
+(define-wlr-types-class-public wlr-event-keyboard-key)

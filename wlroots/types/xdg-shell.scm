@@ -31,6 +31,7 @@
             wlr-xdg-toplevel-set-activated
             wlr-xdg-toplevel-set-tiled
             wlr-xdg-toplevel-set-fullscreen
+            wlr-xdg-toplevel-set-resizing
             wlr-xdg-toplevel-send-close
             wlr-xdg-toplevel-appid
             .edges
@@ -173,4 +174,8 @@
 
 (define-wlr-procedure (wlr-xdg-toplevel-set-fullscreen surface fullscreen)
   (ffi:uint32 "wlr_xdg_toplevel_set_fullscreen" (list '* ffi:int))
+  (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-resizing surface fullscreen)
+  (ffi:uint32 "wlr_xdg_toplevel_set_resizing" (list '* ffi:int))
   (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))

@@ -34,6 +34,7 @@
             wlr-xdg-toplevel-set-resizing
             wlr-xdg-toplevel-send-close
             wlr-xdg-toplevel-appid
+            wlr-xdg-toplevel-title
             .edges
             wlr-xdg-surface-toplevel
             get-event-signal))

@@ -12,6 +12,13 @@ SCM_DEFINE(scm_wlr_xdg_toplevel_appid ,"wlr-xdg-toplevel-appid",1,0,0,(SCM o),""
   return scm_from_locale_string(((struct wlr_xdg_toplevel*)(UNWRAP_WLR_XDG_TOPLEVEL(o)))->app_id);
 }
 
+SCM_DEFINE(scm_wlr_xdg_toplevel_title ,"wlr-xdg-toplevel-title",1,0,0,(SCM o),"")
+#define FUNC_NAME s_scm_wlr_xdg_toplevel_title
+{
+  return scm_from_locale_string(((struct wlr_xdg_toplevel*)(UNWRAP_WLR_XDG_TOPLEVEL(o)))->title);
+}
+#undef FUNC_NAME
+
 
 void
 scm_init_wlr_xdg_shell(void)

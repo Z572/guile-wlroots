@@ -11,7 +11,8 @@
             wrap-wlr-xwayland-surface
             unwrap-wlr-xwayland-surface
             wlr-xwayland-surface-close
-            wlr-xwayland-surface-class))
+            wlr-xwayland-surface-class
+            wlr-xwayland-surface-title))
 
 (define-wlr-types-class wlr-xwayland-surface)
 
@@ -87,6 +88,12 @@
    (pointer->bytestructure
     (unwrap-wlr-xwayland-surface x)
     %wlr-xwayland-surface-struct) 'class))
+
+(define (wlr-xwayland-surface-title x)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-xwayland-surface x)
+    %wlr-xwayland-surface-struct) 'title))
 ;; wlr_xwayland_surface_set_fullscreen
 (define-wlr-procedure (wlr-xwayland-surface-close surface)
   (ffi:void "wlr_xwayland_surface_close" (list '*))

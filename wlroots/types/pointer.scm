@@ -29,6 +29,7 @@
                (y ,double))))
 
 (define-wlr-types-class wlr-event-pointer-axis)
+(define-wlr-types-class-public wlr-event-pointer-button)
 (define %wlr-event-pointer-axis-struct
   (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
                (time-msec ,uint32)

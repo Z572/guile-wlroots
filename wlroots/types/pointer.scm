@@ -1,6 +1,7 @@
 (define-module (wlroots types pointer)
   #:use-module (wlroots types)
   #:use-module (wlroots types input-device)
+  #:use-module (wayland util)
   ;; #:use-module ((system foreign) #:select )
   #:use-module (bytestructures guile)
   #:export (wrap-wlr-event-pointer-motion
@@ -11,7 +12,12 @@
             unwrap-event-pointer-motion-absolute
             %wlr-event-pointer-motion-struct
             %wlr-event-pointer-axis-struct
-            %wlr-event-pointer-motion-absolute-struct))
+            %wlr-event-pointer-motion-absolute-struct
+            wlr-event-pointer-axis-time-msec
+            wlr-event-pointer-axis-orientation
+            wlr-event-pointer-axis-delta
+            wlr-event-pointer-axis-delta-discrete
+            wlr-event-pointer-axis-source))
 (define-wlr-types-class wlr-event-pointer-motion)
 
 (define %wlr-event-pointer-motion-struct
@@ -37,3 +43,34 @@
                (orientation ,int)
                (delta ,double)
                (delta-discrete ,int32))))
+
+(define (wlr-event-pointer-axis-time-msec event)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-event-pointer-axis event)
+    %wlr-event-pointer-axis-struct)
+   'time-msec))
+(define (wlr-event-pointer-axis-orientation event)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-event-pointer-axis event)
+    %wlr-event-pointer-axis-struct)
+   'orientation))
+(define (wlr-event-pointer-axis-delta event)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-event-pointer-axis event)
+    %wlr-event-pointer-axis-struct)
+   'delta))
+(define (wlr-event-pointer-axis-delta-discrete event)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-event-pointer-axis event)
+    %wlr-event-pointer-axis-struct)
+   'delta-discrete))
+(define (wlr-event-pointer-axis-source event)
+  (bytestructure-ref
+   (pointer->bytestructure
+    (unwrap-wlr-event-pointer-axis event)
+    %wlr-event-pointer-axis-struct)
+   'source))

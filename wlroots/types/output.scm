@@ -38,6 +38,7 @@
             wlr-output-width
             wlr-output-height
             wlr-output-modes
+            wlr-output-data
 
             %pixman-region32-t-struct))
 

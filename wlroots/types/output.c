@@ -96,6 +96,14 @@ SCM_DEFINE(scm_wlr_output_scale,"wlr-output-scale",1,0,0,(SCM o),"")
 }
 #undef FUNC_NAME
 
+SCM_DEFINE(scm_wlr_output_data,"wlr-output-data",1,0,0,(SCM o),"")
+#define FUNC_NAME s_scm_wlr_output_data
+{
+  CHECK_TYPE(o);
+  return FROM_P((UNWRAP(o))->data);
+}
+#undef FUNC_NAME
+
 void
 scm_init_wlr_output(void)
 {

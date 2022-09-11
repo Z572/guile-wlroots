@@ -1,6 +1,6 @@
 (define-module (wlroots types output-layout)
   #:use-module (wayland display)
-  ;;#:use-module (wlroots render renderer)
+  #:use-module (wlroots types output)
   #:use-module (wlroots utils)
   #:use-module (wlroots types)
   #:use-module (wayland list)
@@ -13,7 +13,8 @@
             unwrap-wlr-output-layout
             wlr-output-layout-create
             wlr-direction->value value->wlr-direction
-            get-event-signal))
+            get-event-signal
+            wlr-output-layout-output-at))
 
 (define-wlr-types-class wlr-output-layout)
 
@@ -45,3 +46,10 @@
               %wlr-output-layout-struct)
              'events signal-name)))
     (wrap-wl-signal (+ o 24))))
+
+(define-wlr-procedure (wlr-output-layout-output-at layout lx ly)
+  ('* "wlr_output_layout_output_at" (list '* ffi:double ffi:double))
+  (let ((o (% (unwrap-wlr-output-layout layout) lx ly)))
+    (if (ffi:null-pointer? o)
+        #f
+        (wrap-wlr-output o))))

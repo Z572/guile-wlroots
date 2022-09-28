@@ -12,7 +12,8 @@
             unwrap-wlr-xwayland-surface
             wlr-xwayland-surface-close
             wlr-xwayland-surface-class
-            wlr-xwayland-surface-title))
+            wlr-xwayland-surface-title
+            wlr-xwayland-surface-set-fullscreen))
 
 (define-wlr-types-class wlr-xwayland-surface)
 
@@ -99,3 +100,6 @@
   (ffi:void "wlr_xwayland_surface_close" (list '*))
   "Request that this xdg toplevel closes."
   (% (unwrap-wlr-xwayland-surface surface)))
+(define-wlr-procedure (wlr-xwayland-surface-set-fullscreen surface fullscreen)
+  (ffi:void "wlr_xwayland_surface_set_fullscreen" (list '* ffi:int))
+  (% (unwrap-wlr-xwayland-surface surface) surface (if fullscreen 1 0)))

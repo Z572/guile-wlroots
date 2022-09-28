@@ -26,6 +26,7 @@
             wlr-scene-tree-create
             wlr-scene-node-raise-to-top
             %wlr-scene-struct
+            wlr-scene-node-set-enabled
             .node))
 
 (define %wlr-scene-node-state-struct
@@ -80,6 +81,10 @@
 (define-wlr-procedure (wlr-scene-attach-output-layout scene output-layout)
   (ffi:int "wlr_scene_attach_output_layout" '(* *))
   (% (unwrap-wlr-scene scene) (unwrap-wlr-output-layout output-layout)))
+
+(define-wlr-procedure (wlr-scene-node-set-enabled node enabled)
+  (ffi:void "wlr_scene_node_set_enabled" (list '* ffi:int))
+  (% (unwrap-wlr-scene-node node) (if enabled 1 0)))
 
 (define-wlr-procedure (wlr-scene-node-set-position scene x y)
   (ffi:void "wlr_scene_node_set_position" (list '* ffi:int ffi:int))

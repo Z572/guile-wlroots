@@ -31,11 +31,11 @@
                (height ,uint16)
                (override-redirect ,int8) ;; bool
                (mapped ,int8)            ;; bool
-               (title ,cstring-pointer)
-               (class ,cstring-pointer)
-               (instance ,cstring-pointer)
-               (role ,cstring-pointer)
-               (startup-id ,cstring-pointer)
+               (title ,(bs:pointer int8))
+               (class ,(bs:pointer int8))
+               (instance ,(bs:pointer int8))
+               (role ,(bs:pointer int8))
+               (startup-id ,(bs:pointer int8))
                (pid ,int)                   ;; pid_t
                (has-utf8-title ,int8)       ;; bool
                (children ,%wl-list)
@@ -85,16 +85,24 @@
                (data ,(bs:pointer 'void)))))
 
 (define (wlr-xwayland-surface-class x)
-  (bytestructure-ref
-   (pointer->bytestructure
-    (unwrap-wlr-xwayland-surface x)
-    %wlr-xwayland-surface-struct) 'class))
+  (let ((s (ffi:make-pointer
+            (bytestructure-ref
+             (pointer->bytestructure
+              (unwrap-wlr-xwayland-surface x)
+              %wlr-xwayland-surface-struct) 'class))))
+    (if (ffi:null-pointer? s)
+        #f
+        (ffi:pointer->string s))))
 
 (define (wlr-xwayland-surface-title x)
-  (bytestructure-ref
-   (pointer->bytestructure
-    (unwrap-wlr-xwayland-surface x)
-    %wlr-xwayland-surface-struct) 'title))
+  (let ((s (ffi:make-pointer
+            (bytestructure-ref
+             (pointer->bytestructure
+              (unwrap-wlr-xwayland-surface x)
+              %wlr-xwayland-surface-struct) 'title))))
+    (if (ffi:null-pointer? s)
+        #f
+        (ffi:pointer->string s))))
 ;; wlr_xwayland_surface_set_fullscreen
 (define-wlr-procedure (wlr-xwayland-surface-close surface)
   (ffi:void "wlr_xwayland_surface_close" (list '*))

@@ -110,4 +110,4 @@
   (% (unwrap-wlr-xwayland-surface surface)))
 (define-wlr-procedure (wlr-xwayland-surface-set-fullscreen surface fullscreen)
   (ffi:void "wlr_xwayland_surface_set_fullscreen" (list '* ffi:int))
-  (% (unwrap-wlr-xwayland-surface surface) surface (if fullscreen 1 0)))
+  (% (unwrap-wlr-xwayland-surface surface) (if fullscreen 1 0)))

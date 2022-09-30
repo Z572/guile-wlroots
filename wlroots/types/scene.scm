@@ -19,6 +19,8 @@
             unwrap-wlr-scene-node
             wrap-wlr-scene-tree
             unwrap-wlr-scene-tree
+            wrap-wlr-scene-rect
+            unwrap-wlr-scene-rect
             wlr-scene-create
             wlr-scene-attach-output-layout
             wlr-scene-node-set-position
@@ -27,6 +29,7 @@
             wlr-scene-node-raise-to-top
             %wlr-scene-struct
             wlr-scene-node-set-enabled
+            wlr-scene-rect-create
             .node))
 
 (define %wlr-scene-node-state-struct
@@ -53,6 +56,7 @@
 
 (define-wlr-types-class wlr-scene-node)
 (define-wlr-types-class wlr-scene-tree)
+(define-wlr-types-class wlr-scene-rect)
 
 (define-class <wlr-scene> ()
   (item #:accessor .item #:init-keyword #:item)
@@ -110,3 +114,16 @@
 (define-wlr-procedure (wlr-scene-node-raise-to-top node)
   (ffi:void "wlr_scene_node_raise_to_top" '(*))
   (% (unwrap-wlr-scene-node node)))
+
+(define-wlr-procedure (wlr-scene-rect-create parent width height color)
+  ('* "wlr_scene_rect_create" (list '* ffi:int ffi:int '*))
+  (wrap-wlr-scene-rect
+   (% (unwrap-wlr-scene-node parent)
+      width
+      height
+      (ffi:make-c-struct
+       (list ffi:double
+             ffi:double
+             ffi:double
+             ffi:double)
+       color))))

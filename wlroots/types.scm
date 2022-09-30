@@ -19,7 +19,8 @@
 (define-syntax define-wlr-types-class
   (lambda (x)
     (syntax-case x ()
-      ((_ name)
+      ((_ name (supers ...) slots ...
+          )
        (let ((symbol (syntax->datum #'name))
              (identifier (cut datum->syntax #'name <>)))
          (with-syntax ((rtd (identifier (symbol-append '< symbol '>)))
@@ -27,7 +28,8 @@
                        (unwrap (identifier (symbol-append 'unwrap- symbol)))
                        (is? (identifier (symbol-append symbol '?))))
            #`(begin
-               (define-class rtd (<wlr-type>))
+               (define-class rtd (supers ... <wlr-type>)
+                 slots ...)
                (define (wrap p)
                  (make rtd #:pointer p))
                (define (unwrap o)
@@ -36,7 +38,9 @@
                  (let ((u (unwrap o)))
                    (cond ((pointer? u) u)
                          ((bytestructure? u) (bytestructure->pointer u)))))
-               (define (is? o) (is-a? o rtd)))))))))
+               (define (is? o) (is-a? o rtd))))))
+      ((_ name)
+       #'(define-wlr-types-class name ())))))
 
 (define-syntax define-wlr-types-class-public
   (lambda (x)

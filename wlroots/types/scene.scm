@@ -31,6 +31,7 @@
             %wlr-scene-struct
             wlr-scene-node-set-enabled
             wlr-scene-rect-create
+            wlr-scene-rect-node
             .node))
 
 (define %wlr-scene-node-state-struct
@@ -57,8 +58,26 @@
 
 (define-wlr-types-class wlr-scene-node)
 (define-wlr-types-class wlr-scene-tree)
-(define-wlr-types-class wlr-scene-rect)
-
+(define %wlr-scene-node-rect-struct
+  (bs:struct `((node ,%wlr-scene-node-struct)
+               (width ,int)
+               (height ,int)
+               (color ,(bs:vector 4 double)))))
+(define-wlr-types-class wlr-scene-rect ()
+  (node #:accessor .node
+        #:allocation
+        #:virtual
+        #:slot-set! (lambda (o new-val)
+                      (bytestructure-set! (pointer->bytestructure
+                                           (get-pointer o) %wlr-scene-node-rect-struct)
+                                          'node
+                                          (unwrap-wlr-scene-node new-val)))
+        #:slot-ref (lambda (o)
+                     (wrap-wlr-scene-node
+                      (bytestructure->pointer (bytestructure-ref (pointer->bytestructure
+                                                                  (get-pointer o) %wlr-scene-node-rect-struct)
+                                                                 'node))))))
+(define wlr-scene-rect-node .node)
 (define-class <wlr-scene> ()
   (item #:accessor .item #:init-keyword #:item)
   (node #:allocation #:virtual

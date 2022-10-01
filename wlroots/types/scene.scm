@@ -23,6 +23,7 @@
             unwrap-wlr-scene-rect
             wlr-scene-create
             wlr-scene-attach-output-layout
+            wlr-scene-node-destroy
             wlr-scene-node-set-position
             wlr-scene-node-at
             wlr-scene-tree-create
@@ -85,6 +86,10 @@
 (define-wlr-procedure (wlr-scene-attach-output-layout scene output-layout)
   (ffi:int "wlr_scene_attach_output_layout" '(* *))
   (% (unwrap-wlr-scene scene) (unwrap-wlr-output-layout output-layout)))
+
+(define-wlr-procedure (wlr-scene-node-destroy node)
+  (ffi:void "wlr_scene_node_destroy" '(*))
+  (% (unwrap-wlr-scene-node node)))
 
 (define-wlr-procedure (wlr-scene-node-set-enabled node enabled)
   (ffi:void "wlr_scene_node_set_enabled" (list '* ffi:int))

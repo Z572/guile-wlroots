@@ -116,7 +116,7 @@
 
 (define-wlr-procedure (wlr-scene-node-set-position scene x y)
   (ffi:void "wlr_scene_node_set_position" (list '* ffi:int ffi:int))
-  (% (unwrap-wlr-scene scene) x y))
+  (% (unwrap-wlr-scene-node scene) x y))
 (define-wlr-procedure (wlr-scene-tree-create parent)
   ('* "wlr_scene_tree_create" '(*))
   (wrap-wlr-scene-tree (% (pk 's (unwrap-wlr-scene-node parent)))))

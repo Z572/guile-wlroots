@@ -45,7 +45,7 @@
 (define-syntax define-wlr-types-class-public
   (lambda (x)
     (syntax-case x ()
-      ((_ name)
+      ((_ name others ...)
        (let ((symbol (syntax->datum #'name))
              (identifier (cut datum->syntax #'name <>)))
          (with-syntax ((rtd (identifier (symbol-append '< symbol '>)))
@@ -53,7 +53,7 @@
                        (unwrap (identifier (symbol-append 'unwrap- symbol)))
                        (is? (identifier (symbol-append symbol '?))))
            #`(begin
-               (define-wlr-types-class name)
+               (define-wlr-types-class name others ...)
                (export wrap)
                (export unwrap)
                (export is? ))))))))

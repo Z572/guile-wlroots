@@ -46,6 +46,7 @@ GUILE_MODULE_REQUIRED([bytestructures guile])
 GUILE_MODULE_REQUIRED([wayland])
 GUILE_MODULE_REQUIRED([util572 box])
 GUILE_MODULE_REQUIRED([util572 color])
+GUILE_MODULE_REQUIRED([util572 ffi-helpers])
 dnl LT_CONFIG_LTDL_DIR([libltdl])
 dnl LTDL_INIT
 # Checks for library functions.

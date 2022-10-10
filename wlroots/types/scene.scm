@@ -31,6 +31,7 @@
             %wlr-scene-struct
             wlr-scene-node-set-enabled
             wlr-scene-rect-create
+            wlr-scene-rect-set-color
             wlr-scene-rect-node
             .node))
 
@@ -145,9 +146,8 @@
    (% (unwrap-wlr-scene-node parent)
       width
       height
-      (ffi:make-c-struct
-       (list ffi:double
-             ffi:double
-             ffi:double
-             ffi:double)
-       color))))
+      (color->pointer color))))
+(define-wlr-procedure (wlr-scene-rect-set-color rect color)
+  (ffi:void "wlr_scene_rect_set_color" (list '* '*))
+  (% (unwrap-wlr-scene-rect rect)
+     (color->pointer color)))

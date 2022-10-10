@@ -1,5 +1,6 @@
 (define-module (wlroots utils)
   #:use-module (system foreign)
+  #:use-module (util572 color)
   #:use-module (util572 ffi-helpers)
   #:use-module (wlroots config)
   #:use-module (wayland util)
@@ -9,11 +10,21 @@
                  bs:pointer
                  bytestructure-offset))
   #:use-module (oop goops)
-  #:export (wlr->pointer wlr->procedure)
+  #:export (wlr->pointer wlr->procedure color->pointer)
   #:export-syntax (define-wlr-procedure define-enumeration))
 
 (define <bytestructure> (class-of (bytestructure (bs:pointer '*))))
 
+(define-method (color->pointer (color <list>))
+  (make-c-struct
+   (list double
+         double
+         double
+         double)
+   (map (lambda (n) (/ n 255))
+        color)))
+(define-method (color->pointer (color <rgba-color>))
+  (color->pointer (color->list color)))
 (define-method (= (p <foreign>) (p2 <foreign>))
   (= (pointer-address p)
      (pointer-address p2)))

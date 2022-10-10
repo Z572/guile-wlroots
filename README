@@ -1,0 +1,11 @@
+# -*- mode: org -*-
+* deps:
+- automake
+- autoconf
+- bash
+- pkg-config
+- texinfo
+- wlroots
+- guile
+- [[https://github.com/Z572/guile-wayland][guile-wayland]]
+- [[https://github.com/Z572/util572][util572]]

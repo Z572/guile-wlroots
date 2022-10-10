@@ -1,6 +1,8 @@
 (define-module (wlroots util box)
+  #:use-module (util572 box)
   #:use-module (wlroots types)
   #:use-module (wayland util)
+  #:use-module (oop goops)
   #:use-module (bytestructures guile)
   #:export (%wlr-box-struct %wlr-fbox-struct <wlr-box> make-wlr-box list->wlr-box))
 (define %wlr-box-struct
@@ -12,8 +14,7 @@
                (width ,double)
                (height ,double))))
 
-(define-wlr-types-class-public
-  wlr-box)
+(define-wlr-types-class-public wlr-box (<box>))
 (define (make-wlr-box x y width height)
   (wrap-wlr-box (bytestructure->pointer
                  (bytestructure
@@ -24,3 +25,15 @@
                     (height ,height))))))
 (define (list->wlr-box l)
   (apply make-wlr-box l))
+
+(define-method (->bytestructure (box <wlr-box>))
+  (pointer->bytestructure (get-pointer box) %wlr-box-struct))
+
+(define-method (box-x (box <wlr-box>))
+  (bytestructure-ref (->bytestructure box) 'x))
+(define-method (box-y (box <wlr-box>))
+  (bytestructure-ref (->bytestructure box) 'y))
+(define-method (box-width (box <wlr-box>))
+  (bytestructure-ref (->bytestructure box) 'width))
+(define-method (box-height (box <wlr-box>))
+  (bytestructure-ref (->bytestructure box) 'height))

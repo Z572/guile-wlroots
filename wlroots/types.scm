@@ -2,7 +2,7 @@
   #:use-module (wayland util)
   #:use-module (oop goops)
   #:use-module (srfi srfi-26)
-  #:use-module ((system foreign) #:select(pointer-address pointer?))
+  #:use-module ((system foreign) #:select(pointer-address pointer? %null-pointer))
   #:use-module ((bytestructures guile) #:select(bytestructure?))
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
@@ -33,7 +33,9 @@
                (define (wrap p)
                  (make rtd #:pointer p))
                (define (unwrap o)
-                 (.pointer o))
+                 (if o
+                     (.pointer o)
+                     %null-pointer))
                (define-method (get-pointer (o rtd))
                  (let ((u (unwrap o)))
                    (cond ((pointer? u) u)

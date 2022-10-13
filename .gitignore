@@ -33,6 +33,7 @@
 /build-aux/missing
 /build-aux/test-driver
 /build-aux/texinfo.tex
+/build-aux/ltmain.sh
 /config.status
 /configure
 /doc/*.1
@@ -73,4 +74,5 @@ stamp-h[0-9]
 tmp
 /.version
 /doc/stamp-[0-9]
-/magic/config.scm
+/wlroots/config.scm
+compile_commands.json

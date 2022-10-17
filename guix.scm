@@ -1,6 +1,5 @@
 (use-modules
  ((guix licenses) #:prefix license:)
- ((guix licenses) #:prefix license:)
  (gnu packages autotools)
  (gnu packages build-tools)
  (gnu packages file)
@@ -15,13 +14,12 @@
  (gnu packages xdisorg)
  (gnu packages xorg)
  (gnu packages)
- (gnu packages)
  (guix build-system gnu)
  (guix download)
  (guix gexp)
  (guix git-download)
  (guix packages)
- (guix utils) (guix packages)
+ (guix utils)
  )
 (define libdrm-next
   (package

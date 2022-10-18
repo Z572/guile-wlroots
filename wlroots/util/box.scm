@@ -37,3 +37,12 @@
   (bytestructure-ref (->bytestructure box) 'width))
 (define-method (box-height (box <wlr-box>))
   (bytestructure-ref (->bytestructure box) 'height))
+
+(define-method ((setter box-x) (box <wlr-box>) (n <integer>))
+  (bytestructure-set! (->bytestructure box) 'x n))
+(define-method ((setter box-y) (box <wlr-box>) (n <integer>))
+  (bytestructure-set! (->bytestructure box) 'y n))
+(define-method ((setter box-width) (box <wlr-box>) (n <integer>))
+  (bytestructure-set! (->bytestructure box) 'width n))
+(define-method ((setter box-height) (box <wlr-box>) (n <integer>))
+  (bytestructure-set! (->bytestructure box) 'height n))

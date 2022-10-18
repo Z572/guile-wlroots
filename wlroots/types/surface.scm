@@ -3,6 +3,7 @@
   #:use-module (wlroots util addon)
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
+  #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wlroots types output)
   #:use-module (wayland list)
@@ -70,13 +71,7 @@
                     (buffer-width ,int)
                     (buffer-height ,int)))))))
 
-(define-class <wlr-surface> ()
-  (pointer #:accessor .pointer #:init-keyword #:pointer))
-(define (wrap-wlr-surface p)
-  (make <wlr-surface> #:pointer p))
-(define (unwrap-wlr-surface o)
-  (.pointer o))
-
+(define-wlr-types-class-public wlr-surface)
 (define-wlr-procedure (wlr-surface-has-buffer surface)
   (ffi:int "wlr_surface_has_buffer" '(*))
   (= (% (unwrap-wlr-surface surface)) 1))

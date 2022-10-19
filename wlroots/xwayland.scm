@@ -1,5 +1,6 @@
 (define-module (wlroots xwayland)
   #:use-module (wlroots types)
+  #:use-module (wlroots types surface)
   #:use-module (wayland list)
   #:use-module (wayland util)
   #:use-module (wayland listener)
@@ -13,6 +14,7 @@
             wlr-xwayland-surface-close
             wlr-xwayland-surface-class
             wlr-xwayland-surface-title
+            wlr-xwayland-surface-surface
             wlr-xwayland-surface-set-fullscreen))
 
 (define-wlr-types-class wlr-xwayland-surface)
@@ -83,6 +85,16 @@
                                 ))))
                (surface-destroy ,%wl-listener)
                (data ,(bs:pointer 'void)))))
+
+(define (wlr-xwayland-surface-surface x)
+  (let ((s (ffi:make-pointer
+            (bytestructure-ref
+             (pointer->bytestructure
+              (unwrap-wlr-xwayland-surface x)
+              %wlr-xwayland-surface-struct) 'surface))))
+    (if (ffi:null-pointer? s)
+        #f
+        (wrap-wlr-surface s))))
 
 (define (wlr-xwayland-surface-class x)
   (let ((s (ffi:make-pointer

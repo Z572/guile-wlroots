@@ -31,6 +31,7 @@
             %wlr-scene-struct
             wlr-scene-node-set-enabled
             wlr-scene-rect-create
+            wlr-scene-rect-set-size
             wlr-scene-rect-set-color
             wlr-scene-rect-node
             .node))
@@ -147,6 +148,10 @@
       width
       height
       (color->pointer color))))
+(define-wlr-procedure (wlr-scene-rect-set-size rect width height)
+  (ffi:void "wlr_scene_rect_set_size" (list '* ffi:int ffi:int))
+  (% (unwrap-wlr-scene-rect rect)
+     width height))
 (define-wlr-procedure (wlr-scene-rect-set-color rect color)
   (ffi:void "wlr_scene_rect_set_color" (list '* '*))
   (% (unwrap-wlr-scene-rect rect)

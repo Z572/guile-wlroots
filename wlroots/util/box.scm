@@ -14,7 +14,31 @@
                (width ,double)
                (height ,double))))
 
-(define-wlr-types-class-public wlr-box (<box>))
+(define-wlr-types-class-public wlr-box (<box>)
+  (x #:allocation #:virtual
+     #:slot-ref
+     (lambda (box) (bytestructure-ref (->bytestructure box) 'x))
+     #:slot-set!
+     (lambda (box n) (bytestructure-set! (->bytestructure box) 'x n))
+     #:accessor box-x)
+  (y #:allocation #:virtual
+     #:slot-ref
+     (lambda (box) (bytestructure-ref (->bytestructure box) 'y))
+     #:slot-set!
+     (lambda (box n) (bytestructure-set! (->bytestructure box) 'y n))
+     #:accessor box-y)
+  (height #:allocation #:virtual
+          #:slot-ref
+          (lambda (box) (bytestructure-ref (->bytestructure box) 'height))
+          #:slot-set!
+          (lambda (box n) (bytestructure-set! (->bytestructure box) 'height n))
+          #:accessor box-height)
+  (width #:allocation #:virtual
+         #:slot-ref
+         (lambda (box) (bytestructure-ref (->bytestructure box) 'width))
+         #:slot-set!
+         (lambda (box n) (bytestructure-set! (->bytestructure box) 'width n))
+         #:accessor box-width))
 (define (make-wlr-box x y width height)
   (wrap-wlr-box (bytestructure->pointer
                  (bytestructure
@@ -28,21 +52,3 @@
 
 (define-method (->bytestructure (box <wlr-box>))
   (pointer->bytestructure (get-pointer box) %wlr-box-struct))
-
-(define-method (box-x (box <wlr-box>))
-  (bytestructure-ref (->bytestructure box) 'x))
-(define-method (box-y (box <wlr-box>))
-  (bytestructure-ref (->bytestructure box) 'y))
-(define-method (box-width (box <wlr-box>))
-  (bytestructure-ref (->bytestructure box) 'width))
-(define-method (box-height (box <wlr-box>))
-  (bytestructure-ref (->bytestructure box) 'height))
-
-(define-method ((setter box-x) (box <wlr-box>) (n <integer>))
-  (bytestructure-set! (->bytestructure box) 'x n))
-(define-method ((setter box-y) (box <wlr-box>) (n <integer>))
-  (bytestructure-set! (->bytestructure box) 'y n))
-(define-method ((setter box-width) (box <wlr-box>) (n <integer>))
-  (bytestructure-set! (->bytestructure box) 'width n))
-(define-method ((setter box-height) (box <wlr-box>) (n <integer>))
-  (bytestructure-set! (->bytestructure box) 'height n))

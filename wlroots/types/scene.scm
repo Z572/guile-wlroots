@@ -64,7 +64,7 @@
   (bs:struct `((node ,%wlr-scene-node-struct)
                (width ,int)
                (height ,int)
-               (color ,(bs:vector 4 double)))))
+               (color ,%color-struct))))
 (define-wlr-types-class wlr-scene-rect ()
   (node #:accessor .node
         #:allocation

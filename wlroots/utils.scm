@@ -3,28 +3,31 @@
   #:use-module (util572 color)
   #:use-module (util572 ffi-helpers)
   #:use-module (wlroots config)
+  #:use-module (srfi srfi-26)
   #:use-module (wayland util)
   #:use-module ((bytestructures guile)
                 #:select
                 (bytestructure
                  bs:pointer
-                 bytestructure-offset))
+                 float
+                 bytestructure-offset
+                 bs:vector))
   #:use-module (oop goops)
-  #:export (wlr->pointer wlr->procedure color->pointer)
+  #:export (wlr->pointer wlr->procedure color->pointer %color-struct)
   #:export-syntax (define-wlr-procedure define-enumeration))
 
 (define <bytestructure> (class-of (bytestructure (bs:pointer '*))))
 
-(define-method (color->pointer (color <list>))
-  (make-c-struct
-   (list double
-         double
-         double
-         double)
-   (map (lambda (n) (/ n 255))
-        color)))
+(define %color-struct (bs:vector 4 float))
 (define-method (color->pointer (color <rgba-color>))
-  (color->pointer (color->list color)))
+  (bytestructure->pointer
+   (bytestructure %color-struct
+                  (list->vector (map (cut / <> 255)
+                                     (list (color-r color)
+                                           (color-g color)
+                                           (color-b color)
+                                           (color-a color))))))
+  )
 (define-method (= (p <foreign>) (p2 <foreign>))
   (= (pointer-address p)
      (pointer-address p2)))

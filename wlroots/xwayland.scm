@@ -14,105 +14,122 @@
             wlr-xwayland-surface-close
             wlr-xwayland-surface-class
             wlr-xwayland-surface-title
+            wlr-xwayland-surface-role
+            wlr-xwayland-surface-instance
             wlr-xwayland-surface-surface
             wlr-xwayland-surface-set-fullscreen
             wlr-xwayland-surface-from-wlr-surface))
 
 (define-wlr-types-class wlr-xwayland-surface)
 
-(define %wlr-xwayland-surface-struct
-  (bs:struct `((window-id ,uint32)
-               (xwm ,(bs:pointer '*))
-               (surface-id ,uint32)
-               (link ,%wl-list)
-               (stack-link ,%wl-list)
-               (unpaired-link ,%wl-list)
-               (surface ,(bs:pointer '*))
-               (x ,int16)
-               (y ,int16)
-               (width ,uint16)
-               (height ,uint16)
-               (override-redirect ,int8) ;; bool
-               (mapped ,int8)            ;; bool
-               (title ,(bs:pointer int8))
-               (class ,(bs:pointer int8))
-               (instance ,(bs:pointer int8))
-               (role ,(bs:pointer int8))
-               (startup-id ,(bs:pointer int8))
-               (pid ,int)                   ;; pid_t
-               (has-utf8-title ,int8)       ;; bool
-               (children ,%wl-list)
-               (parent ,(bs:pointer (delay %wlr-xwayland-surface-struct)))
-               (parent-link ,%wl-list)
-               (window-type ,(bs:pointer '*))
-               (window-type-len ,size_t)
-               (protocols ,(bs:pointer '*))
-               (protocols-len ,size_t)
-               (decorations ,uint32)
-               (hints ,(bs:pointer '*))
-               (hints-urgency ,uint32)
-               (size-hints ,(bs:pointer '*))
-               (pinging ,int8)          ;; boo;
-               (ping-timer ,(bs:pointer '*))
-               ,@(map (lambda (a) (list a int8))
-                      '(modal fullscreen maximized-vert maximized-horz minimized has-alpha))
-               (events ,(bs:struct
-                         (map (lambda (a) (list a %wl-signal-struct))
-                              '(destroy;
-                                request-configure;
-                                request-move;
-                                request-resize;
-                                request-minimize;
-                                request-maximize;
-                                request-fullscreen;
-                                request-activate;
+(eval-when (expand load eval)
+  (define %wlr-xwayland-surface-struct
+    (bs:struct `((window-id ,uint32)
+                 (xwm ,(bs:pointer '*))
+                 (surface-id ,uint32)
+                 (link ,%wl-list)
+                 (stack-link ,%wl-list)
+                 (unpaired-link ,%wl-list)
+                 (surface ,(bs:pointer '*))
+                 (x ,int16)
+                 (y ,int16)
+                 (width ,uint16)
+                 (height ,uint16)
+                 (override-redirect ,int8) ;; bool
+                 (mapped ,int8)            ;; bool
+                 (title ,(bs:pointer int8))
+                 (class ,(bs:pointer int8))
+                 (instance ,(bs:pointer int8))
+                 (role ,(bs:pointer int8))
+                 (startup-id ,(bs:pointer int8))
+                 (pid ,int)                   ;; pid_t
+                 (has-utf8-title ,int8)       ;; bool
+                 (children ,%wl-list)
+                 (parent ,(bs:pointer (delay %wlr-xwayland-surface-struct)))
+                 (parent-link ,%wl-list)
+                 (window-type ,(bs:pointer '*))
+                 (window-type-len ,size_t)
+                 (protocols ,(bs:pointer '*))
+                 (protocols-len ,size_t)
+                 (decorations ,uint32)
+                 (hints ,(bs:pointer '*))
+                 (hints-urgency ,uint32)
+                 (size-hints ,(bs:pointer '*))
+                 (pinging ,int8)          ;; boo;
+                 (ping-timer ,(bs:pointer '*))
+                 ,@(map (lambda (a) (list a int8))
+                        '(modal fullscreen maximized-vert maximized-horz minimized has-alpha))
+                 (events ,(bs:struct
+                           (map (lambda (a) (list a %wl-signal-struct))
+                                '(destroy
+                                  request-configure
+                                  request-move
+                                  request-resize
+                                  request-minimize
+                                  request-maximize
+                                  request-fullscreen
+                                  request-activate
 
-                                map;
-                                unmap;
-                                set-title;
-                                set-class;
-                                set-role;
-                                set-parent;
-                                set-pid;
-                                set-startup-id;
-                                set-window-type;
-                                set-hints;
-                                set-decorations;
-                                set-override-redirect;
-                                set-geometry;
-                                ping-timeout;
+                                  map
+                                  unmap
+                                  set-title
+                                  set-class
+                                  set-role
+                                  set-parent
+                                  set-pid
+                                  set-startup-id
+                                  set-window-type
+                                  set-hints
+                                  set-decorations
+                                  set-override-redirect
+                                  set-geometry
+                                  ping-timeout
 
 
-                                ))))
-               (surface-destroy ,%wl-listener)
-               (data ,(bs:pointer 'void)))))
+                                  ))))
+                 (surface-destroy ,%wl-listener)
+                 (data ,(bs:pointer 'void)))))
+  (define-bytestructure-accessors %wlr-xwayland-surface-struct
+    xwayland-surface-unwrap xwayland-surface-ref xwayland-surface-set!))
 
+(define dsize (bytestructure-descriptor-size %wlr-xwayland-surface-struct))
+(define-syntax-rule (ref surface o)
+  (xwayland-surface-ref
+   (ffi:pointer->bytevector
+    (unwrap-wlr-xwayland-surface surface)
+    dsize) o))
 (define (wlr-xwayland-surface-surface x)
   (let ((s (ffi:make-pointer
-            (bytestructure-ref
-             (pointer->bytestructure
-              (unwrap-wlr-xwayland-surface x)
-              %wlr-xwayland-surface-struct) 'surface))))
+            (ref x surface))))
     (if (ffi:null-pointer? s)
         #f
         (wrap-wlr-surface s))))
 
 (define (wlr-xwayland-surface-class x)
   (let ((s (ffi:make-pointer
-            (bytestructure-ref
-             (pointer->bytestructure
-              (unwrap-wlr-xwayland-surface x)
-              %wlr-xwayland-surface-struct) 'class))))
+            (ref x class))))
     (if (ffi:null-pointer? s)
         #f
         (ffi:pointer->string s))))
 
 (define (wlr-xwayland-surface-title x)
   (let ((s (ffi:make-pointer
-            (bytestructure-ref
-             (pointer->bytestructure
-              (unwrap-wlr-xwayland-surface x)
-              %wlr-xwayland-surface-struct) 'title))))
+            (ref x title))))
+    (if (ffi:null-pointer? s)
+        #f
+        (ffi:pointer->string s))))
+
+
+(define (wlr-xwayland-surface-instance x)
+  (let ((s (ffi:make-pointer
+            (ref x instance))))
+    (if (ffi:null-pointer? s)
+        #f
+        (ffi:pointer->string s))))
+
+(define (wlr-xwayland-surface-role x)
+  (let ((s (ffi:make-pointer
+            (ref x role))))
     (if (ffi:null-pointer? s)
         #f
         (ffi:pointer->string s))))

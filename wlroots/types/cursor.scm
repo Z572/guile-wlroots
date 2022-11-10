@@ -27,6 +27,7 @@
             wlr-cursor-set-surface
             wlr-cursor-move
             wlr-cursor-warp-absolute
+            wlr-cursor-warp-closest
             wlr-cursor-attach-input-device
             get-event-signal))
 
@@ -116,3 +117,7 @@
 (define-wlr-procedure (wlr-cursor-attach-input-device cur dev)
   (ffi:void "wlr_cursor_attach_input_device" '(* *))
   (% (unwrap-wlr-cursor cur) (unwrap-wlr-input-device dev)))
+
+(define-wlr-procedure (wlr-cursor-warp-closest cur dev x y)
+  (ffi:void "wlr_cursor_warp_closest" (list '* '* ffi:double ffi:double))
+  (% (unwrap-wlr-cursor cur) (unwrap-wlr-input-device dev) x y))

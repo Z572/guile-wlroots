@@ -12,7 +12,8 @@
   #:use-module ((system foreign) #:select ((void . ffi:void)
                                            (int32 . ffi:int32)
                                            (int . ffi:int)
-                                           (double . ffi:double)))
+                                           (double . ffi:double)
+                                           (pointer->bytevector . ffi:pointer->bytevector)))
   ;; #:use-module (system foreign)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
@@ -21,44 +22,62 @@
             wlr-cursor-create
             wlr-cursor-attach-output-layout
             %wlr-cursor-struct
+            wlr-cursor-x
+            wlr-cursor-y
             wlr-cursor-set-surface
             wlr-cursor-move
             wlr-cursor-warp-absolute
             wlr-cursor-attach-input-device
             get-event-signal))
 
-(define %wlr-cursor-struct
-  (bs:struct `((state ,(bs:pointer '*))
-               (x ,double)
-               (y ,double)
-               (events ,(bs:struct (map (cut cons <> (list %wl-signal-struct))
-                                        '(motion
-                                          motion-absolute
-                                          button
-                                          axis
-                                          frame
-                                          swipe-begin
-                                          swipe-update
-                                          swipe-end
-                                          pinch-begin
-                                          pinch-update
-                                          pinch-end
-                                          hold-begin
-                                          hold-end
-                                          touch-up
-                                          touch-down
-                                          touch-motion
-                                          touch-cancel
-                                          touch-frame
-                                          tablet-tool-axis
-                                          tablet-tool-proximity
-                                          tablet-tool-tip
-                                          tablet-tool-button))))
-               (data ,(bs:pointer 'void)))))
+(eval-when (expand load eval)
+  (define %wlr-cursor-struct
+    (bs:struct `((state ,(bs:pointer '*))
+                 (x ,double)
+                 (y ,double)
+                 (events ,(bs:struct (map (cut cons <> (list %wl-signal-struct))
+                                          '(motion
+                                            motion-absolute
+                                            button
+                                            axis
+                                            frame
+                                            swipe-begin
+                                            swipe-update
+                                            swipe-end
+                                            pinch-begin
+                                            pinch-update
+                                            pinch-end
+                                            hold-begin
+                                            hold-end
+                                            touch-up
+                                            touch-down
+                                            touch-motion
+                                            touch-cancel
+                                            touch-frame
+                                            tablet-tool-axis
+                                            tablet-tool-proximity
+                                            tablet-tool-tip
+                                            tablet-tool-button))))
+                 (data ,(bs:pointer 'void)))))
+  (define-bytestructure-accessors %wlr-cursor-struct
+    cursor-unwrap cursor-ref cursor-set!))
+
 (define-wlr-types-class wlr-cursor)
 (define-wlr-procedure (wlr-cursor-create)
   ('* "wlr_cursor_create" '())
   (wrap-wlr-cursor (%)))
+
+(define dsize (bytestructure-descriptor-size %wlr-cursor-struct))
+(define-syntax-rule (ref o s)
+  (cursor-ref
+   (ffi:pointer->bytevector
+    (unwrap-wlr-cursor o)
+    dsize) s))
+
+(define (wlr-cursor-x o)
+  (ref o x))
+(define (wlr-cursor-y o)
+  (ref o y))
 
 (define-method (get-event-signal (b <wlr-cursor>) (signal-name <symbol>))
   (let* ((unwrap-b (unwrap-wlr-cursor b))

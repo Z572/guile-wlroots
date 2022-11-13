@@ -142,6 +142,11 @@
                (edges ,uint32))))
 (define-wlr-types-class wlr-xdg-toplevel-resize-event)
 
+(define %wlr-xdg-toplevel-set-fullscreen-event
+  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
+               (fullscreen ,int)
+               (output ,(bs:pointer '*)))))
+(define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event)
 
 (define-method (.edges (o <wlr-xdg-toplevel-resize-event>))
   (bytestructure-ref

@@ -38,6 +38,7 @@
             wlr-xdg-toplevel-title
             .edges
             wlr-xdg-surface-toplevel
+            wlr-xdg-surface-get-geometry
             get-event-signal))
 
 (eval-when (expand load eval)
@@ -186,3 +187,10 @@
 (define-wlr-procedure (wlr-xdg-toplevel-set-resizing surface fullscreen)
   (ffi:uint32 "wlr_xdg_toplevel_set_resizing" (list '* ffi:int))
   (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))
+(define-wlr-procedure (wlr-xdg-surface-get-geometry surface)
+  (ffi:void "wlr_xdg_surface_get_geometry" (list '* '*))
+  "return a box"
+  (let ((box (bytestructure->pointer (bytestructure
+                                      %wlr-box-struct))))
+    (% (unwrap-wlr-xdg-surface surface) box)
+    (wrap-wlr-box box)))

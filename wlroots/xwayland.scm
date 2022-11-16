@@ -11,6 +11,10 @@
   #:export (%wlr-xwayland-surface-struct
             wrap-wlr-xwayland-surface
             unwrap-wlr-xwayland-surface
+            wlr-xwayland-surface-y
+            wlr-xwayland-surface-x
+            wlr-xwayland-surface-width
+            wlr-xwayland-surface-height
             wlr-xwayland-surface-close
             wlr-xwayland-surface-class
             wlr-xwayland-surface-title
@@ -112,6 +116,16 @@
     (if (ffi:null-pointer? s)
         #f
         (ffi:pointer->string s))))
+
+
+(define (wlr-xwayland-surface-x s)
+  (ref s x))
+(define (wlr-xwayland-surface-y s)
+  (ref s y))
+(define (wlr-xwayland-surface-width s)
+  (ref s width))
+(define (wlr-xwayland-surface-height s)
+  (ref s height))
 
 (define (wlr-xwayland-surface-mapped? x)
   (let ((s (ffi:make-pointer

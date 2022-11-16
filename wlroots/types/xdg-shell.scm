@@ -27,6 +27,7 @@
             unwrap-wlr-xdg-toplevel-resize-event
             wrap-wlr-xdg-toplevel
             unwrap-wlr-xdg-toplevel
+            wlr-xdg-surface-mapped?
             wlr-xdg-surface-from-wlr-surface
             wlr-xdg-toplevel-set-activated
             wlr-xdg-toplevel-set-tiled

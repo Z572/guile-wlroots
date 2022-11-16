@@ -6,6 +6,13 @@ SCM_DEFINE(scm_wlr_xdg_surface_toplevel ,"wlr-xdg-surface-toplevel",1,0,0,(SCM o
 {
   return WRAP_WLR_XDG_TOPLEVEL(((struct wlr_xdg_surface*)(UNWRAP_WLR_XDG_SHELL(o)))->toplevel);
 }
+SCM_DEFINE(scm_wlr_xdg_toplevel_mapped ,"wlr-xdg-surface-mapped?",1,0,0,(SCM o),"")
+#define FUNC_NAME s_scm_wlr_xdg_surface_mapped
+{
+  return scm_from_bool(((struct wlr_xdg_surface*)(UNWRAP_WLR_XDG_SURFACE(o)))->mapped);
+}
+#undef FUNC_NAME
+
 
 SCM_DEFINE(scm_wlr_xdg_toplevel_appid ,"wlr-xdg-toplevel-appid",1,0,0,(SCM o),"")
 {

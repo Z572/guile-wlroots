@@ -18,6 +18,7 @@
             wlr-xwayland-surface-instance
             wlr-xwayland-surface-surface
             wlr-xwayland-surface-set-fullscreen
+            wlr-xwayland-surface-mapped?
             wlr-xwayland-surface-from-wlr-surface))
 
 (define-wlr-types-class wlr-xwayland-surface)
@@ -111,6 +112,11 @@
     (if (ffi:null-pointer? s)
         #f
         (ffi:pointer->string s))))
+
+(define (wlr-xwayland-surface-mapped? x)
+  (let ((s (ffi:make-pointer
+            (ref x mapped))))
+    (not (zero? s))))
 
 (define (wlr-xwayland-surface-title x)
   (let ((s (ffi:make-pointer

@@ -10,6 +10,8 @@
   #:export (%wlr-layer-shell-v1-struct
             wrap-wlr-layer-shell
             unwrap-wlr-layer-shell
+            wrap-wlr-layer-surface-v1
+            unwrap-wlr-layer-surface-v1
             wlr-layer-shell-v1-create
             wl-version
             get-event-signal))
@@ -22,7 +24,7 @@
                (data ,(bs:pointer 'void)))))
 
 (define-wlr-types-class wlr-layer-shell)
-
+(define-wlr-types-class wlr-layer-surface-v1)
 (define-wlr-procedure (wlr-layer-shell-v1-create display)
   ('* "wlr_layer_shell_v1_create" '(*))
   (wrap-wlr-layer-shell (% (unwrap-wl-display display))))

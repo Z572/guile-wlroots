@@ -43,7 +43,8 @@
             unwrap-wlr-seat-client
             wlr-seat-pointer-notify-axis
             wlr-seat-set-capabilities
-            get-event-signal))
+            get-event-signal
+            .serial))
 
 (define WLR_POINTER_BUTTONS_CAP 16)
 (define %wlr-serial-range-struct
@@ -104,11 +105,23 @@
                (grab-id ,uint32)
                (grab ,(bs:pointer '*))
                (default-grab ,(bs:pointer '*)))))
-(define %wlr-seat-request-set-selection-event-struct
-  (bs:struct `((source ,(bs:pointer '*))
-               (serial ,uint32))))
-
-(define-wlr-types-class wlr-seat-request-set-selection-event)
+(eval-when (expand load eval)
+  (define %wlr-seat-request-set-selection-event-struct
+    (bs:struct `((source ,(bs:pointer '*))
+                 (serial ,uint32)))))
+(define-bytestructure-accessors %wlr-seat-request-set-selection-event-struct
+  %srsces-unwrap srsces-ref srsces-set!)
+(define-wlr-types-class wlr-seat-request-set-selection-event ()
+  (serial #:getter .serial
+          #:slot-ref (lambda (a)
+                       (srsces-ref
+                        (pointer->bytevector
+                         (get-pointer a)
+                         (bytestructure-descriptor-size
+                          %wlr-seat-request-set-selection-event-struct))
+                        serial))
+          #:slot-set! (lambda (a b) #f)
+          #:allocation #:virtual))
 
 (define %wlr-seat-request-set-cursor-event-struct
   (bs:struct `((seat-client ,(bs:pointer %wlr-seat-client-struct))

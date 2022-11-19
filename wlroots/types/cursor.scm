@@ -86,8 +86,9 @@
              (pointer->bytestructure
               unwrap-b
               %wlr-cursor-struct)
-             'events signal-name)))
-    (wrap-wl-signal (+ o 32))))
+             'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
 
 (define-wlr-procedure (wlr-cursor-attach-output-layout cursor output-layout)
   (ffi:int "wlr_cursor_attach_output_layout" '(* *))

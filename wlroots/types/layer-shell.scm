@@ -13,7 +13,6 @@
             wrap-wlr-layer-surface-v1
             unwrap-wlr-layer-surface-v1
             wlr-layer-shell-v1-create
-            wl-version
             get-event-signal))
 
 (define %wlr-layer-shell-v1-struct

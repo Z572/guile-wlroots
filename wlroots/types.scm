@@ -30,8 +30,13 @@
            #`(begin
                (define-class rtd (supers ... <wlr-type>)
                  slots ...)
-               (define (wrap p)
-                 (make rtd #:pointer p))
+               (define wrap
+                 (let ((ptr->obj (make-weak-value-hash-table 3000)))
+                   (lambda (ptr)
+                     (or (hash-ref ptr->obj ptr)
+                         (let ((o (make rtd #:pointer ptr)))
+                           (hash-set! ptr->obj ptr o)
+                           o)))))
                (define (unwrap o)
                  (if o
                      (.pointer o)

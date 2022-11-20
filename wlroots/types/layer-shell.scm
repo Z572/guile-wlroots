@@ -1,4 +1,5 @@
 (define-module (wlroots types layer-shell)
+  #:use-module (wlroots types surface)
   #:use-module (wayland listener)
   #:use-module (wayland signal)
   #:use-module (wayland display)
@@ -13,6 +14,7 @@
             wrap-wlr-layer-surface-v1
             unwrap-wlr-layer-surface-v1
             wlr-layer-shell-v1-create
+            wlr-layer-surface-v1-from-wlr-surface
             get-event-signal))
 
 (define %wlr-layer-shell-v1-struct
@@ -27,6 +29,10 @@
 (define-wlr-procedure (wlr-layer-shell-v1-create display)
   ('* "wlr_layer_shell_v1_create" '(*))
   (wrap-wlr-layer-shell (% (unwrap-wl-display display))))
+
+(define-wlr-procedure (wlr-layer-surface-v1-from-wlr-surface surface)
+  ('* "wlr_layer_surface_v1_from_wlr_surface" '(*))
+  (wrap-wlr-layer-surface-v1 (% (unwrap-wlr-surface surface))))
 
 (define-method (get-event-signal (b <wlr-layer-shell>) (signal-name <symbol>))
   (wrap-wl-signal (+ (bytestructure-ref

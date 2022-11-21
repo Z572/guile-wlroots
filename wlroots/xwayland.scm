@@ -1,8 +1,12 @@
 (define-module (wlroots xwayland)
+  #:use-module (oop goops)
+  #:duplicates (merge-generics replace warn-override-core warn last)
   #:use-module (wlroots types)
   #:use-module (wlroots types surface)
+  #:use-module (wlroots types compositor)
   #:use-module (wayland list)
   #:use-module (wayland util)
+  #:use-module (wayland display)
   #:use-module (wayland listener)
   #:use-module (wayland signal)
   #:use-module ((system foreign ) #:prefix ffi:)
@@ -23,11 +27,32 @@
             wlr-xwayland-surface-surface
             wlr-xwayland-surface-set-fullscreen
             wlr-xwayland-surface-mapped?
-            wlr-xwayland-surface-from-wlr-surface))
+            wlr-xwayland-surface-from-wlr-surface
+            wlr-xwayland-create
+            get-event-signal))
 
+(define-wlr-types-class-public wlr-xwayland)
 (define-wlr-types-class wlr-xwayland-surface)
 
 (eval-when (expand load eval)
+  (define %wlr-xwayland-struct
+    (bs:struct `((server ,(bs:pointer '*))
+                 (xwm ,(bs:pointer '*))
+                 (cursor ,(bs:pointer '*))
+                 (display-name ,cstring-pointer)
+                 (wl-display ,(bs:pointer '*))
+                 (compositor ,(bs:pointer '*))
+                 (seat ,(bs:pointer '*))
+                 (events ,(bs:struct
+                           (map (lambda (a) (list a %wl-signal-struct))
+                                '(ready
+                                  new-surface
+                                  remove-startup-info))))
+                 (user-event-handler ,(bs:pointer '*))
+                 (server-ready ,%wl-listener)
+                 (server-destroy ,%wl-listener)
+                 (seat-destroy ,%wl-listener)
+                 (data ,(bs:pointer 'void)))))
   (define %wlr-xwayland-surface-struct
     (bs:struct `((window-id ,uint32)
                  (xwm ,(bs:pointer '*))
@@ -118,6 +143,16 @@
         (ffi:pointer->string s))))
 
 
+(define-method (get-event-signal (b <wlr-xwayland>) (signal-name <symbol>))
+  (let* ((unwrap-b (unwrap-wlr-xwayland b))
+         (o (bytestructure-ref
+             (pointer->bytestructure
+              unwrap-b
+              %wlr-xwayland-struct)
+             'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
+
 (define (wlr-xwayland-surface-x s)
   (ref s x))
 (define (wlr-xwayland-surface-y s)
@@ -154,6 +189,12 @@
         #f
         (ffi:pointer->string s))))
 ;; wlr_xwayland_surface_set_fullscreen
+(define-wlr-procedure (wlr-xwayland-create display compositor lazy?)
+  ('* "wlr_xwayland_create" (list '* '* ffi:int))
+  (wrap-wlr-xwayland (% (unwrap-wl-display display)
+                        (unwrap-wlr-compositor compositor)
+                        (if lazy? 1 0))))
+
 (define-wlr-procedure (wlr-xwayland-surface-close surface)
   (ffi:void "wlr_xwayland_surface_close" (list '*))
   "Request that this xdg toplevel closes."

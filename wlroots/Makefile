@@ -17,6 +17,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/data-device.scm   \
  %D%/types/compositor.scm    \
  %D%/types/xdg-shell.scm     \
+ %D%/types/xdg-activation.scm\
  %D%/types/pointer.scm       \
  %D%/types/cursor.scm        \
  %D%/types/xcursor.scm       \

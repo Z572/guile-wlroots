@@ -15,6 +15,7 @@
   #:export (%wlr-xwayland-surface-struct
             wrap-wlr-xwayland-surface
             unwrap-wlr-xwayland-surface
+            wlr-xwayland-display-name
             wlr-xwayland-surface-y
             wlr-xwayland-surface-x
             wlr-xwayland-surface-width
@@ -122,12 +123,24 @@
   (define-bytestructure-accessors %wlr-xwayland-surface-struct
     xwayland-surface-unwrap xwayland-surface-ref xwayland-surface-set!))
 
+(define-bytestructure-accessors %wlr-xwayland-struct
+  xwayland-unwrap xwayland-ref xwayland-set!)
+
 (define dsize (bytestructure-descriptor-size %wlr-xwayland-surface-struct))
 (define-syntax-rule (ref surface o)
   (xwayland-surface-ref
    (ffi:pointer->bytevector
     (unwrap-wlr-xwayland-surface surface)
     dsize) o))
+(define xwayland-size (bytestructure-descriptor-size %wlr-xwayland-struct))
+(define-syntax-rule (x-ref x o)
+  (xwayland-ref
+   (ffi:pointer->bytevector
+    (unwrap-wlr-xwayland x)
+    xwayland-size) o))
+
+(define (wlr-xwayland-display-name x)
+  (x-ref x display-name))
 (define (wlr-xwayland-surface-surface x)
   (let ((s (ffi:make-pointer
             (ref x surface))))

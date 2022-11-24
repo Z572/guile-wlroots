@@ -92,7 +92,13 @@
           (bytestructure-set! (.item a) 'node (unwrap-wlr-scene-node new-val)))))
 
 (define-method (.node (o <wlr-scene-tree>))
-  (bytestructure-ref (pointer->bytestructure (unwrap-wlr-scene-tree o) %wlr-scene-tree-struct) 'node))
+  (wrap-wlr-scene-node
+   (bytestructure->pointer
+    (bytestructure-ref
+     (pointer->bytestructure
+      (unwrap-wlr-scene-tree o)
+      %wlr-scene-tree-struct)
+     'node))))
 (define (wrap-wlr-scene p)
   (make <wlr-scene>
     #:item

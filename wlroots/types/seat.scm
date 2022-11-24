@@ -181,7 +181,7 @@
              (pointer->bytestructure
               (unwrap-wlr-seat b)
               %wlr-seat-struct)
-             'event)))
+             'events)))
     (wrap-wl-signal (bytestructure+offset->pointer
                      (bytestructure-ref a signal-name)))))
 

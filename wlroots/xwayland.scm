@@ -29,6 +29,7 @@
             wlr-xwayland-surface-set-fullscreen
             wlr-xwayland-surface-mapped?
             wlr-xwayland-surface-from-wlr-surface
+            wlr-xwayland-surface-configure
             wlr-xwayland-create
             get-event-signal))
 
@@ -219,3 +220,11 @@
 (define-wlr-procedure (wlr-xwayland-surface-from-wlr-surface surface)
   ('* "wlr_xwayland_surface_from_wlr_surface" '(*))
   (wrap-wlr-xwayland-surface (% (unwrap-wlr-surface surface))))
+
+(define-wlr-procedure (wlr-xwayland-surface-configure surface x y width height)
+  (ffi:void "wlr_xwayland_surface_configure" (list '*
+                                                   ffi:int16
+                                                   ffi:int16
+                                                   ffi:uint16
+                                                   ffi:uint16))
+  (% (unwrap-wlr-xwayland-surface surface) x y width height))

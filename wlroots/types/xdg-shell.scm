@@ -36,6 +36,7 @@
             wlr-xdg-toplevel-send-close
             wlr-xdg-toplevel-appid
             wlr-xdg-toplevel-title
+            wlr-xdg-toplevel-set-size
             .edges
             wlr-xdg-surface-toplevel
             wlr-xdg-surface-get-geometry
@@ -194,3 +195,7 @@
                                       %wlr-box-struct))))
     (% (unwrap-wlr-xdg-surface surface) box)
     (wrap-wlr-box box)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-size surface width height)
+  (ffi:uint32 "wlr_xdg_toplevel_set_size" (list '* ffi:uint32 ffi:uint32))
+  (% (unwrap-wlr-xdg-surface surface) width height))

@@ -7,8 +7,10 @@
   #:use-module (wlroots render renderer)
   #:use-module (srfi srfi-71)
   #:use-module (wlroots types)
+  #:use-module (wlroots types buffer)
   #:use-module (wlroots types output-layout)
   #:use-module (wlroots utils)
+  #:use-module (wlroots util box)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (rnrs bytevectors)
   #:use-module (bytestructures guile)
@@ -21,7 +23,10 @@
             unwrap-wlr-scene-tree
             wrap-wlr-scene-rect
             unwrap-wlr-scene-rect
+            wrap-wlr-scene-buffer
+            unwrap-wlr-scene-buffer
             wlr-scene-create
+            wlr-scene-buffer-create
             wlr-scene-attach-output-layout
             wlr-scene-node-destroy
             wlr-scene-node-set-position
@@ -60,11 +65,36 @@
 
 (define-wlr-types-class wlr-scene-node)
 (define-wlr-types-class wlr-scene-tree)
+
 (define %wlr-scene-node-rect-struct
   (bs:struct `((node ,%wlr-scene-node-struct)
                (width ,int)
                (height ,int)
                (color ,%color-struct))))
+(define %wlr-scene-buffer-struct
+  (bs:struct `((node ,%wlr-scene-node-struct)
+               (buffer ,(bs:pointer '*))
+               (texture  ,(bs:pointer '*))
+               (src-box ,%wlr-fbox-struct)
+               (dst-width ,int)
+               (dst-height ,int)
+               (transform ,int) ;; enum wl_output_transform
+               (pending-link ,%wl-list))))
+(define-wlr-types-class wlr-scene-buffer ()
+  (node #:accessor .node
+        #:allocation
+        #:virtual
+        #:slot-set! (lambda (o new-val)
+                      (bytestructure-set! (pointer->bytestructure
+                                           (get-pointer o) %wlr-scene-buffer-struct)
+                                          'node
+                                          (unwrap-wlr-scene-buffer new-val)))
+        #:slot-ref (lambda (o)
+                     (wrap-wlr-scene-node
+                      (bytestructure->pointer (bytestructure-ref (pointer->bytestructure
+                                                                  (get-pointer o) %wlr-scene-buffer-struct)
+                                                                 'node))))))
+
 (define-wlr-types-class wlr-scene-rect ()
   (node #:accessor .node
         #:allocation
@@ -162,3 +192,9 @@
   (ffi:void "wlr_scene_rect_set_color" (list '* '*))
   (% (unwrap-wlr-scene-rect rect)
      (color->pointer color)))
+(define-wlr-procedure (wlr-scene-buffer-create parent buffer)
+  ('* "wlr_scene_buffer_create" '(* *))
+  (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node parent)
+                            (unwrap-wlr-buffer buffer))))
+
+

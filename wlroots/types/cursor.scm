@@ -63,11 +63,6 @@
   (define-bytestructure-accessors %wlr-cursor-struct
     cursor-unwrap cursor-ref cursor-set!))
 
-(define-wlr-types-class wlr-cursor)
-(define-wlr-procedure (wlr-cursor-create)
-  ('* "wlr_cursor_create" '())
-  (wrap-wlr-cursor (%)))
-
 (define dsize (bytestructure-descriptor-size %wlr-cursor-struct))
 (define-syntax-rule (ref o s)
   (cursor-ref
@@ -75,10 +70,22 @@
     (unwrap-wlr-cursor o)
     dsize) s))
 
-(define (wlr-cursor-x o)
-  (ref o x))
-(define (wlr-cursor-y o)
-  (ref o y))
+(define-wlr-types-class wlr-cursor ()
+  (x #:getter wlr-cursor-x
+     #:allocation
+     #:virtual
+     #:slot-ref (lambda (o) (ref o x))
+     #:slot-set! (const #f))
+  (y #:getter wlr-cursor-y
+     #:allocation
+     #:virtual
+     #:slot-ref (lambda (o) (ref o y))
+     #:slot-set! (const #f)))
+(define-wlr-procedure (wlr-cursor-create)
+  ('* "wlr_cursor_create" '())
+  (wrap-wlr-cursor (%)))
+
+
 
 (define-method (get-event-signal (b <wlr-cursor>) (signal-name <symbol>))
   (let* ((unwrap-b (unwrap-wlr-cursor b))

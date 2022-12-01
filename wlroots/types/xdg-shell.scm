@@ -62,8 +62,9 @@
              (pointer->bytestructure
               unwrap-b
               %wlr-xdg-shell-struct)
-             'events signal-name)))
-    (wrap-wl-signal (+ o 48))))
+             'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
 
 (define %wlr-xdg-surface-state-struct
   (bs:struct `((configure-serial ,uint32)

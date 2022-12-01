@@ -1,4 +1,5 @@
 (define-module (wlroots backend)
+  #:use-module (wlroots types)
   #:use-module (wlroots config)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
@@ -11,8 +12,7 @@
             unwrap-wlr-backend
             wrap-wlr-backend
             wlr-backend-start
-            wlr-backend-destroy
-            get-event-signal))
+            wlr-backend-destroy))
 ;; (define ffi:int (@ (system foreign) int))
 ;; (define (wlr->pointer name)
 ;;   (dynamic-func name (dynamic-link %libwlroots)))

@@ -39,8 +39,7 @@
             wlr-xdg-toplevel-set-size
             .edges
             wlr-xdg-surface-toplevel
-            wlr-xdg-surface-get-geometry
-            get-event-signal))
+            wlr-xdg-surface-get-geometry))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))

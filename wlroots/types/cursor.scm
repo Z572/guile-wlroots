@@ -28,8 +28,7 @@
             wlr-cursor-move
             wlr-cursor-warp-absolute
             wlr-cursor-warp-closest
-            wlr-cursor-attach-input-device
-            get-event-signal))
+            wlr-cursor-attach-input-device))
 
 (eval-when (expand load eval)
   (define %wlr-cursor-struct

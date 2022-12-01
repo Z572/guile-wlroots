@@ -6,7 +6,10 @@
   #:use-module ((bytestructures guile) #:select(bytestructure?))
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
-  #:export (get-pointer))
+  #:export (get-pointer
+            get-event-signal))
+
+(define-generic get-event-signal)
 
 (define-class <wlr-type> ()
   (pointer #:accessor .pointer #:init-keyword #:pointer))

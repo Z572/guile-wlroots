@@ -30,8 +30,7 @@
             wlr-xwayland-surface-mapped?
             wlr-xwayland-surface-from-wlr-surface
             wlr-xwayland-surface-configure
-            wlr-xwayland-create
-            get-event-signal))
+            wlr-xwayland-create))
 
 (define-wlr-types-class-public wlr-xwayland)
 (define-wlr-types-class wlr-xwayland-surface)

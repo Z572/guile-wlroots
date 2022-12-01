@@ -43,7 +43,6 @@
             unwrap-wlr-seat-client
             wlr-seat-pointer-notify-axis
             wlr-seat-set-capabilities
-            get-event-signal
             .serial))
 
 (define WLR_POINTER_BUTTONS_CAP 16)

@@ -14,8 +14,7 @@
             wrap-wlr-layer-surface-v1
             unwrap-wlr-layer-surface-v1
             wlr-layer-shell-v1-create
-            wlr-layer-surface-v1-from-wlr-surface
-            get-event-signal))
+            wlr-layer-surface-v1-from-wlr-surface))
 
 (define %wlr-layer-shell-v1-struct
   (bs:struct `((global ,(bs:pointer '*))

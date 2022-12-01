@@ -13,7 +13,6 @@
             unwrap-wlr-output-layout
             wlr-output-layout-create
             wlr-direction->value value->wlr-direction
-            get-event-signal
             wlr-output-layout-output-at))
 
 (define-wlr-types-class wlr-output-layout)

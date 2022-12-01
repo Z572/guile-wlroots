@@ -71,16 +71,18 @@
     dsize) s))
 
 (define-wlr-types-class wlr-cursor ()
-  (x #:getter wlr-cursor-x
+  (x #:accessor wlr-cursor-x
      #:allocation
      #:virtual
      #:slot-ref (lambda (o) (ref o x))
-     #:slot-set! (const #f))
-  (y #:getter wlr-cursor-y
+     #:slot-set! (lambda (o new)
+                   (wlr-cursor-warp o #f new (wlr-cursor-y o))))
+  (y #:accessor wlr-cursor-y
      #:allocation
      #:virtual
      #:slot-ref (lambda (o) (ref o y))
-     #:slot-set! (const #f)))
+     #:slot-set! (lambda (o new)
+                   (wlr-cursor-warp o #f (wlr-cursor-x o) new))))
 (define-wlr-procedure (wlr-cursor-create)
   ('* "wlr_cursor_create" '())
   (wrap-wlr-cursor (%)))

@@ -26,6 +26,7 @@
             wlr-cursor-y
             wlr-cursor-set-surface
             wlr-cursor-move
+            wlr-cursor-warp
             wlr-cursor-warp-absolute
             wlr-cursor-warp-closest
             wlr-cursor-attach-input-device))
@@ -114,6 +115,12 @@
      delta-x
      delta-y))
 
+(define-wlr-procedure (wlr-cursor-warp cur dev x y)
+  (ffi:void "wlr_cursor_warp" `(* * ,ffi:double ,ffi:double))
+  (% (unwrap-wlr-cursor cur)
+     (unwrap-wlr-input-device dev)
+     x
+     y))
 
 (define-wlr-procedure (wlr-cursor-warp-absolute cur dev x y)
   (ffi:void "wlr_cursor_warp_absolute" `(* * ,ffi:double ,ffi:double))

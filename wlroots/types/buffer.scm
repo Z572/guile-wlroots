@@ -13,11 +13,11 @@
 
 (define-wlr-procedure (wlr-buffer-drop buffer)
   (ffi:void "wlr_buffer_drop" '(*))
-  (% unwrap-wlr-buffer buffer))
+  (% (unwrap-wlr-buffer buffer)))
 
 (define-wlr-procedure (wlr-buffer-lock buffer)
   ('* "wlr_buffer_lock" '(*))
-  (wrap-wlr-buffer (% unwrap-wlr-buffer buffer)))
+  (wrap-wlr-buffer (% (unwrap-wlr-buffer buffer))))
 (define-wlr-procedure (wlr-buffer-unlock buffer)
   (ffi:void "wlr_buffer_unlock" '(*))
-  (% unwrap-wlr-buffer buffer))
+  (% (unwrap-wlr-buffer buffer)))

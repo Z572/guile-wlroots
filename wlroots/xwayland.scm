@@ -22,6 +22,7 @@
             wlr-xwayland-surface-height
             wlr-xwayland-surface-close
             wlr-xwayland-surface-class
+            wlr-xwayland-surface-override-redirect
             wlr-xwayland-surface-title
             wlr-xwayland-surface-role
             wlr-xwayland-surface-instance
@@ -154,6 +155,9 @@
     (if (ffi:null-pointer? s)
         #f
         (ffi:pointer->string s))))
+
+(define (wlr-xwayland-surface-override-redirect x)
+  (not (zero? (ref x override-redirect))))
 
 
 (define-method (get-event-signal (b <wlr-xwayland>) (signal-name <symbol>))

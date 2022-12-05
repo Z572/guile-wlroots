@@ -161,6 +161,13 @@
    (% (unwrap-wl-display display))))
 (define-wlr-types-class wlr-xdg-surface)
 
+(define-method (get-event-signal (b <wlr-xdg-surface>) (signal-name <symbol>))
+  (let* ((unwrap-b (unwrap-wlr-xdg-surface b))
+         (o (bytestructure-ref
+             (pointer->bytestructure unwrap-b %wlr-xdg-surface-struct) 'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
+
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
   ('* "wlr_xdg_surface_from_wlr_surface" '(*))
   (wrap-wlr-xdg-surface

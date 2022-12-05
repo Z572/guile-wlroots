@@ -35,6 +35,7 @@
             wlr-scene-node-raise-to-top
             %wlr-scene-struct
             wlr-scene-node-set-enabled
+            wlr-scene-node-reparent
             wlr-scene-rect-create
             wlr-scene-rect-set-size
             wlr-scene-rect-set-color
@@ -192,9 +193,13 @@
   (ffi:void "wlr_scene_rect_set_color" (list '* '*))
   (% (unwrap-wlr-scene-rect rect)
      (color->pointer color)))
+
+(define-wlr-procedure (wlr-scene-node-reparent node new-parent)
+  (ffi:void "wlr_scene_node_reparent" '(* *))
+  (% (unwrap-wlr-scene-node node)
+     (unwrap-wlr-scene-node new-parent)))
+
 (define-wlr-procedure (wlr-scene-buffer-create parent buffer)
   ('* "wlr_scene_buffer_create" '(* *))
   (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node parent)
                             (unwrap-wlr-buffer buffer))))
-
-

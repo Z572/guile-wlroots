@@ -11,6 +11,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/keyboard.scm      \
  %D%/types/idle.scm          \
  %D%/types/output-layout.scm \
+ %D%/types/output-management.scm \
  %D%/types/buffer.scm        \
  %D%/types/layer-shell.scm   \
  %D%/types/input-device.scm  \

@@ -27,6 +27,9 @@
             unwrap-wlr-xdg-toplevel-resize-event
             wrap-wlr-xdg-toplevel
             unwrap-wlr-xdg-toplevel
+            wrap-wlr-xdg-popup
+            unwrap-wlr-xdg-popup
+            <wlr-xdg-popup>
             wlr-xdg-surface-mapped?
             wlr-xdg-surface-from-wlr-surface
             wlr-xdg-toplevel-set-activated
@@ -114,6 +117,7 @@
                (fullscreen-output ,(bs:pointer '*))
                (fullscreen-output-destroy ,%wl-listener))))
 (define-wlr-types-class wlr-xdg-toplevel)
+(define-wlr-types-class wlr-xdg-popup)
 (define %wlr-xdg-toplevel-struct
   (bs:struct `((resource ,(bs:pointer '*))
                (base ,(bs:pointer %wlr-xdg-surface-struct))

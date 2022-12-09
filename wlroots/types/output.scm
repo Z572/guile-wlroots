@@ -40,7 +40,10 @@
             wlr-output-modes
             wlr-output-data
 
-            %pixman-region32-t-struct))
+            %pixman-region32-t-struct
+            <wlr-output-cursor>
+            wrap-wlr-output-cursor
+            unwrap-wlr-output-cursor))
 
 (define-wlr-types-class wlr-output)
 
@@ -122,3 +125,6 @@
     ((1) #t)
     ((0) #f)
     (else #t)))
+
+(define-wlr-types-class wlr-output-cursor)
+

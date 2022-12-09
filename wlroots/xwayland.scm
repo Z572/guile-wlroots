@@ -170,6 +170,16 @@
     (wrap-wl-signal (bytestructure+offset->pointer
                      (bytestructure-ref o signal-name)))))
 
+(define-method (get-event-signal (b <wlr-xwayland-surface>) (signal-name <symbol>))
+  (let* ((unwrap-b (unwrap-wlr-xwayland-surface b))
+         (o (bytestructure-ref
+             (pointer->bytestructure
+              unwrap-b
+              %wlr-xwayland-surface-struct)
+             'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
+
 (define (wlr-xwayland-surface-x s)
   (ref s x))
 (define (wlr-xwayland-surface-y s)

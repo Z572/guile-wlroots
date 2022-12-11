@@ -1,5 +1,6 @@
 (define-module (wlroots types xdg-shell)
   #:use-module (wlroots types)
+  #:use-module (wlroots types surface)
   #:use-module (wlroots types seat)
   #:use-module (wayland)
   #:use-module (wlroots util box)
@@ -127,6 +128,18 @@
                                    (height ,int32))))
                (offset ,(bs:struct `((x ,int32)
                                      (y ,int32)))))))
+(define %wlr-xdg-popup-struct
+  (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
+               (link ,%wl-list)
+               (resource ,(bs:pointer '*))
+               (committed ,int8) ;;; bool
+               (parent ,(bs:pointer %wlr-surface-struct))
+               (seat ,(bs:pointer %wlr-seat-struct))
+               (geometry ,%wlr-box-struct)
+               (positioner ,%wlr-xdg-positioner-struct)
+               (grab-link ,%wl-list))))
+
+
 (define %wlr-xdg-toplevel-struct
   (bs:struct `((resource ,(bs:pointer '*))
                (base ,(bs:pointer %wlr-xdg-surface-struct))

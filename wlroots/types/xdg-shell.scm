@@ -118,6 +118,15 @@
                (fullscreen-output-destroy ,%wl-listener))))
 (define-wlr-types-class wlr-xdg-toplevel)
 (define-wlr-types-class wlr-xdg-popup)
+(define %wlr-xdg-positioner-struct
+  (bs:struct `((anchor-rect ,%wlr-box-struct)
+               (anchor ,int8)
+               (gravity ,int8)
+               (constraint-adjustment ,int8)
+               (size ,(bs:struct `((width ,int32)
+                                   (height ,int32))))
+               (offset ,(bs:struct `((x ,int32)
+                                     (y ,int32)))))))
 (define %wlr-xdg-toplevel-struct
   (bs:struct `((resource ,(bs:pointer '*))
                (base ,(bs:pointer %wlr-xdg-surface-struct))

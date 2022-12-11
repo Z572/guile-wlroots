@@ -22,6 +22,7 @@
             wlr-xdg-shell-create
             wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
+            .base
             wrap-wlr-xdg-surface
             unwrap-wlr-xdg-surface
             wrap-wlr-xdg-toplevel-resize-event
@@ -118,7 +119,17 @@
                (fullscreen-output ,(bs:pointer '*))
                (fullscreen-output-destroy ,%wl-listener))))
 (define-wlr-types-class wlr-xdg-toplevel)
-(define-wlr-types-class wlr-xdg-popup)
+(define-wlr-types-class wlr-xdg-popup ()
+  (base #:allocation #:virtual
+        #:slot-ref (lambda (o)
+                     (wrap-wlr-xdg-surface
+                      (make-pointer
+                       (bytestructure-ref
+                        (pointer->bytestructure (get-pointer o) %wlr-xdg-popup-struct)
+                        'base))))
+        #:slot-set! (const #f)
+        #:getter .base))
+
 (define %wlr-xdg-positioner-struct
   (bs:struct `((anchor-rect ,%wlr-box-struct)
                (anchor ,int8)

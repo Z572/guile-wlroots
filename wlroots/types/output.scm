@@ -82,6 +82,15 @@
                                 (refresh ,int32))))
                (gamma-lut ,(bs:pointer '*))
                (gamma-lut-size ,size_t))))
+(define-method (get-event-signal (b <wlr-output>) (signal-name <symbol>))
+  (let* ((unwrap-b (unwrap-wlr-output b))
+         (o (bytestructure-ref
+             (pointer->bytestructure
+              unwrap-b
+              %wlr-output-struct)
+             'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
 (define-class <wlr-output-mode> ()
   (pointer #:accessor .pointer #:init-keyword #:pointer))
 (define (wrap-wlr-output-mode p)

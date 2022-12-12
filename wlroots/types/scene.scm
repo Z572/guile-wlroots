@@ -7,6 +7,7 @@
   #:use-module (wlroots render renderer)
   #:use-module (srfi srfi-71)
   #:use-module (wlroots types)
+  #:use-module (wlroots types surface)
   #:use-module (wlroots types xdg-shell)
   #:use-module (wlroots types buffer)
   #:use-module (wlroots types output-layout)
@@ -42,6 +43,7 @@
             wlr-scene-rect-set-color
             wlr-scene-rect-node
             wlr-scene-xdg-surface-create
+            wlr-scene-subsurface-tree-create
             .node))
 
 (define %wlr-scene-node-state-struct
@@ -205,6 +207,11 @@
   ('* "wlr_scene_buffer_create" '(* *))
   (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node parent)
                             (unwrap-wlr-buffer buffer))))
+
+(define-wlr-procedure (wlr-scene-subsurface-tree-create parent surface)
+  ('* "wlr_scene_subsurface_tree_create" '(* *))
+  (wrap-wlr-scene-node (% (unwrap-wlr-scene-node parent)
+                          (unwrap-wlr-surface surface))))
 
 (define-wlr-procedure (wlr-scene-xdg-surface-create parent xdg-surface)
   ('* "wlr_scene_xdg_surface_create" '(* *))

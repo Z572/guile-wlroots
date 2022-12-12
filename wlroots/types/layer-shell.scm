@@ -4,10 +4,12 @@
   #:use-module (wayland signal)
   #:use-module (wayland list)
   #:use-module (wayland display)
+  #:use-module (wlroots types output)
   #:use-module (wlroots types)
   #:use-module (wayland util)
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:export (%wlr-layer-shell-v1-struct
             wrap-wlr-layer-shell
@@ -15,6 +17,8 @@
             wrap-wlr-layer-surface-v1
             unwrap-wlr-layer-surface-v1
             wlr-layer-shell-v1-create
+            .surface
+            .output
             wlr-layer-surface-v1-from-wlr-surface))
 
 (define %wlr-layer-shell-v1-struct
@@ -57,7 +61,28 @@
                (data ,(bs:pointer 'void)))))
 
 (define-wlr-types-class wlr-layer-shell)
-(define-wlr-types-class wlr-layer-surface-v1)
+(define-wlr-types-class wlr-layer-surface-v1 ()
+  (surface #:allocation #:virtual
+           #:slot-ref (lambda (o)
+                        (wrap-wlr-surface
+                         (ffi:make-pointer
+                          (bytestructure-ref
+                           (pointer->bytestructure
+                            (get-pointer o)
+                            %wlr-layer-surface-v1-struct)
+                           'surface))))
+           #:slot-set! (const #f)
+           #:getter .surface)
+  (output #:allocation #:virtual
+          #:slot-ref (lambda (o)
+                       (wrap-wlr-output
+                        (ffi:make-pointer
+                         (bytestructure-ref
+                          (pointer->bytestructure
+                           (get-pointer o)
+                           %wlr-layer-surface-v1-struct) 'output))))
+          #:slot-set! (const #f)
+          #:getter .output))
 (define-wlr-procedure (wlr-layer-shell-v1-create display)
   ('* "wlr_layer_shell_v1_create" '(*))
   (wrap-wlr-layer-shell (% (unwrap-wl-display display))))

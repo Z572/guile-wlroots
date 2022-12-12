@@ -67,8 +67,9 @@
   (wrap-wlr-layer-surface-v1 (% (unwrap-wlr-surface surface))))
 
 (define-method (get-event-signal (b <wlr-layer-shell>) (signal-name <symbol>))
-  (wrap-wl-signal (+ (bytestructure-ref
-                      (pointer->bytestructure
-                       (unwrap-wlr-layer-shell b)
-                       %wlr-layer-shell-v1-struct)
-                      'events  signal-name) 16)))
+  (wrap-wl-signal (bytestructure+offset->pointer
+                   (bytestructure-ref (bytestructure-ref
+                                       (pointer->bytestructure
+                                        (unwrap-wlr-layer-shell b)
+                                        %wlr-layer-shell-v1-struct)
+                                       'events)  signal-name))))

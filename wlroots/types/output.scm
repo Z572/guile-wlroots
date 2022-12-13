@@ -39,6 +39,7 @@
             wlr-output-height
             wlr-output-modes
             wlr-output-data
+            wlr-output-enable-adaptive-sync
 
             %pixman-region32-t-struct
             <wlr-output-cursor>
@@ -123,6 +124,10 @@
 (define-wlr-procedure (wlr-output-set-mode output mode)
   (ffi:void "wlr_output_set_mode" '(* *) )
   (% (unwrap-wlr-output output) (unwrap-wlr-output-mode mode)))
+
+(define-wlr-procedure (wlr-output-enable-adaptive-sync output enabled)
+  (ffi:void "wlr_output_enable_adaptive_sync" (list '* ffi:int))
+  (% (unwrap-wlr-output output) (if enabled 1 0)))
 
 (define-wlr-procedure (wlr-output-enable output enable)
   (ffi:void "wlr_output_enable" (list '* ffi:int))

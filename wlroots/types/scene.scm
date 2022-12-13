@@ -162,7 +162,7 @@
   (% (unwrap-wlr-scene-node scene) x y))
 (define-wlr-procedure (wlr-scene-tree-create parent)
   ('* "wlr_scene_tree_create" '(*))
-  (wrap-wlr-scene-tree (% (pk 's (unwrap-wlr-scene-node parent)))))
+  (wrap-wlr-scene-tree (% (unwrap-wlr-scene-node parent))))
 (define-wlr-procedure (wlr-scene-node-at node lx ly)
   ('* "wlr_scene_node_at" (list '* ffi:double ffi:double '* '*))
   (define (ref-double-pointer p)

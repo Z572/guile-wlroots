@@ -18,6 +18,7 @@
   #:use-module (wayland signal)
   #:use-module (bytestructures guile)
   #:export (%wlr-output-state-struct
+            %wlr-output-struct
             wrap-wlr-output
             unwrap-wlr-output
             wlr-output-init-render
@@ -103,9 +104,9 @@
                (refresh ,int32)
                (enabled ,int8)
                (scale ,float)
-               (subpixel ,int8)
-               (transform ,int8)
-               (adaptive-sync-status ,int8)
+               (subpixel ,int32)
+               (transform ,int32)
+               (adaptive-sync-status ,int32)
                (render-format ,uint32)
                (needs-frame ,int8)
                (frame-pending ,int8)

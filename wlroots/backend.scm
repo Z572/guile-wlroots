@@ -42,8 +42,9 @@
              (pointer->bytestructure
               unwrap-b
               %wlr-backend-struct)
-             'events signal-name)))
-    (wrap-wl-signal (+ o 8))))
+             'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
 
 (define-wlr-procedure (wlr-backend-autocreate display)
   ('* "wlr_backend_autocreate" (list '*))

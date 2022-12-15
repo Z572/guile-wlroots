@@ -35,6 +35,7 @@
             wlr-scene-node-at
             wlr-scene-tree-create
             wlr-scene-node-raise-to-top
+            wlr-scene-node-lower-to-bottom
             %wlr-scene-struct
             wlr-scene-node-set-enabled
             wlr-scene-node-reparent
@@ -180,6 +181,10 @@
 
 (define-wlr-procedure (wlr-scene-node-raise-to-top node)
   (ffi:void "wlr_scene_node_raise_to_top" '(*))
+  (% (unwrap-wlr-scene-node node)))
+
+(define-wlr-procedure (wlr-scene-node-lower-to-bottom node)
+  (ffi:void "wlr_scene_node_lower_to_bottom" '(*))
   (% (unwrap-wlr-scene-node node)))
 
 (define-wlr-procedure (wlr-scene-rect-create parent width height color)

@@ -6,6 +6,7 @@
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wlroots types output)
+  #:use-module (wayland util)
   #:use-module (wayland list)
   #:use-module (oop goops)
   #:use-module (wayland listener)
@@ -73,6 +74,14 @@
                     (buffer-height ,int)))))))
 
 (define-wlr-types-class-public wlr-surface)
+
+(define-method (get-event-signal (b <wlr-surface>) (signal-name <symbol>))
+  (let* ((unwrap-b (unwrap-wlr-surface b))
+         (o (bytestructure-ref
+             (pointer->bytestructure unwrap-b %wlr-surface-struct) 'events)))
+    (wrap-wl-signal (bytestructure+offset->pointer
+                     (bytestructure-ref o signal-name)))))
+
 (define-wlr-procedure (wlr-surface-has-buffer surface)
   (ffi:int "wlr_surface_has_buffer" '(*))
   (= (% (unwrap-wlr-surface surface)) 1))

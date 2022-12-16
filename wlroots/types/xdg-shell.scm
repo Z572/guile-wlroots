@@ -19,6 +19,7 @@
             %wlr-xdg-toplevel-resize-event-struct
             %wlr-xdg-surface-configure-struct
             %wlr-xdg-toplevel-struct
+            %wlr-xdg-toplevel-state-struct
             wlr-xdg-shell-create
             wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
@@ -151,14 +152,19 @@
                (grab-link ,%wl-list))))
 
 
+(define %wlr-xdg-toplevel-state-struct
+  (bs:struct `(,@(map (lambda (o) `(,o ,int8))
+                      '(maximized fullscreen resizing activated))
+               ,@(map (lambda (o) `(,o ,uint32))
+                      '(tiled width height max-width max-height min-width min-height)))))
 (define %wlr-xdg-toplevel-struct
   (bs:struct `((resource ,(bs:pointer '*))
                (base ,(bs:pointer %wlr-xdg-surface-struct))
                (added ,uint8)
                (parent ,(bs:pointer %wlr-xdg-surface-struct))
                (parent-unmap ,%wl-listener)
-               (current ,%wlr-xdg-surface-state-struct)
-               (pending ,%wlr-xdg-surface-state-struct)
+               (current ,%wlr-xdg-toplevel-state-struct)
+               (pending ,%wlr-xdg-toplevel-state-struct)
                (scheduled ,%wlr-xdg-toplevel-configure-struct)
                (requested ,%wlr-xdg-toplevel-requested-struct)
                (title ,cstring-pointer)

@@ -163,17 +163,18 @@
                (requested ,%wlr-xdg-toplevel-requested-struct)
                (title ,cstring-pointer)
                (app-id ,cstring-pointer)
-               (event ,(bs:struct (map (lambda (a) (list a %wl-signal-struct))
-                                       '(request-maximize;
-                                         request-fullscreen;
-                                         request-minimize;
-                                         request-move;
-                                         request-resize;
-                                         request-show-window-menu;
-                                         set-parent;
-                                         set-title;
-                                         set-app-id
-                                         )))))))
+               (events ,(bs:struct
+                         (map (lambda (a) (list a %wl-signal-struct))
+                              '(request-maximize
+                                request-fullscreen
+                                request-minimize
+                                request-move
+                                request-resize
+                                request-show-window-menu
+                                set-parent
+                                set-title
+                                set-app-id
+                                )))))))
 
 (define %wlr-xdg-toplevel-resize-event-struct
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
@@ -204,6 +205,16 @@
              (pointer->bytestructure unwrap-b %wlr-xdg-surface-struct) 'events)))
     (wrap-wl-signal (bytestructure+offset->pointer
                      (bytestructure-ref o signal-name)))))
+
+(define-method (get-event-signal (b <wlr-xdg-toplevel>) (signal-name <symbol>))
+  (let* ((unwrap-b (unwrap-wlr-xdg-toplevel b))
+         (o (bytestructure-ref
+             (pointer->bytestructure
+              unwrap-b
+              %wlr-xdg-toplevel-struct) 'events)))
+    (wrap-wl-signal
+     (bytestructure+offset->pointer
+      (bytestructure-ref o signal-name)))))
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
   ('* "wlr_xdg_surface_from_wlr_surface" '(*))

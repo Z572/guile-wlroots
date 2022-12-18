@@ -38,6 +38,7 @@
             wlr-xdg-toplevel-appid
             wlr-xdg-toplevel-title
             wlr-xdg-toplevel-set-size
+            wlr-xdg-popup-unconstrain-from-box
             .edges
             wlr-xdg-surface-toplevel
             wlr-xdg-surface-get-geometry
@@ -245,6 +246,11 @@
 (define-wlr-procedure (wlr-xdg-toplevel-set-resizing surface fullscreen)
   (ffi:uint32 "wlr_xdg_toplevel_set_resizing" (list '* ffi:int))
   (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))
+
+(define-wlr-procedure (wlr-xdg-popup-unconstrain-from-box popup box)
+  (ffi:void "wlr_xdg_popup_unconstrain_from_box" (list '* '*))
+  (% (unwrap-wlr-xdg-popup popup) (unwrap-wlr-box box)))
+
 (define-wlr-procedure (wlr-xdg-surface-get-geometry surface)
   (ffi:void "wlr_xdg_surface_get_geometry" (list '* '*))
   "return a box"

@@ -42,7 +42,13 @@
                            o)))))
                (define (unwrap o)
                  (if o
-                     (.pointer o)
+                     (begin (unless (is? o)
+                              (error (string-append
+                                      "not a "
+                                      (symbol->string (class-name rtd))
+                                      " or #f")
+                                     o))
+                            (.pointer o))
                      %null-pointer))
                (define-method (get-pointer (o rtd))
                  (let ((u (unwrap o)))

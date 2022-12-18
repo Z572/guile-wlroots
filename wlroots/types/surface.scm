@@ -16,7 +16,8 @@
             wrap-wlr-surface
             unwrap-wlr-surface
             wlr-surface-has-buffer
-            wlr-surface-send-enter))
+            wlr-surface-send-enter
+            wlr-surface-get-root-surface))
 (define %wlr-surface-state-struct
   (bs:struct `((committed ,uint32)
                (seq ,uint32)
@@ -85,6 +86,12 @@
 (define-wlr-procedure (wlr-surface-has-buffer surface)
   (ffi:int "wlr_surface_has_buffer" '(*))
   (= (% (unwrap-wlr-surface surface)) 1))
+
+(define-wlr-procedure (wlr-surface-get-root-surface surface)
+  ('* "wlr_surface_get_root_surface" '(*))
+  (let ((o (% (unwrap-wlr-surface surface))))
+    (and (not (ffi:null-pointer? o))
+         (wrap-wlr-surface o))))
 
 (define-wlr-procedure (wlr-surface-send-enter surface output)
   (ffi:void "wlr_surface_send_enter" '(* *))

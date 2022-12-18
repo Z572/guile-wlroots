@@ -6,12 +6,7 @@
   #:use-module (wlroots util box)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
-  #:use-module ((system foreign) #:select ((uint32 . ffi:uint32)
-                                           (int . ffi:int)
-                                           (void . ffi:void)
-                                           null-pointer?
-                                           pointer->string
-                                           make-pointer))
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:export (%wlr-xdg-shell-struct
@@ -45,7 +40,8 @@
             wlr-xdg-toplevel-set-size
             .edges
             wlr-xdg-surface-toplevel
-            wlr-xdg-surface-get-geometry))
+            wlr-xdg-surface-get-geometry
+            wlr-xdg-surface-for-each-surface))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -124,7 +120,7 @@
   (base #:allocation #:virtual
         #:slot-ref (lambda (o)
                      (wrap-wlr-xdg-surface
-                      (make-pointer
+                      (ffi:make-pointer
                        (bytestructure-ref
                         (pointer->bytestructure (get-pointer o) %wlr-xdg-popup-struct)
                         'base))))
@@ -260,3 +256,12 @@
 (define-wlr-procedure (wlr-xdg-toplevel-set-size surface width height)
   (ffi:uint32 "wlr_xdg_toplevel_set_size" (list '* ffi:uint32 ffi:uint32))
   (% (unwrap-wlr-xdg-surface surface) width height))
+
+(define-wlr-procedure (wlr-xdg-surface-for-each-surface proc xdg-surface)
+  (ffi:void "wlr_xdg_surface_for_each_surface" `(* * *))
+  (% (unwrap-wlr-xdg-surface xdg-surface)
+     (ffi:procedure->pointer
+      ffi:void (lambda (surface sx sy data)
+                 (proc (wrap-wlr-surface surface) sx sy))
+      (list '* ffi:int ffi:int '*))
+     ffi:%null-pointer))

@@ -1,5 +1,6 @@
 (define-module (wlroots types output-management)
   #:use-module (oop goops)
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wayland display)
   #:use-module (wayland list)
   #:use-module (wayland listener)
@@ -17,7 +18,8 @@
             wrap-wlr-output-configuration-v1
             unwrap-wlr-output-configuration-v1
 
-            wlr-output-manager-v1-create))
+            wlr-output-manager-v1-create
+            wlr-output-manager-v1-set-configuration))
 
 (define %wlr-output-manager-v1-struct
   (bs:struct `((display ,(bs:pointer '*))
@@ -49,3 +51,9 @@
 (define-wlr-procedure (wlr-output-manager-v1-create display)
   ('* "wlr_output_manager_v1_create" (list '*))
   (wrap-wlr-output-manager-v1 (% (unwrap-wl-display display))))
+
+(define-wlr-procedure (wlr-output-manager-v1-set-configuration manager config)
+  (ffi:void "wlr_output_manager_v1_set_configuration" '(* *))
+  (% (unwrap-wlr-output-manager-v1 manager)
+     (unwrap-wlr-output-configuration-v1 config)))
+

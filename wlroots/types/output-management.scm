@@ -19,6 +19,7 @@
             unwrap-wlr-output-configuration-v1
 
             wlr-output-manager-v1-create
+            wlr-output-configuration-v1-create
             wlr-output-manager-v1-set-configuration))
 
 (define %wlr-output-manager-v1-struct
@@ -57,3 +58,6 @@
   (% (unwrap-wlr-output-manager-v1 manager)
      (unwrap-wlr-output-configuration-v1 config)))
 
+(define-wlr-procedure (wlr-output-configuration-v1-create)
+  ('* "wlr_output_configuration_v1_create" '())
+  (wrap-wlr-output-configuration-v1 (%)))

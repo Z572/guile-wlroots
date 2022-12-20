@@ -18,7 +18,7 @@
             wlr-input-device-type->value
             value->wlr-input-device-type))
 
-(define-wlr-types-class wlr-input-device)
+
 (define-enumeration
   value->wlr-input-device-type
   wlr-input-device-type->value
@@ -45,6 +45,8 @@
                                    (tablet ,(bs:pointer '*))
                                    (tablet-pad ,(bs:pointer '*)))))
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+(define-wlr-types-class wlr-input-device ()
+  #:descriptor %wlr-input-device-struct)
 
 (define (wlr-input-device-name device)
   (bytestructure-ref

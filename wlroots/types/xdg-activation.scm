@@ -24,16 +24,9 @@
                (display-destroy ,%wl-listener))))
 
 
-(define-wlr-types-class-public wlr-xdg-activation-v1)
+(define-wlr-types-class-public wlr-xdg-activation-v1 ()
+  #:descriptor %wlr-xdg-activation-v1-struct)
 
-(define-method (get-event-signal (b <wlr-xdg-activation-v1>) (signal-name <symbol>))
-  (let* ((a (bytestructure-ref
-             (pointer->bytestructure
-              (unwrap-wlr-xdg-activation-v1 b)
-              %wlr-xdg-activation-v1-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref a signal-name)))))
 (define-wlr-procedure (wlr-xdg-activation-v1-create display)
   ('* "wlr_xdg_activation_v1_create" '(*))
   (wrap-wlr-xdg-activation-v1 (% (unwrap-wl-display display)) ))

@@ -82,22 +82,11 @@
      #:virtual
      #:slot-ref (lambda (o) (ref o y))
      #:slot-set! (lambda (o new)
-                   (wlr-cursor-warp o #f (wlr-cursor-x o) new))))
+                   (wlr-cursor-warp o #f (wlr-cursor-x o) new)))
+  #:descriptor %wlr-cursor-struct)
 (define-wlr-procedure (wlr-cursor-create)
   ('* "wlr_cursor_create" '())
   (wrap-wlr-cursor (%)))
-
-
-
-(define-method (get-event-signal (b <wlr-cursor>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-cursor b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-cursor-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
 
 (define-wlr-procedure (wlr-cursor-attach-output-layout cursor output-layout)
   (ffi:int "wlr_cursor_attach_output_layout" '(* *))

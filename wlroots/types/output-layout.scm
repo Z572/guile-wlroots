@@ -17,14 +17,6 @@
             wlr-output-layout-output-at
             wlr-output-layout-get-box))
 
-(define-wlr-types-class wlr-output-layout)
-
-(define-enumeration wlr-direction->value value->wlr-direction
-  (WLR_DIRECTION_UP 1)
-  (WLR_DIRECTION_DOWN 2)
-  (WLR_DIRECTION_LEFT 4)
-  (WLR_DIRECTION_RIGHT 8))
-
 (define %wlr-output-layout-struct
   (bs:struct
    `((outputs ,%wl-list)
@@ -35,18 +27,18 @@
                  (destroy ,%wl-signal-struct))))
      (data ,(bs:pointer ffi:void)))))
 
+(define-wlr-types-class wlr-output-layout ()
+  #:descriptor %wlr-output-layout-struct)
+
+(define-enumeration wlr-direction->value value->wlr-direction
+  (WLR_DIRECTION_UP 1)
+  (WLR_DIRECTION_DOWN 2)
+  (WLR_DIRECTION_LEFT 4)
+  (WLR_DIRECTION_RIGHT 8))
+
 (define-wlr-procedure (wlr-output-layout-create)
   ('* "wlr_output_layout_create" '())
   (wrap-wlr-output-layout (%)))
-
-(define-method (get-event-signal (b <wlr-output-layout>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-output-layout b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-output-layout-struct)
-             'events signal-name)))
-    (wrap-wl-signal (+ o 24))))
 
 (define-wlr-procedure (wlr-output-layout-get-box layout #:optional (reference #f))
   ('* "wlr_output_layout_get_box" '(* *))

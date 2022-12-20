@@ -173,16 +173,8 @@
                                           destroy))))
                (data ,(bs:pointer 'void)))))
 
-(define-wlr-types-class wlr-seat)
-
-(define-method (get-event-signal (b <wlr-seat>) (signal-name <symbol>))
-  (let* ((a (bytestructure-ref
-             (pointer->bytestructure
-              (unwrap-wlr-seat b)
-              %wlr-seat-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref a signal-name)))))
+(define-wlr-types-class wlr-seat ()
+  #:descriptor %wlr-seat-struct)
 
 (define-wlr-procedure (wlr-seat-create display name)
   ('* "wlr_seat_create" '(* *))

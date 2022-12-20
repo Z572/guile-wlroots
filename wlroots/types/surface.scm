@@ -74,14 +74,8 @@
                     (buffer-width ,int)
                     (buffer-height ,int)))))))
 
-(define-wlr-types-class-public wlr-surface)
-
-(define-method (get-event-signal (b <wlr-surface>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-surface b))
-         (o (bytestructure-ref
-             (pointer->bytestructure unwrap-b %wlr-surface-struct) 'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
+(define-wlr-types-class-public wlr-surface ()
+  #:descriptor %wlr-surface-struct)
 
 (define-wlr-procedure (wlr-surface-has-buffer surface)
   (ffi:int "wlr_surface_has_buffer" '(*))

@@ -47,7 +47,7 @@
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
 
-(define-wlr-types-class wlr-xdg-shell)
+
 (define %wlr-xdg-shell-struct
   (bs:struct `((global ,(bs:pointer '*))
                (clients ,%wl-list)
@@ -57,16 +57,8 @@
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
-
-(define-method (get-event-signal (b <wlr-xdg-shell>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-xdg-shell b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-xdg-shell-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
+(define-wlr-types-class wlr-xdg-shell ()
+  #:descriptor %wlr-xdg-shell-struct)
 
 (define %wlr-xdg-surface-state-struct
   (bs:struct `((configure-serial ,uint32)
@@ -116,17 +108,6 @@
                       '(maximized minimized fullscreen))
                (fullscreen-output ,(bs:pointer '*))
                (fullscreen-output-destroy ,%wl-listener))))
-(define-wlr-types-class wlr-xdg-toplevel)
-(define-wlr-types-class wlr-xdg-popup ()
-  (base #:allocation #:virtual
-        #:slot-ref (lambda (o)
-                     (wrap-wlr-xdg-surface
-                      (ffi:make-pointer
-                       (bytestructure-ref
-                        (pointer->bytestructure (get-pointer o) %wlr-xdg-popup-struct)
-                        'base))))
-        #:slot-set! (const #f)
-        #:getter .base))
 
 (define %wlr-xdg-positioner-struct
   (bs:struct `((anchor-rect ,%wlr-box-struct)
@@ -147,6 +128,18 @@
                (geometry ,%wlr-box-struct)
                (positioner ,%wlr-xdg-positioner-struct)
                (grab-link ,%wl-list))))
+
+(define-wlr-types-class wlr-xdg-popup ()
+  (base #:allocation #:virtual
+        #:slot-ref (lambda (o)
+                     (wrap-wlr-xdg-surface
+                      (ffi:make-pointer
+                       (bytestructure-ref
+                        (pointer->bytestructure (get-pointer o) %wlr-xdg-popup-struct)
+                        'base))))
+        #:slot-set! (const #f)
+        #:getter .base)
+  #:descriptor %wlr-xdg-popup-struct)
 
 
 (define %wlr-xdg-toplevel-state-struct
@@ -179,6 +172,9 @@
                                 set-app-id
                                 )))))))
 
+(define-wlr-types-class wlr-xdg-toplevel ()
+  #:descriptor %wlr-xdg-toplevel-struct)
+
 (define %wlr-xdg-toplevel-resize-event-struct
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
                (seat ,(bs:pointer %wlr-seat-client-struct))
@@ -200,24 +196,8 @@
   ('* "wlr_xdg_shell_create" '(*))
   (wrap-wlr-xdg-shell
    (% (unwrap-wl-display display))))
-(define-wlr-types-class wlr-xdg-surface)
-
-(define-method (get-event-signal (b <wlr-xdg-surface>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-xdg-surface b))
-         (o (bytestructure-ref
-             (pointer->bytestructure unwrap-b %wlr-xdg-surface-struct) 'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
-
-(define-method (get-event-signal (b <wlr-xdg-toplevel>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-xdg-toplevel b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-xdg-toplevel-struct) 'events)))
-    (wrap-wl-signal
-     (bytestructure+offset->pointer
-      (bytestructure-ref o signal-name)))))
+(define-wlr-types-class wlr-xdg-surface ()
+  #:descriptor %wlr-xdg-surface-struct)
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
   ('* "wlr_xdg_surface_from_wlr_surface" '(*))

@@ -2,17 +2,28 @@
   #:use-module (wayland util)
   #:use-module (oop goops)
   #:use-module (srfi srfi-26)
+  #:use-module (wayland signal)
   #:use-module ((system foreign) #:select(pointer-address pointer? %null-pointer))
-  #:use-module ((bytestructures guile) #:select(bytestructure?))
+  #:use-module (bytestructures guile)
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
   #:export (get-pointer
-            get-event-signal))
+            get-event-signal
+            .descriptor
+            .wrap
+            .unwrap))
 
 (define-generic get-event-signal)
 
+(define-class <bytestructure-class> (<class>)
+  (descriptor #:init-keyword #:descriptor
+              #:init-value #f
+              #:getter .descriptor)
+  (wrap #:init-keyword #:wrap #:getter .wrap)
+  (unwrap #:init-keyword #:unwrap #:getter .unwrap))
 (define-class <wlr-type> ()
-  (pointer #:accessor .pointer #:init-keyword #:pointer))
+  (pointer #:accessor .pointer #:init-keyword #:pointer)
+  #:metaclass <bytestructure-class>)
 
 (define-method (= (f <wlr-type>) (l <wlr-type>))
   (= (.pointer f)
@@ -31,8 +42,6 @@
                        (unwrap (identifier (symbol-append 'unwrap- symbol)))
                        (is? (identifier (symbol-append symbol '?))))
            #`(begin
-               (define-class rtd (supers ... <wlr-type>)
-                 slots ...)
                (define wrap
                  (let ((ptr->obj (make-weak-value-hash-table 3000)))
                    (lambda (ptr)
@@ -50,6 +59,23 @@
                                      o))
                             (.pointer o))
                      %null-pointer))
+               (define-class rtd (supers ... <wlr-type>)
+                 slots ...
+                 #:wrap wrap
+                 #:unwrap unwrap)
+               (when (.descriptor rtd)
+                 (when (assq 'events (struct-metadata-field-alist
+                                      (bytestructure-descriptor-metadata
+                                       (.descriptor rtd))))
+                   (define-method (get-event-signal (b rtd) (signal-name <symbol>))
+                     (let* ((unwrap-b (unwrap b))
+                            (o (bytestructure-ref
+                                (pointer->bytestructure
+                                 unwrap-b
+                                 (.descriptor rtd)) 'events)))
+                       (wrap-wl-signal
+                        (bytestructure+offset->pointer
+                         (bytestructure-ref o signal-name)))))))
                (define-method (get-pointer (o rtd))
                  (let ((u (unwrap o)))
                    (cond ((pointer? u) u)

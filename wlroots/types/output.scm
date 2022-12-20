@@ -47,12 +47,6 @@
             wrap-wlr-output-cursor
             unwrap-wlr-output-cursor))
 
-(define-wlr-types-class wlr-output)
-
-(eval-when (expand load eval)
-  (load-extension "libguile-wlroots" "scm_init_wlr_output"))
-(define (wlr-output-backend o)
-  (wrap-wlr-backend(%wlr-output-backend o)))
 (define %pixman-box32-struct
   (bs:struct `((x1 ,int32)
                (y1 ,int32)
@@ -135,15 +129,15 @@
                (display-destroy ,%wl-listener)
                (addons ,%wlr-addon-set-struct)
                (data ,(bs:pointer 'void)))))
-(define-method (get-event-signal (b <wlr-output>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-output b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-output-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
+
+(define-wlr-types-class wlr-output ()
+  #:descriptor %wlr-output-struct)
+
+(eval-when (expand load eval)
+  (load-extension "libguile-wlroots" "scm_init_wlr_output"))
+(define (wlr-output-backend o)
+  (wrap-wlr-backend(%wlr-output-backend o)))
+
 (define-class <wlr-output-mode> ()
   (pointer #:accessor .pointer #:init-keyword #:pointer))
 (define (wrap-wlr-output-mode p)
@@ -193,4 +187,3 @@
     (else #t)))
 
 (define-wlr-types-class wlr-output-cursor)
-

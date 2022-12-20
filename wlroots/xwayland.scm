@@ -33,9 +33,6 @@
             wlr-xwayland-surface-configure
             wlr-xwayland-create))
 
-(define-wlr-types-class-public wlr-xwayland)
-(define-wlr-types-class wlr-xwayland-surface)
-
 (eval-when (expand load eval)
   (define %wlr-xwayland-struct
     (bs:struct `((server ,(bs:pointer '*))
@@ -124,6 +121,12 @@
   (define-bytestructure-accessors %wlr-xwayland-surface-struct
     xwayland-surface-unwrap xwayland-surface-ref xwayland-surface-set!))
 
+(define-wlr-types-class-public wlr-xwayland ()
+  #:descriptor %wlr-xwayland-struct)
+
+(define-wlr-types-class wlr-xwayland-surface ()
+  #:descriptor %wlr-xwayland-surface-struct)
+
 (define-bytestructure-accessors %wlr-xwayland-struct
   xwayland-unwrap xwayland-ref xwayland-set!)
 
@@ -158,27 +161,6 @@
 
 (define (wlr-xwayland-surface-override-redirect x)
   (not (zero? (ref x override-redirect))))
-
-
-(define-method (get-event-signal (b <wlr-xwayland>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-xwayland b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-xwayland-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
-
-(define-method (get-event-signal (b <wlr-xwayland-surface>) (signal-name <symbol>))
-  (let* ((unwrap-b (unwrap-wlr-xwayland-surface b))
-         (o (bytestructure-ref
-             (pointer->bytestructure
-              unwrap-b
-              %wlr-xwayland-surface-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref o signal-name)))))
 
 (define (wlr-xwayland-surface-x s)
   (ref s x))

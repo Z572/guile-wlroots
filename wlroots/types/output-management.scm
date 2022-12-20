@@ -36,18 +36,9 @@
                (data ,(bs:pointer 'void)))))
 
 
-(define-wlr-types-class wlr-output-manager-v1)
+(define-wlr-types-class wlr-output-manager-v1 ()
+  #:descriptor %wlr-output-manager-v1-struct)
 (define-wlr-types-class wlr-output-configuration-v1)
-
-
-(define-method (get-event-signal (b <wlr-output-manager-v1>) (signal-name <symbol>))
-  (let* ((a (bytestructure-ref
-             (pointer->bytestructure
-              (unwrap-wlr-output-manager-v1 b)
-              %wlr-output-manager-v1-struct)
-             'events)))
-    (wrap-wl-signal (bytestructure+offset->pointer
-                     (bytestructure-ref a signal-name)))))
 
 (define-wlr-procedure (wlr-output-manager-v1-create display)
   ('* "wlr_output_manager_v1_create" (list '*))

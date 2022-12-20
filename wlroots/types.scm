@@ -2,12 +2,15 @@
   #:use-module (wayland util)
   #:use-module (oop goops)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-2)
   #:use-module (wayland signal)
   #:use-module ((system foreign) #:select(pointer-address pointer? %null-pointer))
   #:use-module (bytestructures guile)
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
   #:export (get-pointer
+            get-bytestructure
+            get-bytevector
             get-event-signal
             .descriptor
             .wrap
@@ -28,7 +31,13 @@
 (define-method (= (f <wlr-type>) (l <wlr-type>))
   (= (.pointer f)
      (.pointer l)))
-
+(define-method (get-bytestructure (obj <wlr-type>))
+  (and-let* ((class (class-of obj))
+             (descriptor (.descriptor class))
+             (unwrap (.unwrap class)))
+    (pointer->bytestructure (unwrap obj) descriptor)))
+(define-method (get-bytevector (obj <wlr-type>))
+  (and=> (get-bytestructure obj) bytestructure-bytevector))
 (define-generic get-pointer)
 (define-syntax define-wlr-types-class
   (lambda (x)

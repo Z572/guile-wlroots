@@ -138,23 +138,12 @@
 (define (wlr-output-backend o)
   (wrap-wlr-backend(%wlr-output-backend o)))
 
-(define-class <wlr-output-mode> ()
-  (pointer #:accessor .pointer #:init-keyword #:pointer))
-(define (wrap-wlr-output-mode p)
-  (make <wlr-output-mode> #:pointer p))
-(define (unwrap-wlr-output-mode o)
-  (.pointer o))
-;; (define-class <wlr-output> ()
-;;   (bytestructure #:accessor .bytestructure #:init-keyword #:bytestructure)
-;;   (modes #:allocation #:virtual
-;;          #:accessor .modes
-;;          #:slot-ref (lambda (a) (wrap-wl-list (bytestructure-ref (.bytestructure a) 'modes)))
-;;          #:slot-set! (lambda (instance new-val)
-;;                        (bytestructure-set!
-;;                         (.bytestructure instance)
-;;                         'modes new-val))))
+(define-wlr-types-class wlr-output-mode ()
+  #:descriptor %wlr-output-mode-struct)
+
 (define (wlr-output-modes o)
   (wrap-wl-list (%wlr-output-modes o)))
+
 (define .modes wlr-output-modes)
 
 (define wlr-output-init-render

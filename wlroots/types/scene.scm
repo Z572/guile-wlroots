@@ -69,8 +69,10 @@
                (presentation-destroy ,%wl-listener)
                (peeding-buffers ,%wl-list))))
 
-(define-wlr-types-class wlr-scene-node)
-(define-wlr-types-class wlr-scene-tree)
+(define-wlr-types-class wlr-scene-node ()
+  #:descriptor %wlr-scene-node-struct)
+(define-wlr-types-class wlr-scene-tree ()
+  #:descriptor %wlr-scene-tree-struct)
 
 (define %wlr-scene-node-rect-struct
   (bs:struct `((node ,%wlr-scene-node-struct)
@@ -99,7 +101,8 @@
                      (wrap-wlr-scene-node
                       (bytestructure->pointer (bytestructure-ref (pointer->bytestructure
                                                                   (get-pointer o) %wlr-scene-buffer-struct)
-                                                                 'node))))))
+                                                                 'node)))))
+  #:descriptor %wlr-scene-buffer-struct)
 
 (define-wlr-types-class wlr-scene-rect ()
   (node #:accessor .node
@@ -114,18 +117,21 @@
                      (wrap-wlr-scene-node
                       (bytestructure->pointer (bytestructure-ref (pointer->bytestructure
                                                                   (get-pointer o) %wlr-scene-node-rect-struct)
-                                                                 'node))))))
+                                                                 'node)))))
+  #:descriptor %wlr-scene-node-rect-struct)
 (define wlr-scene-rect-node .node)
-(define-class <wlr-scene> ()
-  (item #:accessor .item #:init-keyword #:item)
+(define-wlr-types-class wlr-scene ()
   (node #:allocation #:virtual
         #:accessor .node
         #:slot-ref
         (lambda (a)
-          (wrap-wlr-scene-node (bytestructure->pointer (bytestructure-ref (.item a) 'node))))
+          (wrap-wlr-scene-node
+           (bytestructure->pointer
+            (bytestructure-ref (get-bytestructure a) 'node))))
         #:slot-set!
         (lambda (a new-val)
-          (bytestructure-set! (.item a) 'node (unwrap-wlr-scene-node new-val)))))
+          (bytestructure-set! (get-bytestructure a) 'node (unwrap-wlr-scene-node new-val))))
+  #:descriptor %wlr-scene-struct)
 
 (define-method (.node (o <wlr-scene-tree>))
   (wrap-wlr-scene-node
@@ -135,12 +141,6 @@
       (unwrap-wlr-scene-tree o)
       %wlr-scene-tree-struct)
      'node))))
-(define (wrap-wlr-scene p)
-  (make <wlr-scene>
-    #:item
-    (pointer->bytestructure p %wlr-scene-struct)))
-(define (unwrap-wlr-scene o)
-  (bytestructure->pointer (.item o)))
 
 (define-wlr-procedure (wlr-scene-create)
   ('* "wlr_scene_create" '())

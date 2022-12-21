@@ -73,6 +73,8 @@
 (define-wlr-types-class wlr-scene-node ()
   #:descriptor %wlr-scene-node-struct)
 (define-wlr-types-class wlr-scene-tree ()
+  (node #:allocation #:bytestructure
+        #:accessor .node)
   #:descriptor %wlr-scene-tree-struct)
 
 (define %wlr-scene-rect-struct
@@ -91,57 +93,19 @@
                (pending-link ,%wl-list))))
 (define-wlr-types-class wlr-scene-buffer ()
   (node #:accessor .node
-        #:allocation
-        #:virtual
-        #:slot-set! (lambda (o new-val)
-                      (bytestructure-set! (pointer->bytestructure
-                                           (get-pointer o) %wlr-scene-buffer-struct)
-                                          'node
-                                          (unwrap-wlr-scene-buffer new-val)))
-        #:slot-ref (lambda (o)
-                     (wrap-wlr-scene-node
-                      (bytestructure->pointer (bytestructure-ref (pointer->bytestructure
-                                                                  (get-pointer o) %wlr-scene-buffer-struct)
-                                                                 'node)))))
+        #:allocation #:bytestructure)
   #:descriptor %wlr-scene-buffer-struct)
 
 (define-wlr-types-class wlr-scene-rect ()
   (node #:accessor .node
         #:allocation
-        #:virtual
-        #:slot-set! (lambda (o new-val)
-                      (bytestructure-set! (pointer->bytestructure
-                                           (get-pointer o) %wlr-scene-rect-struct)
-                                          'node
-                                          (unwrap-wlr-scene-node new-val)))
-        #:slot-ref (lambda (o)
-                     (wrap-wlr-scene-node
-                      (bytestructure->pointer (bytestructure-ref (pointer->bytestructure
-                                                                  (get-pointer o) %wlr-scene-rect-struct)
-                                                                 'node)))))
+        #:bytestructure)
   #:descriptor %wlr-scene-rect-struct)
 (define wlr-scene-rect-node .node)
 (define-wlr-types-class wlr-scene ()
-  (node #:allocation #:virtual
-        #:accessor .node
-        #:slot-ref
-        (lambda (a)
-          (wrap-wlr-scene-node
-           (bytestructure->pointer
-            (bytestructure-ref (get-bytestructure a) 'node))))
-        #:slot-set!
-        (lambda (a new-val)
-          (bytestructure-set! (get-bytestructure a) 'node (unwrap-wlr-scene-node new-val))))
+  (node #:allocation #:bytestructure
+        #:accessor .node)
   #:descriptor %wlr-scene-struct)
-
-(define-method (.node (o <wlr-scene-tree>))
-  (wrap-wlr-scene-node
-   (bytestructure->pointer
-    (bytestructure-ref
-     (pointer->bytestructure
-      (unwrap-wlr-scene-tree o)
-      %wlr-scene-tree-struct)
-     'node))))
 
 (define-wlr-procedure (wlr-scene-create)
   ('* "wlr_scene_create" '())

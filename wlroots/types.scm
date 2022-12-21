@@ -18,12 +18,58 @@
 
 (define-generic get-event-signal)
 
+(define %bytestructures (make-hash-table 1000))
 (define-class <bytestructure-class> (<class>)
   (descriptor #:init-keyword #:descriptor
               #:init-value #f
               #:getter .descriptor)
   (wrap #:init-keyword #:wrap #:getter .wrap)
   (unwrap #:init-keyword #:unwrap #:getter .unwrap))
+
+(define-method (initialize (object <bytestructure-class>) initargs)
+  (next-method)
+  (and=> (.descriptor object) (cut hash-set! %bytestructures <> object)))
+
+(define (get-field-alist o)
+  (cond ((struct-metadata? o) (struct-metadata-field-alist o))
+        (else #f)))
+
+(define-method (compute-get-n-set (class <bytestructure-class>) slot)
+  (if (eq? (slot-definition-allocation slot) #:bytestructure)
+      (let* ((index (slot-ref class 'nfields))
+             (s (slot-definition-options slot))
+             (b-name (or (get-keyword #:field-name s #f)
+                         (slot-definition-name slot)))
+             (descriptor (.descriptor class))
+             (metadata (bytestructure-descriptor-metadata descriptor))
+             (alist (get-field-alist metadata))
+             (field-descriptor
+              (assq-ref alist b-name)))
+        (unless field-descriptor
+          (goops-error "not field name'd `~S' found in class `~S' descriptor " b-name class))
+        (slot-set! class 'nfields (+ index 1))
+        (let* ((field-wrap (delay (or (and=>
+                                       (hash-ref
+                                        %bytestructures
+                                        field-descriptor #f) .wrap)
+                                      identity)))
+               (field-unwrap (delay (or (and=>
+                                         (hash-ref %bytestructures
+                                                   field-descriptor #f)
+                                         .unwrap)
+                                        identity))))
+          (list (lambda (o)
+                  (let ((out (bytestructure-ref (get-bytestructure o) b-name)))
+                    ((force field-wrap)
+                     (cond ((bytestructure? out)
+                            (bytestructure->pointer out))
+                           (else out)))))
+                (lambda (o v)
+                  (bytestructure-set!
+                   (get-bytestructure o) b-name
+                   ((force field-unwrap) v))))))
+      (next-method)))
+
 (define-class <wlr-type> ()
   (pointer #:accessor .pointer #:init-keyword #:pointer)
   #:metaclass <bytestructure-class>)
@@ -54,6 +100,8 @@
                (define wrap
                  (let ((ptr->obj (make-weak-value-hash-table 3000)))
                    (lambda (ptr)
+                     (unless (pointer? ptr)
+                       (goops-error "In ~S,~S is not a pointer" wrap ptr))
                      (or (hash-ref ptr->obj ptr)
                          (let ((o (make rtd #:pointer ptr)))
                            (hash-set! ptr->obj ptr o)

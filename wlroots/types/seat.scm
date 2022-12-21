@@ -112,15 +112,8 @@
   %srsces-unwrap srsces-ref srsces-set!)
 (define-wlr-types-class wlr-seat-request-set-selection-event ()
   (serial #:getter .serial
-          #:slot-ref (lambda (a)
-                       (srsces-ref
-                        (pointer->bytevector
-                         (get-pointer a)
-                         (bytestructure-descriptor-size
-                          %wlr-seat-request-set-selection-event-struct))
-                        serial))
-          #:slot-set! (lambda (a b) #f)
-          #:allocation #:virtual))
+          #:allocation #:bytestructure)
+  #:descriptor %wlr-seat-request-set-selection-event-struct)
 
 (define %wlr-seat-request-set-cursor-event-struct
   (bs:struct `((seat-client ,(bs:pointer %wlr-seat-client-struct))

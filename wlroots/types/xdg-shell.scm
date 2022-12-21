@@ -130,14 +130,7 @@
                (grab-link ,%wl-list))))
 
 (define-wlr-types-class wlr-xdg-popup ()
-  (base #:allocation #:virtual
-        #:slot-ref (lambda (o)
-                     (wrap-wlr-xdg-surface
-                      (ffi:make-pointer
-                       (bytestructure-ref
-                        (pointer->bytestructure (get-pointer o) %wlr-xdg-popup-struct)
-                        'base))))
-        #:slot-set! (const #f)
+  (base #:allocation #:bytestructure
         #:getter .base)
   #:descriptor %wlr-xdg-popup-struct)
 

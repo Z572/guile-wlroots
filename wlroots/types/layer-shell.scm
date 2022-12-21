@@ -63,26 +63,9 @@
 (define-wlr-types-class wlr-layer-shell ()
   #:descriptor %wlr-layer-shell-v1-struct)
 (define-wlr-types-class wlr-layer-surface-v1 ()
-  (surface #:allocation #:virtual
-           #:slot-ref (lambda (o)
-                        (wrap-wlr-surface
-                         (ffi:make-pointer
-                          (bytestructure-ref
-                           (pointer->bytestructure
-                            (get-pointer o)
-                            %wlr-layer-surface-v1-struct)
-                           'surface))))
-           #:slot-set! (const #f)
+  (surface #:allocation #:bytestructure
            #:getter .surface)
-  (output #:allocation #:virtual
-          #:slot-ref (lambda (o)
-                       (wrap-wlr-output
-                        (ffi:make-pointer
-                         (bytestructure-ref
-                          (pointer->bytestructure
-                           (get-pointer o)
-                           %wlr-layer-surface-v1-struct) 'output))))
-          #:slot-set! (const #f)
+  (output #:allocation #:bytestructure
           #:getter .output)
   #:descriptor %wlr-layer-surface-v1-struct)
 (define-wlr-procedure (wlr-layer-shell-v1-create display)

@@ -73,16 +73,10 @@
 (define-wlr-types-class wlr-cursor ()
   (x #:accessor wlr-cursor-x
      #:allocation
-     #:virtual
-     #:slot-ref (lambda (o) (ref o x))
-     #:slot-set! (lambda (o new)
-                   (wlr-cursor-warp o #f new (wlr-cursor-y o))))
+     #:bytestructure)
   (y #:accessor wlr-cursor-y
      #:allocation
-     #:virtual
-     #:slot-ref (lambda (o) (ref o y))
-     #:slot-set! (lambda (o new)
-                   (wlr-cursor-warp o #f (wlr-cursor-x o) new)))
+     #:bytestructure)
   #:descriptor %wlr-cursor-struct)
 (define-wlr-procedure (wlr-cursor-create)
   ('* "wlr_cursor_create" '())

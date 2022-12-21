@@ -2,9 +2,10 @@
   #:use-module (wayland util)
   #:use-module (oop goops)
   #:use-module (srfi srfi-26)
+  #:use-module (srfi srfi-71)
   #:use-module (srfi srfi-2)
   #:use-module (wayland signal)
-  #:use-module ((system foreign) #:select(pointer-address pointer? %null-pointer))
+  #:use-module ((system foreign) #:select(pointer-address pointer? %null-pointer make-pointer null-pointer?))
   #:use-module (bytestructures guile)
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
@@ -34,6 +35,16 @@
   (cond ((struct-metadata? o) (struct-metadata-field-alist o))
         (else #f)))
 
+(define-inlinable (force-or-nothing o)
+  (if (promise? o)
+      (force o)
+      o))
+(define (haneld-pointer-descriptor o)
+  (let* ((metadata (bytestructure-descriptor-metadata o))
+         (is-pointer? (pointer-metadata? metadata)))
+    (values is-pointer? (if is-pointer?
+                            (force-or-nothing (pointer-metadata-content-descriptor metadata))
+                            o))))
 (define-method (compute-get-n-set (class <bytestructure-class>) slot)
   (if (eq? (slot-definition-allocation slot) #:bytestructure)
       (let* ((index (slot-ref class 'nfields))
@@ -48,7 +59,9 @@
         (unless field-descriptor
           (goops-error "not field name'd `~S' found in class `~S' descriptor " b-name class))
         (slot-set! class 'nfields (+ index 1))
-        (let* ((field-wrap (delay (or (and=>
+        (let* ((is-pointer? field-descriptor (haneld-pointer-descriptor field-descriptor))
+               (handle (if is-pointer? make-pointer identity))
+               (field-wrap (delay (or (and=>
                                        (hash-ref
                                         %bytestructures
                                         field-descriptor #f) .wrap)
@@ -59,11 +72,12 @@
                                          .unwrap)
                                         identity))))
           (list (lambda (o)
-                  (let ((out (bytestructure-ref (get-bytestructure o) b-name)))
-                    ((force field-wrap)
-                     (cond ((bytestructure? out)
-                            (bytestructure->pointer out))
-                           (else out)))))
+                  (let* ((f (force field-wrap))
+                         (out (bytestructure-ref (get-bytestructure o) b-name)))
+                    (f (handle
+                        (cond ((bytestructure? out)
+                               (bytestructure->pointer out))
+                              (else out))))))
                 (lambda (o v)
                   (bytestructure-set!
                    (get-bytestructure o) b-name
@@ -102,10 +116,12 @@
                    (lambda (ptr)
                      (unless (pointer? ptr)
                        (goops-error "In ~S,~S is not a pointer" wrap ptr))
-                     (or (hash-ref ptr->obj ptr)
-                         (let ((o (make rtd #:pointer ptr)))
-                           (hash-set! ptr->obj ptr o)
-                           o)))))
+                     (if (null-pointer? ptr)
+                         #f
+                         (or (hash-ref ptr->obj ptr)
+                             (let ((o (make rtd #:pointer ptr)))
+                               (hash-set! ptr->obj ptr o)
+                               o))))))
                (define (unwrap o)
                  (if o
                      (begin (unless (is? o)

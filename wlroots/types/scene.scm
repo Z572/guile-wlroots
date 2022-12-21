@@ -46,7 +46,8 @@
             wlr-scene-rect-node
             wlr-scene-xdg-surface-create
             wlr-scene-subsurface-tree-create
-            .node))
+            .node
+            .parent))
 
 (define %wlr-scene-node-state-struct
   (bs:struct `((link ,%wl-list)
@@ -56,7 +57,7 @@
                (y ,int))))
 (define %wlr-scene-node-struct
   (bs:struct `((type ,int)
-               (parent ,(bs:pointer '*))
+               (parent ,(bs:pointer (delay %wlr-scene-node-struct)))
                (state ,%wlr-scene-node-state-struct)
                (events
                 ,(bs:struct `((destroy ,%wl-signal-struct)))))))
@@ -71,6 +72,7 @@
                (peeding-buffers ,%wl-list))))
 
 (define-wlr-types-class wlr-scene-node ()
+  (parent #:accessor .parent #:allocation #:bytestructure)
   #:descriptor %wlr-scene-node-struct)
 (define-wlr-types-class wlr-scene-tree ()
   (node #:allocation #:bytestructure

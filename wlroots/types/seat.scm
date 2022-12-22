@@ -89,7 +89,7 @@
 
                  (events ,(bs:struct `((destroy ,%wl-signal-struct))))
                  (serials ,%wlr-serial-ringset)
-                 (needs-touch-frame ,int8))))
+                 (needs-touch-frame ,bool))))
   (define %wlr-seat-request-set-selection-event-struct
     (bs:struct `((source ,(bs:pointer '*))
                  (serial ,uint32))))
@@ -103,7 +103,7 @@
                  (sy ,double)
                  (grab ,(bs:pointer '*))
                  (default-grab ,(bs:pointer '*))
-                 (sent-axis-source ,int8)
+                 (sent-axis-source ,bool)
                  (cached-axis-source ,int32)
                  (buttons ,(bs:vector WLR_POINTER_BUTTONS_CAP uint32))
                  (button-count ,size_t)

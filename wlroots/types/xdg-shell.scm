@@ -74,9 +74,9 @@
                                       (delay %wlr-xdg-toplevel-struct)))
                                    (popup ,(bs:pointer '*)))))
                (popups ,%wl-list)
-               (added ,int)
-               (configured ,int)
-               (mapped ,int)
+               (added ,bool)
+               (configured ,bool)
+               (mapped ,bool)
                (configure-idle ,(bs:pointer '*))
                (scheduled-serial ,uint32)
                (configure-list ,%wl-list)
@@ -122,7 +122,7 @@
   (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
                (link ,%wl-list)
                (resource ,(bs:pointer '*))
-               (committed ,int8) ;;; bool
+               (committed ,bool)
                (parent ,(bs:pointer %wlr-surface-struct))
                (seat ,(bs:pointer %wlr-seat-struct))
                (geometry ,%wlr-box-struct)
@@ -136,14 +136,14 @@
 
 
 (define %wlr-xdg-toplevel-state-struct
-  (bs:struct `(,@(map (lambda (o) `(,o ,int8))
+  (bs:struct `(,@(map (lambda (o) `(,o ,bool))
                       '(maximized fullscreen resizing activated))
                ,@(map (lambda (o) `(,o ,uint32))
                       '(tiled width height max-width max-height min-width min-height)))))
 (define %wlr-xdg-toplevel-struct
   (bs:struct `((resource ,(bs:pointer '*))
                (base ,(bs:pointer %wlr-xdg-surface-struct))
-               (added ,uint8)
+               (added ,bool)
                (parent ,(bs:pointer %wlr-xdg-surface-struct))
                (parent-unmap ,%wl-listener)
                (current ,%wlr-xdg-toplevel-state-struct)
@@ -177,7 +177,7 @@
 
 (define %wlr-xdg-toplevel-set-fullscreen-event
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (fullscreen ,int)
+               (fullscreen ,bool)
                (output ,(bs:pointer '*)))))
 (define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event)
 

@@ -5,16 +5,31 @@
   #:use-module (wlroots config)
   #:use-module (srfi srfi-26)
   #:use-module (wayland util)
+  #:use-module (rnrs bytevectors)
   #:use-module ((bytestructures guile)
                 #:select
                 (bytestructure
                  bs:pointer
                  float
                  bytestructure-offset
-                 bs:vector))
+                 bs:vector
+                 make-bytestructure-descriptor))
   #:use-module (oop goops)
-  #:export (wlr->pointer wlr->procedure color->pointer %color-struct)
+  #:export (wlr->pointer wlr->procedure color->pointer %color-struct bool)
   #:export-syntax (define-wlr-procedure define-enumeration))
+
+(define bool
+  (make-bytestructure-descriptor
+   1 1
+   #f
+   (lambda (syntax? bytevector offset)
+     (if syntax?
+         #`(not (zero? (bytevector-s8-ref #,bytevector #,offset)))
+         (not (zero? (bytevector-s8-ref bytevector offset)))))
+   (lambda (syntax? bytevector offset value)
+     (if syntax?
+         #`(bytevector-s8-set! #,bytevector #,offset #,(if value 1 0))
+         (bytevector-s8-set! bytevector offset (if value 1 0))))))
 
 (define <bytestructure> (class-of (bytestructure (bs:pointer '*))))
 

@@ -61,6 +61,7 @@
         (slot-set! class 'nfields (+ index 1))
         (let* ((is-pointer? field-descriptor (haneld-pointer-descriptor field-descriptor))
                (handle (if is-pointer? make-pointer identity))
+               (handle2 (if is-pointer? bytestructure->pointer bytestructure+offset->pointer))
                (field-wrap (delay (or (and=>
                                        (hash-ref
                                         %bytestructures
@@ -76,7 +77,7 @@
                          (out (bytestructure-ref (get-bytestructure o) b-name)))
                     (f (handle
                         (cond ((bytestructure? out)
-                               (bytestructure->pointer out))
+                               (handle2 out))
                               (else out))))))
                 (lambda (o v)
                   (bytestructure-set!

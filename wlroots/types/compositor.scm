@@ -8,7 +8,7 @@
             unwrap-wlr-compositor
             wlr-compositor-create))
 
-(define-wlr-types-class wlr-compositor)
+(define-wlr-types-class wlr-compositor ())
 
 (define-wlr-procedure (wlr-compositor-create display renderer)
   ('* "wlr_compositor_create" '(* *))

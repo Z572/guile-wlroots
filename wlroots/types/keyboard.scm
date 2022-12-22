@@ -31,4 +31,4 @@
   (WLR_MODIFIER_LOGO 64)
   (WLR_MODIFIER_MOD5 128))
 
-(define-wlr-types-class-public wlr-event-keyboard-key)
+(define-wlr-types-class-public wlr-event-keyboard-key ())

@@ -57,7 +57,7 @@
   #:descriptor %wlr-event-pointer-motion-absolute-struct)
 
 
-(define-wlr-types-class-public wlr-event-pointer-button)
+(define-wlr-types-class-public wlr-event-pointer-button ())
 (define %wlr-event-pointer-axis-struct
   (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
                (time-msec ,uint32)

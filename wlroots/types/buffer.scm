@@ -9,7 +9,7 @@
             wlr-buffer-lock
             wlr-buffer-unlock))
 
-(define-wlr-types-class wlr-buffer)
+(define-wlr-types-class wlr-buffer ())
 
 (define-wlr-procedure (wlr-buffer-drop buffer)
   (ffi:void "wlr_buffer_drop" '(*))

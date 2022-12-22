@@ -173,13 +173,15 @@
                (seat ,(bs:pointer %wlr-seat-client-struct))
                (serial ,uint32)
                (edges ,uint32))))
-(define-wlr-types-class wlr-xdg-toplevel-resize-event)
+(define-wlr-types-class wlr-xdg-toplevel-resize-event ()
+  #:descriptor %wlr-xdg-toplevel-resize-event-struct)
 
 (define %wlr-xdg-toplevel-set-fullscreen-event
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
                (fullscreen ,bool)
                (output ,(bs:pointer '*)))))
-(define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event)
+(define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event ()
+  #:descriptor %wlr-xdg-toplevel-set-fullscreen-event)
 
 (define-method (.edges (o <wlr-xdg-toplevel-resize-event>))
   (bytestructure-ref

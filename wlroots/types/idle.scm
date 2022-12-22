@@ -10,7 +10,7 @@
             wrap-wlr-idle
             unwrap-wlr-idle))
 
-(define-wlr-types-class wlr-idle)
+(define-wlr-types-class wlr-idle ())
 
 (define-wlr-procedure (wlr-idle-create display)
   ('* "wlr_idle_create" '(*))

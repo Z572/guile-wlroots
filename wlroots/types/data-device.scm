@@ -70,10 +70,10 @@
 (define-wlr-types-class wlr-drag ()
   #:descriptor %wlr-drag-struct)
 
-(define-wlr-types-class
-  wlr-data-source)
+(define-wlr-types-class wlr-data-source ()
+  #:descriptor %wlr-data-source-struct)
 
-(define-wlr-types-class wlr-data-device-manager)
+(define-wlr-types-class wlr-data-device-manager ())
 
 
 (define-wlr-procedure (wlr-data-device-manager-create display)

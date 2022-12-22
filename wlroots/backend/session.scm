@@ -8,7 +8,7 @@
             wrap-wlr-session
             unwrap-wlr-session))
 
-(define-wlr-types-class wlr-session)
+(define-wlr-types-class wlr-session ())
 (define-wlr-procedure (wlr-session-change-vt session vt)
   (ffi:int "wlr_session_change_vt" (list '* ffi:unsigned-int))
   (= (% (unwrap-wlr-session session ) vt) 1))

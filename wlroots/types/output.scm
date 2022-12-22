@@ -175,4 +175,4 @@
     ((0) #f)
     (else #t)))
 
-(define-wlr-types-class wlr-output-cursor)
+(define-wlr-types-class wlr-output-cursor ())

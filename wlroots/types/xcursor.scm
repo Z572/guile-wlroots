@@ -23,7 +23,7 @@
                (size ,uint32)
                (scaled-themes ,%wl-list))))
 
-(define-wlr-types-class wlr-xcursor-manager)
+(define-wlr-types-class wlr-xcursor-manager ())
 (define-wlr-procedure (wlr-xcursor-manager-create name size)
   ('* "wlr_xcursor_manager_create" (list '* ffi:uint32))
   (wrap-wlr-xcursor-manager (% (if name (string->pointer name ) %null-pointer) size)))

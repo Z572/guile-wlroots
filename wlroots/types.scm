@@ -154,9 +154,7 @@
                  (let ((u (unwrap o)))
                    (cond ((pointer? u) u)
                          ((bytestructure? u) (bytestructure->pointer u)))))
-               (define (is? o) (is-a? o rtd))))))
-      ((_ name)
-       #'(define-wlr-types-class name ())))))
+               (define (is? o) (is-a? o rtd)))))))))
 
 (define-syntax define-wlr-types-class-public
   (lambda (x)

@@ -1,5 +1,5 @@
 (define-module (wlroots utils)
-  #:use-module (system foreign)
+  #:use-module ((system foreign) #:select (pointer-address make-pointer pointer->procedure))
   #:use-module (util572 color)
   #:use-module (util572 ffi-helpers)
   #:use-module (wlroots config)

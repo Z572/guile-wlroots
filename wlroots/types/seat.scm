@@ -75,7 +75,8 @@
             .data-devices
             .end
             .buttons
-            .count))
+            .count
+            .source))
 
 (eval-when (expand load eval)
   (define WLR_SERIAL_RINGSET_SIZE 128)
@@ -100,9 +101,7 @@
                  (events ,(bs:struct `((destroy ,%wl-signal-struct))))
                  (serials ,%wlr-serial-ringset-struct)
                  (needs-touch-frame ,bool))))
-  (define %wlr-seat-request-set-selection-event-struct
-    (bs:struct `((source ,(bs:pointer '*))
-                 (serial ,uint32))))
+
   (define WLR_POINTER_BUTTONS_CAP 16)
 
   (define %wlr-seat-pointer-state-struct
@@ -202,7 +201,11 @@
                                             request-start-drag
                                             start-drag
                                             destroy))))
-                 (data ,(bs:pointer 'void))))))
+                 (data ,(bs:pointer 'void)))))
+
+  (define %wlr-seat-request-set-selection-event-struct
+    (bs:struct `((source ,(bs:pointer (delay %wlr-data-source-struct)))
+                 (serial ,uint32)))))
 
 (define-wlr-types-class wlr-seat-touch-state ()
   (seat #:allocation #:bytestructure #:accessor .seat)
@@ -224,8 +227,8 @@
   #:descriptor %wlr-seat-client-struct)
 
 (define-wlr-types-class wlr-seat-request-set-selection-event ()
-  (serial #:getter .serial
-          #:allocation #:bytestructure)
+  (source #:accessor .source #:allocation #:bytestructure)
+  (serial #:accessor .serial #:allocation #:bytestructure)
   #:descriptor %wlr-seat-request-set-selection-event-struct)
 
 (define-wlr-types-class wlr-seat-pointer-request-set-cursor-event ())

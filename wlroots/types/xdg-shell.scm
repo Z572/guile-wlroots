@@ -42,7 +42,24 @@
             .edges
             wlr-xdg-surface-toplevel
             wlr-xdg-surface-get-geometry
-            wlr-xdg-surface-for-each-surface))
+            wlr-xdg-surface-for-each-surface
+            .maximized
+            .fullscreen
+            .resizing
+            .activated
+            .parent
+            .current
+            .base
+            .app-id
+            .title
+            .ping-timeout
+            .data
+            .geometry
+            .configure-serial
+            .pending
+            .scheduled-serial
+            .popups
+            .rold))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -58,21 +75,33 @@
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 (define-wlr-types-class wlr-xdg-shell ()
+  (global #:allocation #:bytestructure #:accessor .global)
+  (clients #:allocation #:bytestructure #:accessor .clients)
+  (ping-timeout #:allocation #:bytestructure #:accessor .ping-timeout)
+  (data #:allocation #:bytestructure #:accessor .data)
   #:descriptor %wlr-xdg-shell-struct)
 
 (define %wlr-xdg-surface-state-struct
   (bs:struct `((configure-serial ,uint32)
                (geometry ,%wlr-box-struct))))
+
+(define-wlr-types-class wlr-xdg-surface-state ()
+  (configure-serial #:allocation #:bytestructure #:accessor .configure-serial)
+  (geometry #:allocation #:bytestructure #:accessor .geometry)
+  #:descriptor %wlr-xdg-surface-state-struct)
 (define %wlr-xdg-surface-struct
   (bs:struct `((client ,(bs:pointer '*))
                (resource ,(bs:pointer '*))
                (surface ,(bs:pointer '*))
                (link ,%wl-list)
                (role ,int)
-               (union ,(bs:union `((toplevel
-                                    ,(bs:pointer
-                                      (delay %wlr-xdg-toplevel-struct)))
-                                   (popup ,(bs:pointer '*)))))
+               (union ,(bs:union
+                        `((toplevel
+                           ,(bs:pointer
+                             (delay %wlr-xdg-toplevel-struct)))
+                          (popup
+                           ,(bs:pointer
+                             (delay %wlr-xdg-popup-struct))))))
                (popups ,%wl-list)
                (added ,bool)
                (configured ,bool)
@@ -140,6 +169,14 @@
                       '(maximized fullscreen resizing activated))
                ,@(map (lambda (o) `(,o ,uint32))
                       '(tiled width height max-width max-height min-width min-height)))))
+
+(define-wlr-types-class-public wlr-xdg-toplevel-state ()
+  (maximized  #:allocator #:bytestructure #:accessor .maximized )
+  (fullscreen #:allocator #:bytestructure #:accessor .fullscreen)
+  (resizing   #:allocator #:bytestructure #:accessor .resizing  )
+  (activated  #:allocator #:bytestructure #:accessor .activated )
+
+  #:descriptor %wlr-xdg-toplevel-state-struct)
 (define %wlr-xdg-toplevel-struct
   (bs:struct `((resource ,(bs:pointer '*))
                (base ,(bs:pointer %wlr-xdg-surface-struct))
@@ -166,6 +203,12 @@
                                 )))))))
 
 (define-wlr-types-class wlr-xdg-toplevel ()
+  (base #:allocation #:bytestructure #:accessor .base)
+  (added #:allocation #:bytestructure #:accessor .added)
+  (parent #:allocation #:bytestructure #:accessor .parent)
+  (current #:allocation #:bytestructure #:accessor .current)
+  (title #:allocation #:bytestructure #:accessor .title)
+  (app-id #:allocation #:bytestructure #:accessor .app-id)
   #:descriptor %wlr-xdg-toplevel-struct)
 
 (define %wlr-xdg-toplevel-resize-event-struct
@@ -192,6 +235,16 @@
   (wrap-wlr-xdg-shell
    (% (unwrap-wl-display display))))
 (define-wlr-types-class wlr-xdg-surface ()
+  (role #:allocation #:bytestructure #:accessor .rold )
+  (popups #:allocation #:bytestructure #:accessor .popups)
+  (added #:allocation #:bytestructure #:accessor .added)
+  (configured #:allocation #:bytestructure #:accessor .configured)
+  (mapped #:allocation #:bytestructure #:accessor .mapped)
+
+  (scheduled-serial #:allocation #:bytestructure #:accessor .scheduled-serial)
+
+  (current #:allocation #:bytestructure #:accessor .current)
+  (pending #:allocation #:bytestructure #:accessor .pending)
   #:descriptor %wlr-xdg-surface-struct)
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)

@@ -6,9 +6,10 @@
   #:use-module (srfi srfi-26)
   ;; #:use-module (wlroots render renderer)
   ;; #:use-module (wlroots types output-layout)
+  #:use-module (wlroots time)
   #:use-module (wlroots types)
   #:autoload (wlroots types data-device)
-  (unwrap-wlr-data-source %wlr-drag-struct)
+  (unwrap-wlr-data-source %wlr-drag-struct %wlr-data-source-struct)
   #:use-module (wlroots types input-device)
   #:use-module (wlroots types surface)
   #:use-module (wlroots utils)
@@ -24,7 +25,7 @@
                                            %null-pointer
                                            string->pointer))
   #:use-module (oop goops)
-  #:duplicates (merge-generics)
+  #:duplicates (merge-generics replace warn-override-core warn last)
   #:export (wrap-wlr-seat
             unwrap-wlr-seat
             wlr-seat-create
@@ -52,6 +53,7 @@
             .pointer-state
             .seat
             .focused-client
+            .focused-surface
             .sx
             .sy
             .capabilities
@@ -65,14 +67,22 @@
             .primary-selection-serial
             .keyboard-state
             .touch-state
-            .drag-serial))
+            .drag-serial
+            .grab-serial
+            .grab
+            .default-grab
+            .needs-touch-frame
+            .data-devices
+            .end
+            .buttons
+            .count))
 
 (eval-when (expand load eval)
   (define WLR_SERIAL_RINGSET_SIZE 128)
   (define %wlr-serial-range-struct
     (bs:struct `((min-incl ,uint32)
                  (max-incl ,uint32))))
-  (define %wlr-serial-ringset
+  (define %wlr-serial-ringset-struct
     (bs:struct `((data ,(bs:vector WLR_SERIAL_RINGSET_SIZE %wlr-serial-range-struct))
                  (end ,int)
                  (count ,int))))
@@ -88,7 +98,7 @@
                  (data-devices ,%wl-list)
 
                  (events ,(bs:struct `((destroy ,%wl-signal-struct))))
-                 (serials ,%wlr-serial-ringset)
+                 (serials ,%wlr-serial-ringset-struct)
                  (needs-touch-frame ,bool))))
   (define %wlr-seat-request-set-selection-event-struct
     (bs:struct `((source ,(bs:pointer '*))
@@ -101,8 +111,8 @@
                  (focused-surface ,(bs:pointer %wlr-surface-struct))
                  (sx ,double)
                  (sy ,double)
-                 (grab ,(bs:pointer '*))
-                 (default-grab ,(bs:pointer '*))
+                 (grab ,(bs:pointer (delay %wlr-seat-pointer-grab-struct)))
+                 (default-grab ,(bs:pointer (delay %wlr-seat-pointer-grab-struct)))
                  (sent-axis-source ,bool)
                  (cached-axis-source ,int32)
                  (buttons ,(bs:vector WLR_POINTER_BUTTONS_CAP uint32))
@@ -111,21 +121,21 @@
                  (grab-serial ,uint32)
                  (grab-time ,uint32)
                  (surface-destroy ,%wl-listener)
-                 (events ,(bs:struct `((focus-change ,%wl-listener)))))))
+                 (events ,(bs:struct `((focus-change ,%wl-signal-struct)))))))
   (define %wlr-seat-keyboard-state-struct
     (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
                  (keyboard ,(bs:pointer '*))
                  (focused-client ,(bs:pointer %wlr-seat-client-struct))
-                 (focused-surface ,(bs:pointer '*))
+                 (focused-surface ,(bs:pointer %wlr-surface-struct))
                  (keyboard-destroy ,%wl-listener)
                  (keyboard-keymap ,%wl-listener)
                  (keyboard-repeat-info ,%wl-listener)
                  (surface-destroy ,%wl-listener)
-                 (grab ,(bs:pointer '*))
-                 (default-grab ,(bs:pointer '*))
-                 (events ,(bs:struct `((focus-change ,%wl-listener)))))))
+                 (grab ,(bs:pointer (delay %wlr-seat-keyboard-grab-struct)))
+                 (default-grab ,(bs:pointer (delay %wlr-seat-keyboard-grab-struct)))
+                 (events ,(bs:struct `((focus-change ,%wl-signal-struct)))))))
   (define %wlr-seat-touch-state-struct
-    (bs:struct `((seat ,(bs:pointer '*))
+    (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
                  (touch-points ,%wl-list)
                  (grab-serial ,uint32)
                  (grab-id ,uint32)
@@ -156,16 +166,15 @@
                  (name ,cstring-pointer)
                  (capabilities ,uint32)
                  (accumulated-capabilities ,uint32)
-                 (last-event ,(bs:struct `((tv-sec ,long)
-                                           (tv-nsec ,long))))
-                 (selection-source ,(bs:pointer '*))
+                 (last-event ,%timespec-struct)
+                 (selection-source ,(bs:pointer (delay %wlr-data-source-struct)))
                  (selection-serial ,uint32)
                  (selection-offers ,%wl-list)
                  (primary-selection-source ,(bs:pointer '*))
                  (primary-selection-serial ,uint32)
 
                  (drag ,(bs:pointer (delay %wlr-drag-struct)))
-                 (drag-source ,(bs:pointer '*))
+                 (drag-source ,(bs:pointer (delay %wlr-data-source-struct)))
                  (drag-serial ,uint32)
                  (drag-offers ,%wl-list)
 
@@ -195,13 +204,25 @@
                                             destroy))))
                  (data ,(bs:pointer 'void))))))
 
+(define-wlr-types-class wlr-seat-touch-state ()
+  (seat #:allocation #:bytestructure #:accessor .seat)
+  (grab-serial #:allocation #:bytestructure #:accessor .grab-serial)
+  (grab-id #:allocation #:bytestructure #:accessor .grab-id)
+  (grab #:allocation #:bytestructure #:accessor .grab)
+  (default-grab #:allocation #:bytestructure #:accessor .default-grab)
+  #:descriptor %wlr-seat-touch-state-struct)
 
-
+(define-wlr-types-class wlr-serial-ringset ()
+  (end #:allocation #:bytestructure #:accessor .end)
+  (count #:allocation #:bytestructure #:accessor .count)
+  #:descriptor %wlr-serial-ringset-struct)
 (define-wlr-types-class wlr-seat-client ()
   (seat #:allocation #:bytestructure #:getter .seat)
+  (data-devices #:allocation #:bytestructure #:accessor .data-devices)
+  (serials #:allocation #:bytestructure #:accessor .serials)
+  (needs-touch-frame #:allocation #:bytestructure #:accessor .needs-touch-frame)
   #:descriptor %wlr-seat-client-struct)
-(define-bytestructure-accessors %wlr-seat-request-set-selection-event-struct
-  %srsces-unwrap srsces-ref srsces-set!)
+
 (define-wlr-types-class wlr-seat-request-set-selection-event ()
   (serial #:getter .serial
           #:allocation #:bytestructure)
@@ -212,11 +233,21 @@
 
 
 (define-wlr-types-class-public wlr-seat-pointer-state ()
-  (seat #:allocation #:bytestructure #:getter .seat)
-  (focused-client #:allocation #:bytestructure #:getter .focused-client)
+  (seat #:allocation #:bytestructure #:accessor .seat)
+  (focused-client #:allocation #:bytestructure #:accessor .focused-client)
+  (focused-surface #:allocation #:bytestructure #:accessor .focused-surface)
   (sx #:allocation #:bytestructure #:getter .sx)
   (sy #:allocation #:bytestructure #:getter .sy)
+  (buttons #:allocation #:bytestructure #:accessor .buttons)
   #:descriptor %wlr-seat-pointer-state-struct)
+
+(define-wlr-types-class wlr-seat-keyboard-state ()
+  (seat #:allocation #:bytestructure #:accessor .seat)
+  (focused-client #:allocation #:bytestructure #:accessor .focused-client)
+  (focused-surface #:allocation #:bytestructure #:accessor .focused-surface)
+  (grab #:allocation #:bytestructure #:accessor .grab)
+  (default-grab #:allocation #:bytestructure #:accessor .default-grab)
+  #:descriptor %wlr-seat-keyboard-state-struct)
 
 (define-wlr-types-class wlr-seat ()
   (display #:allocation #:bytestructure #:getter .display)

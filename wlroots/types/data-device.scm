@@ -40,7 +40,7 @@
                  (events ,(bs:struct `((map ,%wl-signal-struct)
                                        (unmap ,%wl-signal-struct)
                                        (destroy ,%wl-signal-struct))))
-                 (surface-destroy ,%wl-listener)
+                 (surface-destroy ,%wl-listener-struct)
                  (data ,(bs:pointer 'void)))))
   (define %wlr-drag-struct
     (bs:struct `((grab-type ,int32)
@@ -62,9 +62,9 @@
                                        (motion ,%wl-signal-struct)
                                        (drop ,%wl-signal-struct)
                                        (destroy ,%wl-signal-struct))))
-                 (source-destroy ,%wl-listener)
-                 (seat-client-destroy ,%wl-listener)
-                 (icon-destroy ,%wl-listener)
+                 (source-destroy ,%wl-listener-struct)
+                 (seat-client-destroy ,%wl-listener-struct)
+                 (icon-destroy ,%wl-listener-struct)
                  (data ,(bs:pointer 'void))))))
 
 (define-wlr-types-class wlr-drag ()

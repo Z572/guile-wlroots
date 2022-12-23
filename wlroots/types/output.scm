@@ -126,7 +126,7 @@
                (renderer ,(bs:pointer '*))
                (swapchain ,(bs:pointer '*))
                (back-buffer ,(bs:pointer '*))
-               (display-destroy ,%wl-listener)
+               (display-destroy ,%wl-listener-struct)
                (addons ,%wlr-addon-set-struct)
                (data ,(bs:pointer 'void)))))
 

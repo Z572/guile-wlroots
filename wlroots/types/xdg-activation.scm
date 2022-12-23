@@ -21,7 +21,7 @@
                                      (request-activate ,%wl-signal-struct))))
                (display ,(bs:pointer '*))
                (global ,(bs:pointer '*))
-               (display-destroy ,%wl-listener))))
+               (display-destroy ,%wl-listener-struct))))
 
 
 (define-wlr-types-class-public wlr-xdg-activation-v1 ()

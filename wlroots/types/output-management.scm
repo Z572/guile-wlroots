@@ -32,7 +32,7 @@
                (events ,(bs:struct `((apply ,%wl-signal-struct)
                                      (test ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
-               (display-destroy ,%wl-listener)
+               (display-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
 
 

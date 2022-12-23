@@ -74,7 +74,7 @@
   (bs:struct `((node ,%wlr-scene-node-struct)
                (outputs ,%wl-list-struct)
                (presentation ,(bs:pointer '*))
-               (presentation-destroy ,%wl-listener)
+               (presentation-destroy ,%wl-listener-struct)
                (peeding-buffers ,%wl-list-struct))))
 
 

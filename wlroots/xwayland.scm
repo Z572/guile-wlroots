@@ -48,9 +48,9 @@
                                   new-surface
                                   remove-startup-info))))
                  (user-event-handler ,(bs:pointer '*))
-                 (server-ready ,%wl-listener)
-                 (server-destroy ,%wl-listener)
-                 (seat-destroy ,%wl-listener)
+                 (server-ready ,%wl-listener-struct)
+                 (server-destroy ,%wl-listener-struct)
+                 (seat-destroy ,%wl-listener-struct)
                  (data ,(bs:pointer 'void)))))
   (define %wlr-xwayland-surface-struct
     (bs:struct `((window-id ,uint32)
@@ -116,7 +116,7 @@
 
 
                                   ))))
-                 (surface-destroy ,%wl-listener)
+                 (surface-destroy ,%wl-listener-struct)
                  (data ,(bs:pointer 'void)))))
   (define-bytestructure-accessors %wlr-xwayland-surface-struct
     xwayland-surface-unwrap xwayland-surface-ref xwayland-surface-set!))

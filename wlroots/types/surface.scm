@@ -65,7 +65,7 @@
      (current-outputs ,%wl-list-struct)
      (addons ,%wlr-addon-set-struct)
      (data ,(bs:pointer 'void))
-     (renderer-destroy ,%wl-listener)
+     (renderer-destroy ,%wl-listener-struct)
      (previous
       ,(bs:struct `((scale ,int32)
                     (transform ,int)

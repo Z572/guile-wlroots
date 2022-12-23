@@ -23,7 +23,7 @@
 
 (define %wlr-layer-shell-v1-struct
   (bs:struct `((global ,(bs:pointer '*))
-               (display-destroy ,%wl-listener)
+               (display-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
@@ -53,7 +53,7 @@
                (configure-list ,%wl-list-struct)
                (current ,%wlr-layer-surface-v1-status-struct)
                (pending ,%wlr-layer-surface-v1-status-struct)
-               (surface-destroy ,%wl-listener)
+               (surface-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (map ,%wl-signal-struct)
                                      (unmap ,%wl-signal-struct)

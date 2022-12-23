@@ -39,6 +39,7 @@
   (if (promise? o)
       (force o)
       o))
+
 (define (haneld-pointer-descriptor o)
   (let* ((metadata (bytestructure-descriptor-metadata o))
          (is-pointer? (pointer-metadata? metadata)))
@@ -61,28 +62,21 @@
         (slot-set! class 'nfields (+ index 1))
         (let* ((is-pointer? field-descriptor (haneld-pointer-descriptor field-descriptor))
                (handle (if is-pointer? make-pointer identity))
-               (handle2 (if is-pointer? bytestructure->pointer bytestructure+offset->pointer))
-               (field-wrap (delay (or (and=>
-                                       (hash-ref
-                                        %bytestructures
-                                        field-descriptor #f) .wrap)
-                                      identity)))
-               (field-unwrap (delay (or (and=>
-                                         (hash-ref %bytestructures
-                                                   field-descriptor #f)
-                                         .unwrap)
-                                        identity))))
+               (b-class (delay (hash-ref %bytestructures field-descriptor #f)))
+               (wrap (delay (or (and=> (force b-class) .wrap) identity)))
+               (unwrap (delay (or (and=> (force b-class) .unwrap) identity))))
           (list (lambda (o)
-                  (let* ((f (force field-wrap))
-                         (out (bytestructure-ref (get-bytestructure o) b-name)))
+                  (let ((f (force wrap))
+                        (out (bytestructure-ref (get-bytestructure o) b-name)))
                     (f (handle
                         (cond ((bytestructure? out)
-                               (handle2 out))
+                               (bytestructure->pointer out))
                               (else out))))))
                 (lambda (o v)
-                  (bytestructure-set!
-                   (get-bytestructure o) b-name
-                   ((force field-unwrap) v))))))
+                  (let ((f (force unwrap)))
+                    (bytestructure-set!
+                     (get-bytestructure o) b-name
+                     (f v)))))))
       (next-method)))
 
 (define-class <wlr-type> ()
@@ -148,7 +142,7 @@
                                  unwrap-b
                                  (.descriptor rtd)) 'events)))
                        (wrap-wl-signal
-                        (bytestructure+offset->pointer
+                        (bytestructure->pointer
                          (bytestructure-ref o signal-name)))))))
                (define-method (get-pointer (o rtd))
                  (let ((u (unwrap o)))

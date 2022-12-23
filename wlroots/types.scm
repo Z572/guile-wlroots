@@ -136,14 +136,10 @@
                                       (bytestructure-descriptor-metadata
                                        (.descriptor rtd))))
                    (define-method (get-event-signal (b rtd) (signal-name <symbol>))
-                     (let* ((unwrap-b (unwrap b))
-                            (o (bytestructure-ref
-                                (pointer->bytestructure
-                                 unwrap-b
-                                 (.descriptor rtd)) 'events)))
-                       (wrap-wl-signal
-                        (bytestructure->pointer
-                         (bytestructure-ref o signal-name)))))))
+                     (let* ((bs (get-bytestructure b))
+                            (o (bytestructure-ref bs 'events signal-name))
+                            (p (bytestructure->pointer o)))
+                       (wrap-wl-signal p)))))
                (define-method (get-pointer (o rtd))
                  (let ((u (unwrap o)))
                    (cond ((pointer? u) u)

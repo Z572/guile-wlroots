@@ -2,6 +2,7 @@ SOURCES = %D%/config.scm     \
  %D%/../wlroots.scm          \
  %D%/backend.scm             \
  %D%/backend/session.scm     \
+ %D%/time.scm               \
  %D%/utils.scm               \
  %D%/xwayland.scm            \
  %D%/render/allocator.scm    \

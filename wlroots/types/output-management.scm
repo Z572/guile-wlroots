@@ -25,8 +25,8 @@
 (define %wlr-output-manager-v1-struct
   (bs:struct `((display ,(bs:pointer '*))
                (global ,(bs:pointer '*))
-               (resources ,%wl-list)
-               (heads ,%wl-list)
+               (resources ,%wl-list-struct)
+               (heads ,%wl-list-struct)
                (serial ,uint32)
                (current-configuration-dirty ,int8) ;; bool
                (events ,(bs:struct `((apply ,%wl-signal-struct)

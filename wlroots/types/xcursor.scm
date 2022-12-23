@@ -21,7 +21,7 @@
 (define %wlr-xcursor-manager-struct
   (bs:struct `((name ,(bs:pointer *) )
                (size ,uint32)
-               (scaled-themes ,%wl-list))))
+               (scaled-themes ,%wl-list-struct))))
 
 (define-wlr-types-class wlr-xcursor-manager ())
 (define-wlr-procedure (wlr-xcursor-manager-create name size)

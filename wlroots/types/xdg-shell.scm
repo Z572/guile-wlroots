@@ -67,8 +67,8 @@
 
 (define %wlr-xdg-shell-struct
   (bs:struct `((global ,(bs:pointer '*))
-               (clients ,%wl-list)
-               (popup-grabs ,%wl-list)
+               (clients ,%wl-list-struct)
+               (popup-grabs ,%wl-list-struct)
                (ping-timeout ,uint32)
                (display-destroy ,%wl-listener)
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
@@ -93,7 +93,7 @@
   (bs:struct `((client ,(bs:pointer '*))
                (resource ,(bs:pointer '*))
                (surface ,(bs:pointer '*))
-               (link ,%wl-list)
+               (link ,%wl-list-struct)
                (role ,int)
                (union ,(bs:union
                         `((toplevel
@@ -102,13 +102,13 @@
                           (popup
                            ,(bs:pointer
                              (delay %wlr-xdg-popup-struct))))))
-               (popups ,%wl-list)
+               (popups ,%wl-list-struct)
                (added ,bool)
                (configured ,bool)
                (mapped ,bool)
                (configure-idle ,(bs:pointer '*))
                (scheduled-serial ,uint32)
-               (configure-list ,%wl-list)
+               (configure-list ,%wl-list-struct)
                (current ,%wlr-xdg-surface-state-struct)
                (pending ,%wlr-xdg-surface-state-struct)
                (surface-destroy ,%wl-listener)
@@ -124,7 +124,7 @@
 
 (define %wlr-xdg-surface-configure-struct
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (link ,%wl-list)
+               (link ,%wl-list-struct)
                (serial ,uint32))))
 
 (define %wlr-xdg-toplevel-configure-struct
@@ -149,14 +149,14 @@
                                      (y ,int32)))))))
 (define %wlr-xdg-popup-struct
   (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
-               (link ,%wl-list)
+               (link ,%wl-list-struct)
                (resource ,(bs:pointer '*))
                (committed ,bool)
                (parent ,(bs:pointer %wlr-surface-struct))
                (seat ,(bs:pointer %wlr-seat-struct))
                (geometry ,%wlr-box-struct)
                (positioner ,%wlr-xdg-positioner-struct)
-               (grab-link ,%wl-list))))
+               (grab-link ,%wl-list-struct))))
 
 (define-wlr-types-class wlr-xdg-popup ()
   (base #:allocation #:bytestructure

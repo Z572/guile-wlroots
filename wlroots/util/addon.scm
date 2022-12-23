@@ -3,4 +3,4 @@
   #:use-module (bytestructures guile)
   #:export (%wlr-addon-set-struct))
 (define %wlr-addon-set-struct
-  (bs:struct `((addons ,%wl-list))))
+  (bs:struct `((addons ,%wl-list-struct))))

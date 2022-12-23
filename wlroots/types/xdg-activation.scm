@@ -16,7 +16,7 @@
 
 (define %wlr-xdg-activation-v1-struct
   (bs:struct `((token-timeout-msec ,uint32)
-               (tokens ,%wl-list)
+               (tokens ,%wl-list-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (request-activate ,%wl-signal-struct))))
                (display ,(bs:pointer '*))

@@ -56,8 +56,8 @@
             .y))
 
 (define %wlr-scene-node-state-struct
-  (bs:struct `((link ,%wl-list)
-               (children ,%wl-list)
+  (bs:struct `((link ,%wl-list-struct)
+               (children ,%wl-list-struct)
                (enabled ,bool)
                (x ,int)
                (y ,int))))
@@ -72,10 +72,10 @@
 
 (define %wlr-scene-struct
   (bs:struct `((node ,%wlr-scene-node-struct)
-               (outputs ,%wl-list)
+               (outputs ,%wl-list-struct)
                (presentation ,(bs:pointer '*))
                (presentation-destroy ,%wl-listener)
-               (peeding-buffers ,%wl-list))))
+               (peeding-buffers ,%wl-list-struct))))
 
 
 (define-wlr-types-class wlr-scene-node-state ()
@@ -107,7 +107,7 @@
                (dst-width ,int)
                (dst-height ,int)
                (transform ,int) ;; enum wl_output_transform
-               (pending-link ,%wl-list))))
+               (pending-link ,%wl-list-struct))))
 (define-wlr-types-class wlr-scene-buffer ()
   (node #:accessor .node
         #:allocation #:bytestructure)

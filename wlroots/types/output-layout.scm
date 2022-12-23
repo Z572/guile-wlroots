@@ -19,7 +19,7 @@
 
 (define %wlr-output-layout-struct
   (bs:struct
-   `((outputs ,%wl-list)
+   `((outputs ,%wl-list-struct)
      (state ,(bs:pointer '*))
      (events ,(bs:struct
                `((add ,%wl-signal-struct)

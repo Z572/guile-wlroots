@@ -90,13 +90,13 @@
   (define %wlr-seat-client-struct
     (bs:struct `((client ,(bs:pointer '*))
                  (seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (link ,%wl-list)
+                 (link ,%wl-list-struct)
 
-                 (resources ,%wl-list)
-                 (pointers ,%wl-list)
-                 (keyboards ,%wl-list)
-                 (touches ,%wl-list)
-                 (data-devices ,%wl-list)
+                 (resources ,%wl-list-struct)
+                 (pointers ,%wl-list-struct)
+                 (keyboards ,%wl-list-struct)
+                 (touches ,%wl-list-struct)
+                 (data-devices ,%wl-list-struct)
 
                  (events ,(bs:struct `((destroy ,%wl-signal-struct))))
                  (serials ,%wlr-serial-ringset-struct)
@@ -135,7 +135,7 @@
                  (events ,(bs:struct `((focus-change ,%wl-signal-struct)))))))
   (define %wlr-seat-touch-state-struct
     (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (touch-points ,%wl-list)
+                 (touch-points ,%wl-list-struct)
                  (grab-serial ,uint32)
                  (grab-id ,uint32)
                  (grab ,(bs:pointer '*))
@@ -161,21 +161,21 @@
   (define %wlr-seat-struct
     (bs:struct `((global ,(bs:pointer '*))
                  (display ,(bs:pointer '*))
-                 (clients ,%wl-list)
+                 (clients ,%wl-list-struct)
                  (name ,cstring-pointer)
                  (capabilities ,uint32)
                  (accumulated-capabilities ,uint32)
                  (last-event ,%timespec-struct)
                  (selection-source ,(bs:pointer (delay %wlr-data-source-struct)))
                  (selection-serial ,uint32)
-                 (selection-offers ,%wl-list)
+                 (selection-offers ,%wl-list-struct)
                  (primary-selection-source ,(bs:pointer '*))
                  (primary-selection-serial ,uint32)
 
                  (drag ,(bs:pointer (delay %wlr-drag-struct)))
                  (drag-source ,(bs:pointer (delay %wlr-data-source-struct)))
                  (drag-serial ,uint32)
-                 (drag-offers ,%wl-list)
+                 (drag-offers ,%wl-list-struct)
 
                  (pointer-state ,%wlr-seat-pointer-state-struct)
                  (keyboard-state ,%wlr-seat-keyboard-state-struct)

@@ -5,7 +5,9 @@
   #:use-module (srfi srfi-71)
   #:use-module (srfi srfi-2)
   #:use-module (wayland signal)
-  #:use-module ((system foreign) #:select(pointer-address pointer? %null-pointer make-pointer null-pointer?))
+  #:use-module (rnrs bytevectors)
+  #:use-module ((system foreign)
+                #:select(pointer-address pointer? %null-pointer make-pointer null-pointer? bytevector->pointer))
   #:use-module (bytestructures guile)
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
@@ -83,6 +85,20 @@
   (pointer #:accessor .pointer #:init-keyword #:pointer)
   #:metaclass <bytestructure-class>)
 
+(define-method (initialize (object <wlr-type>) initargs)
+  (let ((descriptor(.descriptor (class-of object))))
+    (if (get-keyword #:pointer initargs #f)
+        (next-method)
+        (if descriptor
+            (next-method
+             object (append
+                     (list #:pointer (bytevector->pointer
+                                      (make-bytevector
+                                       (bytestructure-descriptor-size descriptor))))
+                     initargs))
+            (goops-error (string-append
+                          "You must set a #:descriptor with `define-class' "
+                          "or provie #:pointer when `make'"))))))
 (define-method (= (f <wlr-type>) (l <wlr-type>))
   (= (.pointer f)
      (.pointer l)))

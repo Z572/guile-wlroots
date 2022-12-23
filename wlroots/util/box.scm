@@ -15,30 +15,12 @@
                (height ,double))))
 
 (define-wlr-types-class-public wlr-box (<box>)
-  (x #:allocation #:virtual
-     #:slot-ref
-     (lambda (box) (bytestructure-ref (->bytestructure box) 'x))
-     #:slot-set!
-     (lambda (box n) (bytestructure-set! (->bytestructure box) 'x n))
-     #:accessor box-x)
-  (y #:allocation #:virtual
-     #:slot-ref
-     (lambda (box) (bytestructure-ref (->bytestructure box) 'y))
-     #:slot-set!
-     (lambda (box n) (bytestructure-set! (->bytestructure box) 'y n))
-     #:accessor box-y)
-  (height #:allocation #:virtual
-          #:slot-ref
-          (lambda (box) (bytestructure-ref (->bytestructure box) 'height))
-          #:slot-set!
-          (lambda (box n) (bytestructure-set! (->bytestructure box) 'height n))
-          #:accessor box-height)
-  (width #:allocation #:virtual
-         #:slot-ref
-         (lambda (box) (bytestructure-ref (->bytestructure box) 'width))
-         #:slot-set!
-         (lambda (box n) (bytestructure-set! (->bytestructure box) 'width n))
-         #:accessor box-width))
+  (x #:allocation #:bytestructure #:accessor box-x)
+  (y #:allocation #:bytestructure #:accessor box-y)
+  (height #:allocation #:bytestructure #:accessor box-height)
+  (width #:allocation #:bytestructure #:accessor box-width)
+  #:descriptor %wlr-box-struct)
+
 (define (make-wlr-box x y width height)
   (wrap-wlr-box (bytestructure->pointer
                  (bytestructure

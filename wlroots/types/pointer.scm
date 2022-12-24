@@ -49,7 +49,7 @@
                (time-msec ,uint32)
                (x ,double)
                (y ,double))))
-(define-wlr-types-class event-pointer-motion-absolute ()
+(define-wlr-types-class-public wlr-event-pointer-motion-absolute ()
   (device #:accessor .device #:allocation #:bytestructure)
   (time-msec #:accessor .time-msec #:allocation #:bytestructure)
   (x #:accessor .x #:allocation #:bytestructure)

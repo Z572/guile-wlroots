@@ -48,6 +48,8 @@
             unwrap-wlr-seat-client
             wlr-seat-pointer-notify-axis
             wlr-seat-set-capabilities
+            wlr-seat-keyboard-notify-key
+            wlr-seat-keyboard-send-key
             .serial
             .selection-serial
             .pointer-state
@@ -299,3 +301,13 @@
 (define-wlr-procedure (wlr-seat-set-capabilities seat capabilities)
   (ffi:void "wlr_seat_set_capabilities" `(* ,ffi:uint32))
   (% (unwrap-wlr-seat seat) capabilities))
+
+(define-wlr-procedure (wlr-seat-keyboard-notify-key seat time-msec key state)
+  (ffi:void "wlr_seat_keyboard_notify_key"
+            (list '* ffi:uint32 ffi:uint32 ffi:uint32))
+  (% (unwrap-wlr-seat seat) time-msec key state))
+
+(define-wlr-procedure (wlr-seat-keyboard-send-key seat time-msec key state)
+  (ffi:void "wlr_seat_keyboard_send_key"
+            (list '* ffi:uint32 ffi:uint32 ffi:uint32))
+  (% (unwrap-wlr-seat seat) time-msec key state))

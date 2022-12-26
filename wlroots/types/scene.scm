@@ -11,6 +11,7 @@
   #:use-module (wlroots types xdg-shell)
   #:use-module (wlroots types buffer)
   #:use-module (wlroots types output-layout)
+  #:use-module (wlroots types presentation-time)
   #:use-module (wlroots utils)
   #:use-module (wlroots util box)
   #:use-module ((system foreign) #:prefix ffi:)
@@ -34,6 +35,7 @@
             wlr-scene-node-set-position
             wlr-scene-node-at
             wlr-scene-tree-create
+            wlr-scene-set-presentation
             wlr-scene-node-raise-to-top
             wlr-scene-node-lower-to-bottom
             %wlr-scene-struct
@@ -143,6 +145,11 @@
 (define-wlr-procedure (wlr-scene-node-set-position scene x y)
   (ffi:void "wlr_scene_node_set_position" (list '* ffi:int ffi:int))
   (% (unwrap-wlr-scene-node scene) x y))
+
+(define-wlr-procedure (wlr-scene-set-presentation scene presentation)
+  (ffi:void "wlr_scene_set_presentation" '(* *))
+  (% (unwrap-wlr-scene scene) (unwrap-wlr-presentation presentation)))
+
 (define-wlr-procedure (wlr-scene-tree-create parent)
   ('* "wlr_scene_tree_create" '(*))
   (wrap-wlr-scene-tree (% (unwrap-wlr-scene-node parent))))

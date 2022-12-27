@@ -15,14 +15,21 @@
   #:use-module (wlroots types surface)
   #:use-module (wlroots utils)
   #:use-module (oop goops)
-  #:export (wrap-wlr-data-source
+  #:export (<wlr-drop-icon>
+            wrap-wlr-data-source
             unwrap-wlr-data-source
             wrap-wlr-data-device-manager
             unwrap-wlr-data-device-manager
+            wrap-wlr-drap-icon
+            unwrap-wlr-drap-icon
             wlr-data-device-manager-create
             %wlr-drag-struct
             %wlr-data-source-struct
-            %wlr-drap-icon-struct))
+            %wlr-drap-icon-struct
+            .drag
+            .surface
+            .mapped
+            .data))
 
 (eval-when (expand load eval)
   (define %wlr-data-source-struct
@@ -72,6 +79,13 @@
 
 (define-wlr-types-class wlr-data-source ()
   #:descriptor %wlr-data-source-struct)
+
+(define-wlr-types-class wlr-drap-icon ()
+  (drag    #:allocation #:bytestructure #:accessor .drag   )
+  (surface #:allocation #:bytestructure #:accessor .surface)
+  (mapped  #:allocation #:bytestructure #:accessor .mapped )
+  (data    #:allocation #:bytestructure #:accessor .data   )
+  #:descriptor %wlr-drap-icon-struct)
 
 (define-wlr-types-class wlr-data-device-manager ())
 

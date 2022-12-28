@@ -18,7 +18,8 @@
   #:use-module (rnrs bytevectors)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
-  #:re-export (%wlr-scene-node-state-struct
+  #:re-export (%wlr-scene-node-type-enum
+               %wlr-scene-node-state-struct
                %wlr-scene-node-struct
                %wlr-scene-struct
                %wlr-scene-rect-struct
@@ -60,6 +61,7 @@
             .state
             .enabled
             .x
+            .type
             .y))
 
 (define-wlr-types-class wlr-scene-node-state ()
@@ -70,6 +72,7 @@
   #:descriptor %wlr-scene-node-state-struct)
 
 (define-wlr-types-class wlr-scene-node ()
+  (type #:accessor .type #:allocation #:bytestructure)
   (parent #:accessor .parent #:allocation #:bytestructure)
   (state #:accessor .state #:allocation #:bytestructure)
   #:descriptor %wlr-scene-node-struct)

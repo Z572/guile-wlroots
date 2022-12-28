@@ -396,9 +396,16 @@
                (global ,(bs:pointer '*))
                (display-destroy ,%wl-listener-struct))))
 
+(define-public %wlr-input-device-type-enum
+  (bs:enum '((WLR_INPUT_DEVICE_KEYBOARD 0)
+             (WLR_INPUT_DEVICE_POINTER 1)
+             (WLR_INPUT_DEVICE_TOUCH 2)
+             (WLR_INPUT_DEVICE_TABLET_TOOL 3)
+             (WLR_INPUT_DEVICE_TABLET_PAD 4)
+             (WLR_INPUT_DEVICE_SWITCH 5))))
 (define-public %wlr-input-device-struct
   (bs:struct `((impl ,(bs:pointer '*))
-               (type ,int)
+               (type ,%wlr-input-device-type-enum)
                (vendor ,unsigned-int)
                (product ,unsigned-int)
                (name ,cstring-pointer)

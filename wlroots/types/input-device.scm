@@ -16,7 +16,14 @@
             WLR_INPUT_DEVICE_SWITCH
             wlr-input-device-type
             wlr-input-device-type->value
-            value->wlr-input-device-type))
+            value->wlr-input-device-type
+            .type
+            .vendor
+            .product
+            .name
+            .width-mm
+            .height-mm
+            .output-name))
 
 
 (define-enumeration
@@ -30,6 +37,13 @@
   (WLR_INPUT_DEVICE_SWITCH 5))
 
 (define-wlr-types-class wlr-input-device ()
+  (type         #:allocation #:bytestructure #:accessor .type       )
+  (vendor       #:allocation #:bytestructure #:accessor .vendor     )
+  (product      #:allocation #:bytestructure #:accessor .product    )
+  (name         #:allocation #:bytestructure #:accessor .name       )
+  (width-mm     #:allocation #:bytestructure #:accessor .width-mm   )
+  (height-mm    #:allocation #:bytestructure #:accessor .height-mm  )
+  (output-name  #:allocation #:bytestructure #:accessor .output-name)
   #:descriptor %wlr-input-device-struct)
 
 (define (wlr-input-device-name device)
@@ -37,9 +51,4 @@
    (pointer->bytestructure (unwrap-wlr-input-device device) %wlr-input-device-struct)
    'name))
 
-(define (wlr-input-device-type device)
-  (bytestructure-ref
-   (pointer->bytestructure
-    (unwrap-wlr-input-device device)
-    %wlr-input-device-struct)
-   'type))
+(define wlr-input-device-type .type)

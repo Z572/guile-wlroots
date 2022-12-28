@@ -3,13 +3,15 @@
   #:use-module (oop goops)
   #:use-module (wlroots utils)
   #:use-module ((system foreign) #:prefix ffi:)
+  #:re-export (%wlr-buffer-struct)
   #:export (wrap-wlr-buffer
             unwrap-wlr-buffer
             wlr-buffer-drop
             wlr-buffer-lock
             wlr-buffer-unlock))
 
-(define-wlr-types-class wlr-buffer ())
+(define-wlr-types-class wlr-buffer ()
+  #:descriptor %wlr-buffer-struct)
 
 (define-wlr-procedure (wlr-buffer-drop buffer)
   (ffi:void "wlr_buffer_drop" '(*))

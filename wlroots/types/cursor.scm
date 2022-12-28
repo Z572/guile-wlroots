@@ -17,11 +17,11 @@
   ;; #:use-module (system foreign)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
+  #:re-export (%wlr-cursor-struct)
   #:export (wrap-wlr-cursor
             unwrap-wlr-cursor
             wlr-cursor-create
             wlr-cursor-attach-output-layout
-            %wlr-cursor-struct
             wlr-cursor-x
             wlr-cursor-y
             wlr-cursor-set-surface
@@ -30,45 +30,6 @@
             wlr-cursor-warp-absolute
             wlr-cursor-warp-closest
             wlr-cursor-attach-input-device))
-
-(eval-when (expand load eval)
-  (define %wlr-cursor-struct
-    (bs:struct `((state ,(bs:pointer '*))
-                 (x ,double)
-                 (y ,double)
-                 (events ,(bs:struct (map (cut cons <> (list %wl-signal-struct))
-                                          '(motion
-                                            motion-absolute
-                                            button
-                                            axis
-                                            frame
-                                            swipe-begin
-                                            swipe-update
-                                            swipe-end
-                                            pinch-begin
-                                            pinch-update
-                                            pinch-end
-                                            hold-begin
-                                            hold-end
-                                            touch-up
-                                            touch-down
-                                            touch-motion
-                                            touch-cancel
-                                            touch-frame
-                                            tablet-tool-axis
-                                            tablet-tool-proximity
-                                            tablet-tool-tip
-                                            tablet-tool-button))))
-                 (data ,(bs:pointer 'void)))))
-  (define-bytestructure-accessors %wlr-cursor-struct
-    cursor-unwrap cursor-ref cursor-set!))
-
-(define dsize (bytestructure-descriptor-size %wlr-cursor-struct))
-(define-syntax-rule (ref o s)
-  (cursor-ref
-   (ffi:pointer->bytevector
-    (unwrap-wlr-cursor o)
-    dsize) s))
 
 (define-wlr-types-class wlr-cursor ()
   (x #:accessor wlr-cursor-x

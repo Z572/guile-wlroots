@@ -11,68 +11,14 @@
   #:use-module (oop goops)
   #:use-module (wayland listener)
   #:use-module (wayland signal)
-  #:export (%wlr-surface-state-struct
-            %wlr-surface-struct
-            wrap-wlr-surface
+  #:re-export (%wlr-surface-state-struct
+               %wlr-surface-struct)
+  #:export (wrap-wlr-surface
             unwrap-wlr-surface
             wlr-surface-has-buffer
             wlr-surface-send-enter
             wlr-surface-get-root-surface))
-(define %wlr-surface-state-struct
-  (bs:struct `((committed ,uint32)
-               (seq ,uint32)
-               (buffer ,(bs:pointer '*))
-               (dx ,int)
-               (dy ,int)
-               (surface-damage ,%pixman-region32-t-struct)
-               (buffer-damage ,%pixman-region32-t-struct)
-               (opaque ,%pixman-region32-t-struct)
-               (input ,%pixman-region32-t-struct)
-               (scale ,int32)
-               (frame-callback-list ,%wl-list-struct)
-               (width ,int)
-               (height ,int)
-               (buffer-width ,int)
-               (buffer-height ,int)
-               (subsurfaces-below ,%wl-list-struct)
-               (subsurfaces-above ,%wl-list-struct)
-               (viewport ,(bs:struct `((has-src ,bool)
-                                       (has-dst ,bool)
-                                       (src ,%wlr-fbox-struct)
-                                       (dst-width ,int)
-                                       (dst-height ,int))))
-               (cached-state-locks ,size_t)
-               (cached-state-link ,%wl-list-struct))))
-(define %wlr-surface-struct
-  (bs:struct
-   `((resource ,(bs:pointer '*))
-     (renderer ,(bs:pointer '*))
-     (buffer ,(bs:pointer '*))
-     (sx ,int)
-     (sy ,int)
-     (buffer-damage ,%pixman-region32-t-struct)
-     (external-damage ,%pixman-region32-t-struct)
-     (opaque-region ,%pixman-region32-t-struct)
-     (input-region ,%pixman-region32-t-struct)
-     (current ,%wlr-surface-state-struct)
-     (pending ,%wlr-surface-state-struct)
-     (cached ,%wl-list-struct)
-     (role ,(bs:pointer '*))
-     (role-data ,(bs:pointer 'void))
-     (events ,(bs:struct `((commit ,%wl-signal-struct)
-                           (new-subsurface ,%wl-signal-struct)
-                           (destroy ,%wl-signal-struct))))
-     (current-outputs ,%wl-list-struct)
-     (addons ,%wlr-addon-set-struct)
-     (data ,(bs:pointer 'void))
-     (renderer-destroy ,%wl-listener-struct)
-     (previous
-      ,(bs:struct `((scale ,int32)
-                    (transform ,int)
-                    (width ,int)
-                    (height ,int)
-                    (buffer-width ,int)
-                    (buffer-height ,int)))))))
+
 
 (define-wlr-types-class-public wlr-surface ()
   #:descriptor %wlr-surface-struct)

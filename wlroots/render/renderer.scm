@@ -7,16 +7,13 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
+  #:re-export (%wlr-renderer-struct)
   #:export (wrap-wlr-renderer unwrap-wlr-renderer wlr-renderer-autocreate
                               wlr-renderer-init-wl-display
                               .rendering
                               .rendering-with-buffer))
 
-(define %wlr-renderer-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (rendering ,bool)
-               (rendering-with-buffer ,bool)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
 (define-wlr-types-class wlr-renderer ()
   (rendering #:getter .rendering #:allocation #:bytestructure)
   (rendering-with-buffer #:getter .rendering-with-buffer #:allocation #:bytestructure)

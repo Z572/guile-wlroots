@@ -9,7 +9,7 @@
   #:use-module (wlroots time)
   #:use-module (wlroots types)
   #:autoload (wlroots types data-device)
-  (unwrap-wlr-data-source %wlr-drag-struct %wlr-data-source-struct)
+  (unwrap-wlr-data-source)
   #:use-module (wlroots types input-device)
   #:use-module (wlroots types surface)
   #:use-module (wlroots utils)
@@ -26,24 +26,26 @@
                                            string->pointer))
   #:use-module (oop goops)
   #:duplicates (merge-generics replace warn-override-core warn last)
+  #:re-export (%wlr-seat-keyboard-grab-struct
+               %wlr-seat-pointer-grab-struct
+               %wlr-seat-touch-grab-struct
+               %wlr-seat-client-struct
+               %wlr-seat-struct
+               %wlr-seat-request-set-selection-event-struct
+               %wlr-seat-struct
+               %wlr-seat-client-struct)
   #:export (wrap-wlr-seat
             unwrap-wlr-seat
             wlr-seat-create
             wlr-seat-pointer-notify-frame
             WLR_POINTER_BUTTONS_CAP
-            %wlr-seat-request-set-selection-event-struct
+
             wrap-wlr-seat-request-set-selection-event
             unwrap-wlr-seat-request-set-selection-event
-            %wlr-seat-request-set-cursor-event-struct
-            %wlr-seat-keyboard-grab-struct
-            %wlr-seat-pointer-grab-struct
-            %wlr-seat-touch-grab-struct
             wrap-wlr-seat-pointer-request-set-cursor-event
             unwrap-wlr-seat-pointer-request-set-cursor-event
             wlr-seat-set-selection
             wlr-seat-set-keyboard
-            %wlr-seat-struct
-            %wlr-seat-client-struct
             wrap-wlr-seat-client
             unwrap-wlr-seat-client
             wlr-seat-pointer-notify-axis
@@ -80,134 +82,6 @@
             .count
             .source))
 
-(eval-when (expand load eval)
-  (define WLR_SERIAL_RINGSET_SIZE 128)
-  (define %wlr-serial-range-struct
-    (bs:struct `((min-incl ,uint32)
-                 (max-incl ,uint32))))
-  (define %wlr-serial-ringset-struct
-    (bs:struct `((data ,(bs:vector WLR_SERIAL_RINGSET_SIZE %wlr-serial-range-struct))
-                 (end ,int)
-                 (count ,int))))
-  (define %wlr-seat-client-struct
-    (bs:struct `((client ,(bs:pointer '*))
-                 (seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (link ,%wl-list-struct)
-
-                 (resources ,%wl-list-struct)
-                 (pointers ,%wl-list-struct)
-                 (keyboards ,%wl-list-struct)
-                 (touches ,%wl-list-struct)
-                 (data-devices ,%wl-list-struct)
-
-                 (events ,(bs:struct `((destroy ,%wl-signal-struct))))
-                 (serials ,%wlr-serial-ringset-struct)
-                 (needs-touch-frame ,bool))))
-
-  (define WLR_POINTER_BUTTONS_CAP 16)
-
-  (define %wlr-seat-pointer-state-struct
-    (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (focused-client ,(bs:pointer %wlr-seat-client-struct))
-                 (focused-surface ,(bs:pointer %wlr-surface-struct))
-                 (sx ,double)
-                 (sy ,double)
-                 (grab ,(bs:pointer (delay %wlr-seat-pointer-grab-struct)))
-                 (default-grab ,(bs:pointer (delay %wlr-seat-pointer-grab-struct)))
-                 (sent-axis-source ,bool)
-                 (cached-axis-source ,int32)
-                 (buttons ,(bs:vector WLR_POINTER_BUTTONS_CAP uint32))
-                 (button-count ,size_t)
-                 (grab-button ,uint32)
-                 (grab-serial ,uint32)
-                 (grab-time ,uint32)
-                 (surface-destroy ,%wl-listener-struct)
-                 (events ,(bs:struct `((focus-change ,%wl-signal-struct)))))))
-  (define %wlr-seat-keyboard-state-struct
-    (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (keyboard ,(bs:pointer '*))
-                 (focused-client ,(bs:pointer %wlr-seat-client-struct))
-                 (focused-surface ,(bs:pointer %wlr-surface-struct))
-                 (keyboard-destroy ,%wl-listener-struct)
-                 (keyboard-keymap ,%wl-listener-struct)
-                 (keyboard-repeat-info ,%wl-listener-struct)
-                 (surface-destroy ,%wl-listener-struct)
-                 (grab ,(bs:pointer (delay %wlr-seat-keyboard-grab-struct)))
-                 (default-grab ,(bs:pointer (delay %wlr-seat-keyboard-grab-struct)))
-                 (events ,(bs:struct `((focus-change ,%wl-signal-struct)))))))
-  (define %wlr-seat-touch-state-struct
-    (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (touch-points ,%wl-list-struct)
-                 (grab-serial ,uint32)
-                 (grab-id ,uint32)
-                 (grab ,(bs:pointer '*))
-                 (default-grab ,(bs:pointer '*)))))
-  (define %wlr-seat-keyboard-grab-struct
-    (bs:struct `((interface ,(bs:pointer '*))
-                 (seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (data ,(bs:pointer 'void)))))
-  (define %wlr-seat-pointer-grab-struct
-    (bs:struct `((interface ,(bs:pointer '*))
-                 (seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (data ,(bs:pointer 'void)))))
-  (define %wlr-seat-touch-grab-struct
-    (bs:struct `((interface ,(bs:pointer '*))
-                 (seat ,(bs:pointer (delay %wlr-seat-struct)))
-                 (data ,(bs:pointer 'void)))))
-  (define %wlr-seat-request-set-cursor-event-struct
-    (bs:struct `((seat-client ,(bs:pointer %wlr-seat-client-struct))
-                 (surface ,(bs:pointer %wlr-surface-struct))
-                 (serial ,uint32)
-                 (hostpot-x ,int32)
-                 (hostpot-y ,int32))))
-  (define %wlr-seat-struct
-    (bs:struct `((global ,(bs:pointer '*))
-                 (display ,(bs:pointer '*))
-                 (clients ,%wl-list-struct)
-                 (name ,cstring-pointer)
-                 (capabilities ,uint32)
-                 (accumulated-capabilities ,uint32)
-                 (last-event ,%timespec-struct)
-                 (selection-source ,(bs:pointer (delay %wlr-data-source-struct)))
-                 (selection-serial ,uint32)
-                 (selection-offers ,%wl-list-struct)
-                 (primary-selection-source ,(bs:pointer '*))
-                 (primary-selection-serial ,uint32)
-
-                 (drag ,(bs:pointer (delay %wlr-drag-struct)))
-                 (drag-source ,(bs:pointer (delay %wlr-data-source-struct)))
-                 (drag-serial ,uint32)
-                 (drag-offers ,%wl-list-struct)
-
-                 (pointer-state ,%wlr-seat-pointer-state-struct)
-                 (keyboard-state ,%wlr-seat-keyboard-state-struct)
-                 (touch-state ,%wlr-seat-touch-state-struct)
-
-                 (display-destroy ,%wl-listener-struct)
-                 (selection-source-destroy ,%wl-listener-struct)
-                 (primary-selection-source-destroy ,%wl-listener-struct)
-                 (drag-source-destroy ,%wl-listener-struct)
-
-                 (events ,(bs:struct (map (cut cons <> (list %wl-signal-struct))
-                                          '(pointer-grab-begin
-                                            pointer-grab-end
-                                            keyboard-grab-begin
-                                            keyboard-grab-end
-                                            touch-grab-begin
-                                            touch-grab-end
-                                            request-set-cursor
-                                            request-set-selection
-                                            set-selection
-                                            request-set-primary-selection
-                                            set-primary-selection
-                                            request-start-drag
-                                            start-drag
-                                            destroy))))
-                 (data ,(bs:pointer 'void)))))
-
-  (define %wlr-seat-request-set-selection-event-struct
-    (bs:struct `((source ,(bs:pointer (delay %wlr-data-source-struct)))
-                 (serial ,uint32)))))
 
 (define-wlr-types-class wlr-seat-touch-state ()
   (seat #:allocation #:bytestructure #:accessor .seat)

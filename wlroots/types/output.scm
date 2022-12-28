@@ -17,9 +17,9 @@
   #:use-module (srfi srfi-26)
   #:use-module (wayland signal)
   #:use-module (bytestructures guile)
-  #:export (%wlr-output-state-struct
-            %wlr-output-struct
-            wrap-wlr-output
+  #:re-export (%wlr-output-state-struct
+               %wlr-output-struct)
+  #:export (wrap-wlr-output
             unwrap-wlr-output
             wlr-output-init-render
             .modes
@@ -46,89 +46,6 @@
             <wlr-output-cursor>
             wrap-wlr-output-cursor
             unwrap-wlr-output-cursor))
-
-(define %pixman-box32-struct
-  (bs:struct `((x1 ,int32)
-               (y1 ,int32)
-               (x2 ,int32)
-               (y2 ,int32))))
-(define %pixman-region32-t-struct
-  (bs:struct `((extents ,%pixman-box32-struct)
-               (data ,(bs:pointer '*)))))
-(define %wlr-output-mode-struct
-  (bs:struct `((width ,int32)
-               (height ,int32)
-               (refresh ,int32)
-               (preferred ,int)
-               (link ,%wl-list-struct))))
-(define %wlr-output-state-struct
-  (bs:struct `((committed ,uint32)
-               (damage ,%pixman-region32-t-struct)
-               (enabled ,int)
-               (scale ,float)
-               (transform ,int)
-               (adaptive-sync-enabled ,int)
-               (render-format ,uint32)
-               (buffer ,(bs:pointer '*))
-               (mode-type ,int)
-               (mode ,(bs:pointer '*))
-               (custom-mode ,(bs:struct
-                              `((width ,int32)
-                                (height ,int32)
-                                (refresh ,int32))))
-               (gamma-lut ,(bs:pointer '*))
-               (gamma-lut-size ,size_t))))
-(define %wlr-output-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (backend ,(bs:pointer '*))
-               (display ,(bs:pointer '*))
-               (gloabl ,(bs:pointer '*))
-               (resources ,%wl-list-struct)
-               (name ,cstring-pointer)
-               (description ,cstring-pointer)
-               (make ,(bs:vector 56 int8))
-               (model ,(bs:vector 16 int8))
-               (serial ,(bs:vector 16 int8))
-               (phys-width ,int32)
-               (phys-height ,int32)
-               (modes ,%wl-list-struct)
-               (current-mode ,(bs:pointer %wlr-output-mode-struct))
-               (width ,int32)
-               (height ,int32)
-               (refresh ,int32)
-               (enabled ,int8)
-               (scale ,float)
-               (subpixel ,int32)
-               (transform ,int32)
-               (adaptive-sync-status ,int32)
-               (render-format ,uint32)
-               (needs-frame ,int8)
-               (frame-pending ,int8)
-               (transform-matrix ,(bs:vector 9 float))
-               (non-desktop ,int8)
-               (pending ,%wlr-output-state-struct)
-               (commit-seq ,uint32)
-               (events ,(bs:struct (map (lambda (a)(list a %wl-signal-struct))
-                                        `(frame
-                                          damage
-                                          needs-frame precommit
-                                          commit present bind
-                                          enable mode description destroy ))))
-               (idle-frame ,(bs:pointer '*))
-               (idle-done ,(bs:pointer '*))
-               (attach-render-locks ,int)
-               (cursors ,%wl-list-struct)
-               (hardware-cursor ,(bs:pointer '*))
-               (cursor-swapchain ,(bs:pointer '*))
-               (cursor-front-buffer ,(bs:pointer '*))
-               (software-cursor-locks ,int)
-               (allocator ,(bs:pointer '*))
-               (renderer ,(bs:pointer '*))
-               (swapchain ,(bs:pointer '*))
-               (back-buffer ,(bs:pointer '*))
-               (display-destroy ,%wl-listener-struct)
-               (addons ,%wlr-addon-set-struct)
-               (data ,(bs:pointer 'void)))))
 
 (define-wlr-types-class wlr-output ()
   #:descriptor %wlr-output-struct)

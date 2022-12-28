@@ -8,10 +8,10 @@
   #:use-module (wlroots types)
   #:use-module (wlroots types output)
   #:use-module (wlroots utils)
-  #:export (%wlr-presentation-struct
-            %wlr-presentation-feedback-struct
-            %wlr-presentation-event-struct
-            wlr-presentation-create
+  #:re-export (%wlr-presentation-struct
+               %wlr-presentation-feedback-struct
+               %wlr-presentation-event-struct)
+  #:export (wlr-presentation-create
             wrap-wlr-presentation
             unwrap-wlr-presentation
             wrap-wlr-presentation-feedback
@@ -27,26 +27,6 @@
             .refresh
             .seq
             .flags))
-(define %wlr-presentation-struct
-  (bs:struct `((global ,(bs:pointer '*))
-               (clock ,int32) ;; clockid_t
-               (events ,(bs:struct `((destroy ,%wl-listener-struct))))
-               (display-destroy ,%wl-listener-struct))))
-(define %wlr-presentation-feedback-struct
-  (bs:struct `((resources ,%wl-list-struct)
-               (output ,%wlr-output-struct)
-               (output-committed ,bool)
-               (output-commit-seq ,uint32)
-               (output-commit ,%wl-listener-struct)
-               (output-present ,%wl-listener-struct)
-               (output-destroy ,%wl-listener-struct))))
-(define %wlr-presentation-event-struct
-  (bs:struct `((output ,%wlr-output-struct)
-               (tv-sec ,uint64)
-               (tv-nsec ,uint32)
-               (refresh ,uint32)
-               (seq ,uint64)
-               (flags ,uint32))))
 
 (define-wlr-types-class wlr-presentation ()
   (clock #:allocation #:bytestructure #:accessor .clock)

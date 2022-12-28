@@ -10,22 +10,13 @@
   #:use-module (wayland signal)
   #:use-module (oop goops)
   #:use-module (bytestructures guile)
+  #:re-export (%wlr-output-layout-struct)
   #:export (wrap-wlr-output-layout
             unwrap-wlr-output-layout
             wlr-output-layout-create
             wlr-direction->value value->wlr-direction
             wlr-output-layout-output-at
             wlr-output-layout-get-box))
-
-(define %wlr-output-layout-struct
-  (bs:struct
-   `((outputs ,%wl-list-struct)
-     (state ,(bs:pointer '*))
-     (events ,(bs:struct
-               `((add ,%wl-signal-struct)
-                 (change ,%wl-signal-struct)
-                 (destroy ,%wl-signal-struct))))
-     (data ,(bs:pointer ffi:void)))))
 
 (define-wlr-types-class wlr-output-layout ()
   #:descriptor %wlr-output-layout-struct)

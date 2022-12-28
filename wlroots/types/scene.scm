@@ -18,6 +18,12 @@
   #:use-module (rnrs bytevectors)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
+  #:re-export (%wlr-scene-node-state-struct
+               %wlr-scene-node-struct
+               %wlr-scene-struct
+               %wlr-scene-rect-struct
+               %wlr-scene-tree-struct
+               %wlr-scene-buffer-struct)
   #:export (wrap-wlr-scene
             unwrap-wlr-scene
             wrap-wlr-scene-node
@@ -38,8 +44,7 @@
             wlr-scene-set-presentation
             wlr-scene-node-raise-to-top
             wlr-scene-node-lower-to-bottom
-            %wlr-scene-struct
-            %wlr-scene-rect-struct
+
             wlr-scene-node-set-enabled
             wlr-scene-node-reparent
             wlr-scene-rect-create
@@ -57,29 +62,6 @@
             .x
             .y))
 
-(define %wlr-scene-node-state-struct
-  (bs:struct `((link ,%wl-list-struct)
-               (children ,%wl-list-struct)
-               (enabled ,bool)
-               (x ,int)
-               (y ,int))))
-(define %wlr-scene-node-struct
-  (bs:struct `((type ,int32)
-               (parent ,(bs:pointer (delay %wlr-scene-node-struct)))
-               (state ,%wlr-scene-node-state-struct)
-               (events
-                ,(bs:struct `((destroy ,%wl-signal-struct)))))))
-(define %wlr-scene-tree-struct
-  (bs:struct `((node ,%wlr-scene-node-struct))))
-
-(define %wlr-scene-struct
-  (bs:struct `((node ,%wlr-scene-node-struct)
-               (outputs ,%wl-list-struct)
-               (presentation ,(bs:pointer '*))
-               (presentation-destroy ,%wl-listener-struct)
-               (peeding-buffers ,%wl-list-struct))))
-
-
 (define-wlr-types-class wlr-scene-node-state ()
   (enabled #:accessor .enabled #:allocation #:bytestructure)
   (x #:accessor .x #:allocation #:bytestructure)
@@ -96,20 +78,6 @@
         #:accessor .node)
   #:descriptor %wlr-scene-tree-struct)
 
-(define %wlr-scene-rect-struct
-  (bs:struct `((node ,%wlr-scene-node-struct)
-               (width ,int)
-               (height ,int)
-               (color ,%color-struct))))
-(define %wlr-scene-buffer-struct
-  (bs:struct `((node ,%wlr-scene-node-struct)
-               (buffer ,(bs:pointer '*))
-               (texture  ,(bs:pointer '*))
-               (src-box ,%wlr-fbox-struct)
-               (dst-width ,int)
-               (dst-height ,int)
-               (transform ,int) ;; enum wl_output_transform
-               (pending-link ,%wl-list-struct))))
 (define-wlr-types-class wlr-scene-buffer ()
   (node #:accessor .node
         #:allocation #:bytestructure)

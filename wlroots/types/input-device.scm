@@ -4,8 +4,8 @@
   #:use-module (bytestructures guile)
   #:use-module (wayland util)
   #:use-module (wlroots utils)
-  #:export (%wlr-input-device-struct
-            wrap-wlr-input-device
+  #:re-export (%wlr-input-device-struct)
+  #:export (wrap-wlr-input-device
             unwrap-wlr-input-device
             wlr-input-device-name
             WLR_INPUT_DEVICE_KEYBOARD
@@ -28,23 +28,7 @@
   (WLR_INPUT_DEVICE_TABLET_TOOL 3)
   (WLR_INPUT_DEVICE_TABLET_PAD 4)
   (WLR_INPUT_DEVICE_SWITCH 5))
-(define %wlr-input-device-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (type ,int)
-               (vendor ,unsigned-int)
-               (product ,unsigned-int)
-               (name ,cstring-pointer)
-               (width-mm ,double)
-               (height-mm ,double)
-               (output-name ,cstring-pointer)
-               (union ,(bs:union `((_device ,(bs:pointer 'void))
-                                   (keyboard ,(bs:pointer '*))
-                                   (pointer ,(bs:pointer '*))
-                                   (switch-device ,(bs:pointer '*))
-                                   (touch ,(bs:pointer '*))
-                                   (tablet ,(bs:pointer '*))
-                                   (tablet-pad ,(bs:pointer '*)))))
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
 (define-wlr-types-class wlr-input-device ()
   #:descriptor %wlr-input-device-struct)
 

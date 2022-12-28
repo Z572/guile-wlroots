@@ -9,13 +9,13 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
-  #:export (%wlr-xdg-shell-struct
-            %wlr-xdg-surface-struct
-            %wlr-xdg-toplevel-resize-event-struct
-            %wlr-xdg-surface-configure-struct
-            %wlr-xdg-toplevel-struct
-            %wlr-xdg-toplevel-state-struct
-            wlr-xdg-shell-create
+  #:re-export (%wlr-xdg-shell-struct
+               %wlr-xdg-surface-struct
+               %wlr-xdg-toplevel-resize-event-struct
+               %wlr-xdg-surface-configure-struct
+               %wlr-xdg-toplevel-struct
+               %wlr-xdg-toplevel-state-struct)
+  #:export (wlr-xdg-shell-create
             wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
             .base
@@ -64,16 +64,6 @@
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
 
-
-(define %wlr-xdg-shell-struct
-  (bs:struct `((global ,(bs:pointer '*))
-               (clients ,%wl-list-struct)
-               (popup-grabs ,%wl-list-struct)
-               (ping-timeout ,uint32)
-               (display-destroy ,%wl-listener-struct)
-               (events ,(bs:struct `((new-surface ,%wl-signal-struct)
-                                     (destroy ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
 (define-wlr-types-class wlr-xdg-shell ()
   (global #:allocation #:bytestructure #:accessor .global)
   (clients #:allocation #:bytestructure #:accessor .clients)
@@ -81,82 +71,10 @@
   (data #:allocation #:bytestructure #:accessor .data)
   #:descriptor %wlr-xdg-shell-struct)
 
-(define %wlr-xdg-surface-state-struct
-  (bs:struct `((configure-serial ,uint32)
-               (geometry ,%wlr-box-struct))))
-
 (define-wlr-types-class wlr-xdg-surface-state ()
   (configure-serial #:allocation #:bytestructure #:accessor .configure-serial)
   (geometry #:allocation #:bytestructure #:accessor .geometry)
   #:descriptor %wlr-xdg-surface-state-struct)
-(define %wlr-xdg-surface-struct
-  (bs:struct `((client ,(bs:pointer '*))
-               (resource ,(bs:pointer '*))
-               (surface ,(bs:pointer '*))
-               (link ,%wl-list-struct)
-               (role ,int)
-               (union ,(bs:union
-                        `((toplevel
-                           ,(bs:pointer
-                             (delay %wlr-xdg-toplevel-struct)))
-                          (popup
-                           ,(bs:pointer
-                             (delay %wlr-xdg-popup-struct))))))
-               (popups ,%wl-list-struct)
-               (added ,bool)
-               (configured ,bool)
-               (mapped ,bool)
-               (configure-idle ,(bs:pointer '*))
-               (scheduled-serial ,uint32)
-               (configure-list ,%wl-list-struct)
-               (current ,%wlr-xdg-surface-state-struct)
-               (pending ,%wlr-xdg-surface-state-struct)
-               (surface-destroy ,%wl-listener-struct)
-               (surface-commit ,%wl-listener-struct)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)
-                                     (ping-timeout ,%wl-signal-struct)
-                                     (new-popup ,%wl-signal-struct)
-                                     (map ,%wl-signal-struct)
-                                     (unmap ,%wl-signal-struct)
-                                     (configure ,%wl-signal-struct)
-                                     (ack-configure ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
-
-(define %wlr-xdg-surface-configure-struct
-  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (link ,%wl-list-struct)
-               (serial ,uint32))))
-
-(define %wlr-xdg-toplevel-configure-struct
-  (bs:struct `(,@(map (lambda (a) (list a int8))
-                      '(maximized fullscreen resizing activated))
-               ,@(map (lambda (a) (list a uint32))
-                      '(titled width height)))))
-(define %wlr-xdg-toplevel-requested-struct
-  (bs:struct `(,@(map (lambda (a) (list a int8))
-                      '(maximized minimized fullscreen))
-               (fullscreen-output ,(bs:pointer '*))
-               (fullscreen-output-destroy ,%wl-listener-struct))))
-
-(define %wlr-xdg-positioner-struct
-  (bs:struct `((anchor-rect ,%wlr-box-struct)
-               (anchor ,int8)
-               (gravity ,int8)
-               (constraint-adjustment ,int8)
-               (size ,(bs:struct `((width ,int32)
-                                   (height ,int32))))
-               (offset ,(bs:struct `((x ,int32)
-                                     (y ,int32)))))))
-(define %wlr-xdg-popup-struct
-  (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
-               (link ,%wl-list-struct)
-               (resource ,(bs:pointer '*))
-               (committed ,bool)
-               (parent ,(bs:pointer %wlr-surface-struct))
-               (seat ,(bs:pointer %wlr-seat-struct))
-               (geometry ,%wlr-box-struct)
-               (positioner ,%wlr-xdg-positioner-struct)
-               (grab-link ,%wl-list-struct))))
 
 (define-wlr-types-class wlr-xdg-popup ()
   (base #:allocation #:bytestructure
@@ -164,11 +82,7 @@
   #:descriptor %wlr-xdg-popup-struct)
 
 
-(define %wlr-xdg-toplevel-state-struct
-  (bs:struct `(,@(map (lambda (o) `(,o ,bool))
-                      '(maximized fullscreen resizing activated))
-               ,@(map (lambda (o) `(,o ,uint32))
-                      '(tiled width height max-width max-height min-width min-height)))))
+
 
 (define-wlr-types-class-public wlr-xdg-toplevel-state ()
   (maximized  #:allocator #:bytestructure #:accessor .maximized )
@@ -177,30 +91,7 @@
   (activated  #:allocator #:bytestructure #:accessor .activated )
 
   #:descriptor %wlr-xdg-toplevel-state-struct)
-(define %wlr-xdg-toplevel-struct
-  (bs:struct `((resource ,(bs:pointer '*))
-               (base ,(bs:pointer %wlr-xdg-surface-struct))
-               (added ,bool)
-               (parent ,(bs:pointer %wlr-xdg-surface-struct))
-               (parent-unmap ,%wl-listener-struct)
-               (current ,%wlr-xdg-toplevel-state-struct)
-               (pending ,%wlr-xdg-toplevel-state-struct)
-               (scheduled ,%wlr-xdg-toplevel-configure-struct)
-               (requested ,%wlr-xdg-toplevel-requested-struct)
-               (title ,cstring-pointer)
-               (app-id ,cstring-pointer)
-               (events ,(bs:struct
-                         (map (lambda (a) (list a %wl-signal-struct))
-                              '(request-maximize
-                                request-fullscreen
-                                request-minimize
-                                request-move
-                                request-resize
-                                request-show-window-menu
-                                set-parent
-                                set-title
-                                set-app-id
-                                )))))))
+
 
 (define-wlr-types-class wlr-xdg-toplevel ()
   (base #:allocation #:bytestructure #:accessor .base)
@@ -211,18 +102,11 @@
   (app-id #:allocation #:bytestructure #:accessor .app-id)
   #:descriptor %wlr-xdg-toplevel-struct)
 
-(define %wlr-xdg-toplevel-resize-event-struct
-  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (seat ,(bs:pointer %wlr-seat-client-struct))
-               (serial ,uint32)
-               (edges ,uint32))))
+
 (define-wlr-types-class wlr-xdg-toplevel-resize-event ()
   #:descriptor %wlr-xdg-toplevel-resize-event-struct)
 
-(define %wlr-xdg-toplevel-set-fullscreen-event
-  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (fullscreen ,bool)
-               (output ,(bs:pointer '*)))))
+
 (define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event ()
   #:descriptor %wlr-xdg-toplevel-set-fullscreen-event)
 

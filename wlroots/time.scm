@@ -6,8 +6,7 @@
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
   #:use-module ((system foreign) #:prefix ffi:)
-  #:export (%timespec-struct
-            clock-gettime
+  #:export (clock-gettime
             wrap-timespec
             unwrap-timespec
             <timespec>
@@ -15,11 +14,7 @@
             .tv-nsec
             value->clockid_t
             clockid_t->value))
-(define %timespec-struct
-  (bs:struct
-   `((tv-sec ,int64) ;; __time_t
-     (tv-nsec ,long) ;; __syscall_slong_t
-     )))
+
 
 (define-enumeration value->clockid_t clockid_t->value
   (CLOCK_REALTIME           0)

@@ -8,19 +8,12 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:use-module (bytestructures guile)
+  #:re-export (%wlr-backend-struct)
   #:export (wlr-backend-autocreate
             unwrap-wlr-backend
             wrap-wlr-backend
             wlr-backend-start
             wlr-backend-destroy))
-
-(define %wlr-backend-struct
-  (bs:struct
-   `((wlr-backend-impl ,(bs:pointer '*))
-     (events ,(bs:struct
-               `((destroy ,%wl-signal-struct)
-                 (new-input ,%wl-signal-struct)
-                 (new-output ,%wl-signal-struct)))))))
 
 (define-wlr-types-class wlr-backend ()
   #:descriptor %wlr-backend-struct)

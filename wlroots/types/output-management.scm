@@ -9,8 +9,8 @@
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
-  #:export (%wlr-output-manager-v1-struct
-            <wlr-output-manager-v1>
+  #:re-export (%wlr-output-manager-v1-struct)
+  #:export (<wlr-output-manager-v1>
             wrap-wlr-output-manager-v1
             unwrap-wlr-output-manager-v1
 
@@ -21,20 +21,6 @@
             wlr-output-manager-v1-create
             wlr-output-configuration-v1-create
             wlr-output-manager-v1-set-configuration))
-
-(define %wlr-output-manager-v1-struct
-  (bs:struct `((display ,(bs:pointer '*))
-               (global ,(bs:pointer '*))
-               (resources ,%wl-list-struct)
-               (heads ,%wl-list-struct)
-               (serial ,uint32)
-               (current-configuration-dirty ,int8) ;; bool
-               (events ,(bs:struct `((apply ,%wl-signal-struct)
-                                     (test ,%wl-signal-struct)
-                                     (destroy ,%wl-signal-struct))))
-               (display-destroy ,%wl-listener-struct)
-               (data ,(bs:pointer 'void)))))
-
 
 (define-wlr-types-class wlr-output-manager-v1 ()
   #:descriptor %wlr-output-manager-v1-struct)

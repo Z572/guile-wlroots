@@ -11,8 +11,10 @@
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
-  #:export (%wlr-layer-shell-v1-struct
-            wrap-wlr-layer-shell
+  #:re-export (%wlr-layer-shell-v1-struct
+               %wlr-layer-surface-v1-struct
+               %wlr-layer-surface-v1-status-struct)
+  #:export (wrap-wlr-layer-shell
             unwrap-wlr-layer-shell
             wrap-wlr-layer-surface-v1
             unwrap-wlr-layer-surface-v1
@@ -20,45 +22,6 @@
             .surface
             .output
             wlr-layer-surface-v1-from-wlr-surface))
-
-(define %wlr-layer-shell-v1-struct
-  (bs:struct `((global ,(bs:pointer '*))
-               (display-destroy ,%wl-listener-struct)
-               (events ,(bs:struct `((new-surface ,%wl-signal-struct)
-                                     (destroy ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
-(define %wlr-layer-surface-v1-status-struct
-  (bs:struct `((committed ,uint32)
-               (anchor ,uint32)
-               (exclusive-zone ,int32)
-               (margin ,(bs:struct `((top ,uint32)
-                                     (right ,uint32)
-                                     (bottom ,uint32)
-                                     (left ,uint32))))
-               (keyboard-interactive ,int)
-               (layer ,int)
-               (configure-serial ,uint32)
-               (actual-width ,uint32)
-               (actual-height ,uint32))))
-(define %wlr-layer-surface-v1-struct
-  (bs:struct `((surface ,(bs:pointer %wlr-surface-struct))
-               (output ,(bs:pointer '*))
-               (resource ,(bs:pointer '*))
-               (shell ,(bs:pointer %wlr-layer-shell-v1-struct))
-               (popups ,%wl-list-struct)
-               (namespace ,cstring-pointer)
-               (added ,int8)
-               (configured ,int8)
-               (mapped ,int8)
-               (configure-list ,%wl-list-struct)
-               (current ,%wlr-layer-surface-v1-status-struct)
-               (pending ,%wlr-layer-surface-v1-status-struct)
-               (surface-destroy ,%wl-listener-struct)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)
-                                     (map ,%wl-signal-struct)
-                                     (unmap ,%wl-signal-struct)
-                                     (new-popup ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
 
 (define-wlr-types-class wlr-layer-shell ()
   #:descriptor %wlr-layer-shell-v1-struct)

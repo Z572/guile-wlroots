@@ -16,7 +16,8 @@
             wlr-output-layout-create
             wlr-direction->value value->wlr-direction
             wlr-output-layout-output-at
-            wlr-output-layout-get-box))
+            wlr-output-layout-get-box
+            wlr-output-layout-remove))
 
 (define-wlr-types-class wlr-output-layout ()
   #:descriptor %wlr-output-layout-struct)
@@ -43,3 +44,7 @@
     (if (ffi:null-pointer? o)
         #f
         (wrap-wlr-output o))))
+
+(define-wlr-procedure (wlr-output-layout-remove layout output)
+  (ffi:void "wlr_output_layout_remove" '(* *))
+  (% (unwrap-wlr-output-layout layout) (unwrap-wlr-output output)))

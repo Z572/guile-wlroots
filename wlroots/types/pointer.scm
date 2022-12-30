@@ -24,7 +24,9 @@
             .x
             .y
             .unaccel-dx
-            .unaccel-dy))
+            .unaccel-dy
+            .button
+            .state))
 
 
 
@@ -46,7 +48,12 @@
   #:descriptor %wlr-event-pointer-motion-absolute-struct)
 
 
-(define-wlr-types-class-public wlr-event-pointer-button ())
+(define-wlr-types-class-public wlr-event-pointer-button ()
+  (device    #:allocation #:bytestructure #:accessor .device   )
+  (time-msec #:allocation #:bytestructure #:accessor .time-msec)
+  (button    #:allocation #:bytestructure #:accessor .button   )
+  (state     #:allocation #:bytestructure #:accessor .state    )
+  #:descriptor %wlr-event-pointer-button-struct)
 
 (define-wlr-types-class wlr-event-pointer-axis ()
   (time-msec #:accessor wlr-event-pointer-axis-time-msec #:allocation #:bytestructure)

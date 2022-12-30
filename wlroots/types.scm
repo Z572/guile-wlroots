@@ -421,6 +421,16 @@
                                    (tablet-pad ,(bs:pointer '*)))))
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
 
+(define-public %wlr-button-state-enum
+  (bs:enum '((WLR_BUTTON_RELEASED 0)
+             (WLR_BUTTON_PRESSED 1))))
+
+(define-public %wlr-event-pointer-button-struct
+  (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
+               (time-msec ,uint32)
+               (button ,uint32)
+               (state ,%wlr-button-state-enum))))
+
 (define-public %wlr-event-pointer-motion-struct
   (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
                (time-msec ,uint32)

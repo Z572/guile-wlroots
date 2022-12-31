@@ -243,6 +243,11 @@
                (width ,double)
                (height ,double))))
 
+(define-public %wlr-allocator-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (buffer-caps ,uint32)
+               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
 (define-public %wlr-surface-state-struct
   (bs:struct `((committed ,uint32)
                (seq ,uint32)

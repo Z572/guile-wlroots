@@ -9,9 +9,12 @@
   #:export (wrap-wlr-allocator
             unwrap-wlr-allocator
             wlr-allocator-autocreate
-            wlr-allocator-destroy))
+            wlr-allocator-destroy
+            .buffer-caps))
 
-(define-wlr-types-class wlr-allocator ())
+(define-wlr-types-class wlr-allocator ()
+  (buffer-caps #:allocation #:bytestructure #:accessor .buffer-caps)
+  #:descriptor %wlr-allocator-struct)
 
 (define-wlr-procedure (wlr-allocator-autocreate backend renderer)
   ('* "wlr_allocator_autocreate" '(* *))

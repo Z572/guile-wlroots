@@ -25,12 +25,20 @@
 
 (define-wlr-types-class wlr-layer-shell ()
   #:descriptor %wlr-layer-shell-v1-struct)
+
 (define-wlr-types-class wlr-layer-surface-v1 ()
-  (surface #:allocation #:bytestructure
-           #:getter .surface)
-  (output #:allocation #:bytestructure
-          #:getter .output)
+  (surface #:allocation #:bytestructure #:accessor .surface)
+  (output #:allocation #:bytestructure #:accessor .output)
+  (shell #:allocation #:bytestructure #:accessor .shell)
+  (namespace #:allocation #:bytestructure #:accessor .namespace)
+  (added #:allocation #:bytestructure #:accessor .added)
+  (configured #:allocation #:bytestructure #:accessor .configured)
+  (mapped #:allocation #:bytestructure #:accessor .mapped)
+  (current #:allocation #:bytestructure #:accessor .current)
+  (pending #:allocation #:bytestructure #:accessor .pending)
+  (data #:allocation #:bytestructure #:accessor .data)
   #:descriptor %wlr-layer-surface-v1-struct)
+
 (define-wlr-procedure (wlr-layer-shell-v1-create display)
   ('* "wlr_layer_shell_v1_create" '(*))
   (wrap-wlr-layer-shell (% (unwrap-wl-display display))))

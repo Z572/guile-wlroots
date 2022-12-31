@@ -543,6 +543,8 @@
                                      (bottom ,uint32)
                                      (left ,uint32))))
                (keyboard-interactive ,int)
+               (desired-width ,uint32)
+               (desired-height ,uint32)
                (layer ,int)
                (configure-serial ,uint32)
                (actual-width ,uint32)

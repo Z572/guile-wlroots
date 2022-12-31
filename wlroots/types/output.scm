@@ -28,32 +28,44 @@
             wlr-output-set-mode
             wlr-output-enable
             wlr-output-commit
-            wlr-output-name
-            wlr-output-description
-            wlr-output-backend
-            wlr-output-physical-width
-            wlr-output-physical-height
-            wlr-output-refresh
-            wlr-output-enabled
-            wlr-output-scale
-            wlr-output-width
-            wlr-output-height
             wlr-output-modes
-            wlr-output-data
             wlr-output-enable-adaptive-sync
 
-            %pixman-region32-t-struct
             <wlr-output-cursor>
             wrap-wlr-output-cursor
-            unwrap-wlr-output-cursor))
+            unwrap-wlr-output-cursor
+            .backend
+            .name
+            .description
+            .phys-width
+            .phys-height
+            .current-mode
+            .width
+            .height
+            .refresh
+            .enabled
+            .scale
+            .non-desktop
+            .data))
 
 (define-wlr-types-class wlr-output ()
+  (backend      #:allocation #:bytestructure #:accessor .backend)
+  (name         #:allocation #:bytestructure #:accessor .name)
+  (description  #:allocation #:bytestructure #:accessor .description)
+  (phys-width   #:allocation #:bytestructure #:accessor .phys-width)
+  (phys-height  #:allocation #:bytestructure #:accessor .phys-height)
+  (current-mode #:allocation #:bytestructure #:accessor .current-mode)
+  (width        #:allocation #:bytestructure #:accessor .width)
+  (height       #:allocation #:bytestructure #:accessor .height)
+  (refresh      #:allocation #:bytestructure #:accessor .refresh)
+  (enabled      #:allocation #:bytestructure #:accessor .enabled)
+  (scale        #:allocation #:bytestructure #:accessor .scale)
+  (non-desktop  #:allocation #:bytestructure #:accessor .non-desktop)
+  (data         #:allocation #:bytestructure #:accessor .data)
   #:descriptor %wlr-output-struct)
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_output"))
-(define (wlr-output-backend o)
-  (wrap-wlr-backend(%wlr-output-backend o)))
 
 (define-wlr-types-class wlr-output-mode ()
   #:descriptor %wlr-output-mode-struct)

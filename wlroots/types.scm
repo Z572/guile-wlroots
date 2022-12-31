@@ -539,7 +539,7 @@
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
-(define-public %wlr-layer-surface-v1-status-struct
+(define-public %wlr-layer-surface-v1-state-struct
   (bs:struct `((committed ,uint32)
                (anchor ,uint32)
                (exclusive-zone ,int32)
@@ -566,8 +566,8 @@
                (configured ,bool)
                (mapped ,bool)
                (configure-list ,%wl-list-struct)
-               (current ,%wlr-layer-surface-v1-status-struct)
-               (pending ,%wlr-layer-surface-v1-status-struct)
+               (current ,%wlr-layer-surface-v1-state-struct)
+               (pending ,%wlr-layer-surface-v1-state-struct)
                (surface-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (map ,%wl-signal-struct)

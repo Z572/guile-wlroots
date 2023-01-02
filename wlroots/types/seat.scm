@@ -106,7 +106,8 @@
   (serial #:accessor .serial #:allocation #:bytestructure)
   #:descriptor %wlr-seat-request-set-selection-event-struct)
 
-(define-wlr-types-class wlr-seat-pointer-request-set-cursor-event ())
+(define-wlr-types-class wlr-seat-pointer-request-set-cursor-event ()
+  #:descriptor %wlr-seat-pointer-request-set-cursor-event-struct)
 
 
 

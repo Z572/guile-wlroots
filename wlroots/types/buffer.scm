@@ -8,10 +8,21 @@
             unwrap-wlr-buffer
             wlr-buffer-drop
             wlr-buffer-lock
-            wlr-buffer-unlock))
+            wlr-buffer-unlock
+            .base
+            .texture
+            .source
+            .shm-source-format))
 
 (define-wlr-types-class wlr-buffer ()
   #:descriptor %wlr-buffer-struct)
+
+(define-wlr-types-class wlr-client-buffer ()
+  (base #:accessor .base)
+  (texture #:accessor .texture)
+  (source #:accessor .source)
+  (shm-source-format #:accessor .shm-source-format)
+  #:descriptor %wlr-client-buffer-struct)
 
 (define-wlr-procedure (wlr-buffer-drop buffer)
   (ffi:void "wlr_buffer_drop" '(*))

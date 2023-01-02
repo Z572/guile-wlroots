@@ -8,21 +8,20 @@
   #:export (<wlr-box> make-wlr-box list->wlr-box))
 
 
-(define-wlr-types-class-public wlr-box (<box>)
-  (x #:allocation #:bytestructure #:accessor box-x)
-  (y #:allocation #:bytestructure #:accessor box-y)
-  (height #:allocation #:bytestructure #:accessor box-height)
-  (width #:allocation #:bytestructure #:accessor box-width)
-  #:descriptor %wlr-box-struct)
+(define-bytestructure-class <wlr-box> (<box>)
+  %wlr-box-struct wrap-wlr-box unwrap-wlr-box wlr-box?
+  (x #:accessor box-x)
+  (y #:accessor box-y)
+  (height #:accessor box-height)
+  (width #:accessor box-width))
 
 (define (make-wlr-box x y width height)
-  (wrap-wlr-box (bytestructure->pointer
-                 (bytestructure
-                  %wlr-box-struct
-                  `((x ,x)
-                    (y ,y)
-                    (width ,width)
-                    (height ,height))))))
+  (wrap-wlr-box (bytestructure
+                 %wlr-box-struct
+                 `((x ,x)
+                   (y ,y)
+                   (width ,width)
+                   (height ,height)))))
 
 (define-method (shallow-clone (box <wlr-box>))
   (make-wlr-box (box-x box) (box-y box) (box-width box) (box-height box)))

@@ -8,6 +8,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (wayland util)
   #:use-module (rnrs bytevectors)
+  #:use-module (bytestructure-class)
   #:use-module ((bytestructures guile)
                 #:select
                 (bytestructure
@@ -17,63 +18,8 @@
                  bs:vector
                  make-bytestructure-descriptor))
   #:use-module (oop goops)
-  #:export (wlr->pointer wlr->procedure color->pointer %color-struct bool bs:enum enum-metadata-field-alist)
+  #:export (wlr->pointer wlr->procedure color->pointer %color-struct)
   #:export-syntax (define-wlr-procedure define-enumeration))
-
-(define bool
-  (make-bytestructure-descriptor
-   1 1
-   #f
-   (lambda (syntax? bytevector offset)
-     (if syntax?
-         #`(not (zero? (bytevector-s8-ref #,bytevector #,offset)))
-         (not (zero? (bytevector-s8-ref bytevector offset)))))
-   (lambda (syntax? bytevector offset value)
-     (if syntax?
-         #`(bytevector-s8-set! #,bytevector #,offset #,(if value 1 0))
-         (bytevector-s8-set! bytevector offset (if value 1 0))))))
-
-(define-record-type <enum-metadata>
-  (make-enum-metadata field-alist)
-  enum-metadata?
-  (field-alist enum-metadata-field-alist))
-
-(define (bs:enum fields)
-  ;; TODO: check duplicates.
-  (define-values (symbols integers) (unzip2 fields))
-
-  (define alist (map (lambda (o)
-                       (let ((symbol (first o))
-                             (integer (second o)))
-                         (unless (and (symbol? symbol)
-                                      (integer? integer))
-                           (error "Invalid value" o))
-                         (cons integer symbol)))
-                     fields))
-
-  (define meta (make-enum-metadata alist))
-  (define (getter syntax? bytevector offset)
-    (if syntax?
-        #`(or (assq-ref #,alist (bytevector-s8-ref #,bytevector #,offset))
-              (error "get invalid value!"))
-        (or (assq-ref alist (bytevector-s8-ref bytevector offset))
-            (error "get invalid value!"))))
-  (define (setter syntax? bytevector offset value)
-    (define (to-value v)
-      (cond ((symbol? v)
-             (or (and=> (list-index (lambda (o) (eq? v o)) symbols)
-                        (cut list-ref integers <>) )
-                 (error "can't not found symbol in enum!" v)))
-            ((integer? v)
-             (unless (member v integers)
-               (error "can't not found integer in enum!" v))
-             v)
-            (else (error "Is not symbol or "))))
-    (if syntax?
-        #`(bytevector-s8-set! #,bytevector #,offset #,(to-value value))
-        (bytevector-s8-set! bytevector offset (to-value value))))
-  (make-bytestructure-descriptor
-   4 4 #f getter setter meta))
 
 (define <bytestructure> (class-of (bytestructure (bs:pointer '*))))
 

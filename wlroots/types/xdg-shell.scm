@@ -1,3 +1,4 @@
+
 (define-module (wlroots types xdg-shell)
   #:use-module (wlroots types)
   #:use-module (wlroots types surface)
@@ -59,7 +60,8 @@
             .pending
             .scheduled-serial
             .popups
-            .rold))
+            .rold
+            .resource))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -119,6 +121,7 @@
   (wrap-wlr-xdg-shell
    (% (unwrap-wl-display display))))
 (define-wlr-types-class wlr-xdg-surface ()
+  (resource #:allocation #:bytestructure #:accessor .resource)
   (role #:allocation #:bytestructure #:accessor .rold )
   (popups #:allocation #:bytestructure #:accessor .popups)
   (added #:allocation #:bytestructure #:accessor .added)
@@ -166,10 +169,9 @@
 (define-wlr-procedure (wlr-xdg-surface-get-geometry surface)
   (ffi:void "wlr_xdg_surface_get_geometry" (list '* '*))
   "return a box"
-  (let ((box (bytestructure->pointer (bytestructure
-                                      %wlr-box-struct))))
-    (% (unwrap-wlr-xdg-surface surface) box)
-    (wrap-wlr-box box)))
+  (let ((box (make <wlr-box>)))
+    (% (unwrap-wlr-xdg-surface surface) (unwrap-wlr-box box))
+    box))
 
 (define-wlr-procedure (wlr-xdg-toplevel-set-size surface width height)
   (ffi:uint32 "wlr_xdg_toplevel_set_size" (list '* ffi:uint32 ffi:uint32))

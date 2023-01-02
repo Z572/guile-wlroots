@@ -24,7 +24,9 @@
 
 (define-wlr-types-class wlr-output-manager-v1 ()
   #:descriptor %wlr-output-manager-v1-struct)
-(define-wlr-types-class wlr-output-configuration-v1 ())
+
+(define-wlr-types-class wlr-output-configuration-v1 ()
+  #:descriptor %wlr-output-configuration-v1-struct)
 
 (define-wlr-procedure (wlr-output-manager-v1-create display)
   ('* "wlr_output_manager_v1_create" (list '*))

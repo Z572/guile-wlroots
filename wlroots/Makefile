@@ -5,6 +5,7 @@ SOURCES = %D%/config.scm     \
  %D%/time.scm               \
  %D%/utils.scm               \
  %D%/xwayland.scm            \
+ %D%/render/texture.scm    \
  %D%/render/allocator.scm    \
  %D%/render/renderer.scm     \
  %D%/types.scm               \

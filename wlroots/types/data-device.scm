@@ -74,7 +74,8 @@
   (data    #:allocation #:bytestructure #:accessor .data   )
   #:descriptor %wlr-drap-icon-struct)
 
-(define-wlr-types-class wlr-data-device-manager ())
+(define-wlr-types-class wlr-data-device-manager ()
+  #:descriptor %wlr-data-device-manager-struct)
 
 
 (define-wlr-procedure (wlr-data-device-manager-create display)

@@ -8,9 +8,22 @@
             wlr-idle-create
             wlr-idle-notify-activity
             wrap-wlr-idle
-            unwrap-wlr-idle))
+            unwrap-wlr-idle
+            .global
+            .idle-timers
+            .event-loop
+            .enabled
+            .display-destroy
+            .data))
 
-(define-wlr-types-class wlr-idle ())
+(define-wlr-types-class wlr-idle ()
+  (global #:accessor .global)
+  (idle-timers #:accessor .idle-timers)
+  (event-loop #:accessor .event-loop)
+  (enabled #:accessor .enabled)
+  (display-destroy #:accessor .display-destroy)
+  (data #:accessor .data)
+  #:descriptor %wlr-idle-struct)
 
 (define-wlr-procedure (wlr-idle-create display)
   ('* "wlr_idle_create" '(*))

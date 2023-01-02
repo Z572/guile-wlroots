@@ -1,117 +1,33 @@
 (define-module (wlroots types)
   #:use-module (wayland util)
   #:use-module (wlroots utils)
-  #:use-module (wayland)
+  #:use-module (wayland display)
+  #:use-module (wayland list)
+  #:use-module (wayland listener)
+  #:use-module (wayland global)
+  #:use-module (wayland client)
+  #:use-module (wayland event-loop)
+  #:use-module (wayland resource)
   #:use-module (oop goops)
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-71)
   #:use-module (srfi srfi-2)
   #:use-module (wayland signal)
   #:use-module (rnrs bytevectors)
+  #:use-module (bytestructure-class)
   #:use-module ((system foreign)
                 #:select(pointer-address pointer? %null-pointer make-pointer null-pointer? bytevector->pointer))
   #:use-module (bytestructures guile)
   #:export-syntax ( define-wlr-types-class
                     define-wlr-types-class-public)
-  #:export (get-pointer
-            get-bytestructure
-            get-bytevector
-            get-event-signal
-            .descriptor
-            .wrap
-            .unwrap))
+  #:re-export (get-pointer
+               get-bytestructure
+               get-bytevector
+               define-bytestructure-class)
+  #:export (get-event-signal))
 
 (define-generic get-event-signal)
 
-(define %bytestructures (make-hash-table 1000))
-(define-class <bytestructure-class> (<class>)
-  (descriptor #:init-keyword #:descriptor
-              #:init-value #f
-              #:getter .descriptor)
-  (wrap #:init-keyword #:wrap #:getter .wrap)
-  (unwrap #:init-keyword #:unwrap #:getter .unwrap))
-
-(define-method (initialize (object <bytestructure-class>) initargs)
-  (next-method)
-  (and=> (.descriptor object) (cut hash-set! %bytestructures <> object)))
-
-(define (get-field-alist o)
-  (cond ((struct-metadata? o) (struct-metadata-field-alist o))
-        (else #f)))
-
-(define-inlinable (force-or-nothing o)
-  (if (promise? o)
-      (force o)
-      o))
-
-(define (haneld-pointer-descriptor o)
-  (let* ((metadata (bytestructure-descriptor-metadata o))
-         (is-pointer? (pointer-metadata? metadata)))
-    (values is-pointer? (if is-pointer?
-                            (force-or-nothing (pointer-metadata-content-descriptor metadata))
-                            o))))
-(define-method (compute-get-n-set (class <bytestructure-class>) slot)
-  (if (eq? (slot-definition-allocation slot) #:bytestructure)
-      (let* ((index (slot-ref class 'nfields))
-             (s (slot-definition-options slot))
-             (b-name (or (get-keyword #:field-name s #f)
-                         (slot-definition-name slot)))
-             (descriptor (.descriptor class))
-             (metadata (bytestructure-descriptor-metadata descriptor))
-             (alist (get-field-alist metadata))
-             (field-descriptor
-              (assq-ref alist b-name)))
-        (unless field-descriptor
-          (goops-error "not field name'd `~S' found in class `~S' descriptor " b-name class))
-        (slot-set! class 'nfields (+ index 1))
-        (let* ((is-pointer? field-descriptor (haneld-pointer-descriptor field-descriptor))
-               (handle (if is-pointer? make-pointer identity))
-               (b-class (delay (hash-ref %bytestructures field-descriptor #f)))
-               (wrap (delay (or (and=> (force b-class) .wrap) identity)))
-               (unwrap (delay (or (and=> (force b-class) .unwrap) identity))))
-          (list (lambda (o)
-                  (let ((f (force wrap))
-                        (out (bytestructure-ref (get-bytestructure o) b-name)))
-                    (f (handle
-                        (cond ((bytestructure? out)
-                               (bytestructure->pointer out))
-                              (else out))))))
-                (lambda (o v)
-                  (let ((f (force unwrap)))
-                    (bytestructure-set!
-                     (get-bytestructure o) b-name
-                     (f v)))))))
-      (next-method)))
-
-(define-class <wlr-type> ()
-  (pointer #:accessor .pointer #:init-keyword #:pointer)
-  #:metaclass <bytestructure-class>)
-
-(define-method (initialize (object <wlr-type>) initargs)
-  (let ((descriptor(.descriptor (class-of object))))
-    (if (get-keyword #:pointer initargs #f)
-        (next-method)
-        (if descriptor
-            (next-method
-             object (append
-                     (list #:pointer (bytevector->pointer
-                                      (make-bytevector
-                                       (bytestructure-descriptor-size descriptor))))
-                     initargs))
-            (goops-error (string-append
-                          "You must set a #:descriptor with `define-class' "
-                          "or provie #:pointer when `make'"))))))
-(define-method (= (f <wlr-type>) (l <wlr-type>))
-  (= (.pointer f)
-     (.pointer l)))
-(define-method (get-bytestructure (obj <wlr-type>))
-  (and-let* ((class (class-of obj))
-             (descriptor (.descriptor class))
-             (unwrap (.unwrap class)))
-    (pointer->bytestructure (unwrap obj) descriptor)))
-(define-method (get-bytevector (obj <wlr-type>))
-  (and=> (get-bytestructure obj) bytestructure-bytevector))
-(define-generic get-pointer)
 (define-syntax define-wlr-types-class
   (lambda (x)
     (syntax-case x ()
@@ -124,61 +40,27 @@
                        (unwrap (identifier (symbol-append 'unwrap- symbol)))
                        (is? (identifier (symbol-append symbol '?))))
            #`(begin
-               (define wrap
-                 (let ((ptr->obj (make-weak-value-hash-table 3000)))
-                   (lambda (ptr)
-                     (unless (pointer? ptr)
-                       (goops-error "In ~S,~S is not a pointer" wrap ptr))
-                     (if (null-pointer? ptr)
-                         #f
-                         (or (hash-ref ptr->obj ptr)
-                             (let ((o (make rtd #:pointer ptr)))
-                               (hash-set! ptr->obj ptr o)
-                               o))))))
-               (define (unwrap o)
-                 (if o
-                     (begin (unless (is? o)
-                              (error (string-append
-                                      "not a "
-                                      (symbol->string (class-name rtd))
-                                      " or #f")
-                                     o))
-                            (.pointer o))
-                     %null-pointer))
-               (define-class rtd (supers ... <wlr-type>)
-                 slots ...
-                 #:wrap wrap
-                 #:unwrap unwrap)
-               (when (.descriptor rtd)
-                 (when (assq 'events (struct-metadata-field-alist
-                                      (bytestructure-descriptor-metadata
-                                       (.descriptor rtd))))
-                   (define-method (get-event-signal (b rtd) (signal-name <symbol>))
-                     (let* ((bs (get-bytestructure b))
-                            (o (bytestructure-ref bs 'events signal-name))
-                            (p (bytestructure->pointer o)))
-                       (wrap-wl-signal p)))))
-               (define-method (get-pointer (o rtd))
-                 (let ((u (unwrap o)))
-                   (cond ((pointer? u) u)
-                         ((bytestructure? u) (bytestructure->pointer u)))))
-               (define (is? o) (is-a? o rtd)))))))))
+
+               (define-bytestructure-class rtd (supers ...)
+                 #f wrap unwrap is?
+                 slots ...)
+               (if (.descriptor rtd)
+                   (when (assq 'events (struct-metadata-field-alist
+                                        (bytestructure-descriptor-metadata
+                                         (.descriptor rtd))))
+                     (define-method (get-event-signal (b rtd) (signal-name <symbol>))
+                       (let* ((bs (get-bytestructure b))
+                              (o (bytestructure-ref bs 'events signal-name))
+                              (p (bytestructure->pointer o)))
+                         (wrap-wl-signal p))))
+                   (pk 'rtd rtd))
+               )))))))
 
 (define-syntax define-wlr-types-class-public
   (lambda (x)
     (syntax-case x ()
       ((_ name others ...)
-       (let ((symbol (syntax->datum #'name))
-             (identifier (cut datum->syntax #'name <>)))
-         (with-syntax ((rtd (identifier (symbol-append '< symbol '>)))
-                       (wrap (identifier (symbol-append 'wrap- symbol )))
-                       (unwrap (identifier (symbol-append 'unwrap- symbol)))
-                       (is? (identifier (symbol-append symbol '?))))
-           #`(begin
-               (define-wlr-types-class name others ...)
-               (export wrap)
-               (export unwrap)
-               (export is? ))))))))
+       #'(define-wlr-types-class name others ...)))))
 
 
 (define-public %timespec-struct
@@ -196,18 +78,30 @@
   (bs:struct `((extents ,%pixman-box32-struct)
                (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-texture-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (width ,uint32)
+               (height ,uint32))))
+
 (define-public %wlr-addon-set-struct
   (bs:struct `((addons ,%wl-list-struct))))
 
 (define-public %wlr-buffer-struct
   (bs:struct `((width ,int)
                (height ,int)
-               (dropped ,bool)
+               (dropped ,stdbool)
                (n-locks ,size_t)
-               (accessing-data-ptr ,bool)
+               (accessing-data-ptr ,stdbool)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (release ,%wl-signal-struct))))
                (addons ,%wlr-addon-set-struct))))
+
+(define-public %wlr-client-buffer-struct
+  (bs:struct `((base ,%wlr-buffer-struct)
+               (texture ,(bs:pointer %wlr-texture-struct))
+               (source ,(bs:pointer %wlr-buffer-struct))
+               (source-destroy ,%wl-listener-struct)
+               (shm-source-format ,uint32))))
 
 (define-public %wlr-output-mode-struct
   (bs:struct `((width ,int32)
@@ -218,10 +112,10 @@
 (define-public %wlr-output-state-struct
   (bs:struct `((committed ,uint32)
                (damage ,%pixman-region32-t-struct)
-               (enabled ,bool)
+               (enabled ,stdbool)
                (scale ,float)
                (transform ,int)
-               (adaptive-sync-enabled ,bool)
+               (adaptive-sync-enabled ,stdbool)
                (render-format ,uint32)
                (buffer ,(bs:pointer %wlr-buffer-struct))
                (mode-type ,int)
@@ -233,6 +127,30 @@
                (gamma-lut ,(bs:pointer uint16))
                (gamma-lut-size ,size_t))))
 
+(define-public %wlr-output-cursor-struct
+  (bs:struct `((output ,(bs:pointer (delay %wlr-output-struct)))
+               (x ,double)
+               (y ,double)
+               (enabled ,stdbool)
+               (visible ,stdbool)
+               (width ,uint32)
+               (height ,uint32)
+               (hostpot-x ,int32)
+               (hostpot-y ,int32)
+               (link ,%wl-list-struct)
+               (texture ,(bs:pointer %wlr-texture-struct))
+               (surface ,(bs:pointer (delay %wlr-surface-struct)))
+               (surface-commit ,%wl-listener-struct)
+               (surface-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
+
+(define-public %wlr-edges-enum
+  (bs:enum '((WLR_EDGE_NONE 0)
+             (WLR_EDGE_TOP 1)
+             (WLR_EDGE_BOTTOM 2)
+             (WLR_EDGE_LEFT 4)
+             (WLR_EDGE_RIGHT 8))))
 
 (define-public %wlr-box-struct
   (bs:struct `((x ,int) (y ,int) (width ,int) (height ,int))))
@@ -267,8 +185,8 @@
                (buffer-height ,int)
                (subsurfaces-below ,%wl-list-struct)
                (subsurfaces-above ,%wl-list-struct)
-               (viewport ,(bs:struct `((has-src ,bool)
-                                       (has-dst ,bool)
+               (viewport ,(bs:struct `((has-src ,stdbool)
+                                       (has-dst ,stdbool)
                                        (src ,%wlr-fbox-struct)
                                        (dst-width ,int)
                                        (dst-height ,int))))
@@ -277,9 +195,9 @@
 
 (define-public %wlr-surface-struct
   (bs:struct
-   `((resource ,(bs:pointer '*))
-     (renderer ,(bs:pointer '*))
-     (buffer ,(bs:pointer '*))
+   `((resource ,(bs:pointer %wl-resource-struct))
+     (renderer ,(bs:pointer (delay %wlr-renderer-struct)))
+     (buffer ,(bs:pointer %wlr-client-buffer-struct))
      (sx ,int)
      (sy ,int)
      (buffer-damage ,%pixman-region32-t-struct)
@@ -310,8 +228,8 @@
 (define-public %wlr-output-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (backend ,(bs:pointer (delay %wlr-backend-struct)))
-               (display ,(bs:pointer '*))
-               (gloabl ,(bs:pointer '*))
+               (display ,(bs:pointer (delay %wl-display-struct)))
+               (global ,(bs:pointer %wl-global-struct))
                (resources ,%wl-list-struct)
                (name ,cstring-pointer)
                (description ,cstring-pointer)
@@ -325,16 +243,16 @@
                (width ,int32)
                (height ,int32)
                (refresh ,int32)
-               (enabled ,bool)
+               (enabled ,stdbool)
                (scale ,float)
                (subpixel ,int32)
                (transform ,int32)
                (adaptive-sync-status ,int32)
                (render-format ,uint32)
-               (needs-frame ,bool)
-               (frame-pending ,bool)
+               (needs-frame ,stdbool)
+               (frame-pending ,stdbool)
                (transform-matrix ,(bs:vector 9 float))
-               (non-desktop ,bool)
+               (non-desktop ,stdbool)
                (pending ,%wlr-output-state-struct)
                (commit-seq ,uint32)
                (events ,(bs:struct (map (lambda (a)(list a %wl-signal-struct))
@@ -343,11 +261,11 @@
                                           needs-frame precommit
                                           commit present bind
                                           enable mode description destroy ))))
-               (idle-frame ,(bs:pointer '*))
-               (idle-done ,(bs:pointer '*))
+               (idle-frame ,(bs:pointer %wl-event-source-struct))
+               (idle-done ,(bs:pointer %wl-event-source-struct))
                (attach-render-locks ,int)
                (cursors ,%wl-list-struct)
-               (hardware-cursor ,(bs:pointer '*))
+               (hardware-cursor ,(bs:pointer %wlr-output-cursor-struct))
                (cursor-swapchain ,(bs:pointer '*))
                (cursor-front-buffer ,(bs:pointer %wlr-buffer-struct))
                (software-cursor-locks ,int)
@@ -360,7 +278,7 @@
                (data ,(bs:pointer 'void)))))
 
 (define-public %wlr-xcursor-manager-struct
-  (bs:struct `((name ,(bs:pointer *))
+  (bs:struct `((name ,(bs:pointer '*))
                (size ,uint32)
                (scaled-themes ,%wl-list-struct))))
 
@@ -369,17 +287,46 @@
                (geometry ,%wlr-box-struct))))
 
 (define-public %wlr-output-manager-v1-struct
-  (bs:struct `((display ,(bs:pointer '*))
-               (global ,(bs:pointer '*))
+  (bs:struct `((display ,(bs:pointer (delay %wl-display-struct)))
+               (global ,(bs:pointer (delay %wl-global-struct)))
                (resources ,%wl-list-struct)
                (heads ,%wl-list-struct)
                (serial ,uint32)
-               (current-configuration-dirty ,int8) ;; bool
+               (current-configuration-dirty ,int8) ;; stdbool
                (events ,(bs:struct `((apply ,%wl-signal-struct)
                                      (test ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
                (display-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-output-configuration-v1-struct
+  (bs:struct `((heads ,%wl-list-struct)
+               (manager ,(bs:pointer %wlr-output-manager-v1-struct))
+               (serial ,uint32)
+               (finalized ,stdbool)
+               (finished ,stdbool)
+               (resource ,(bs:pointer %wl-resource-struct)))))
+
+(define-public %wlr-output-head-v1-state-struct
+  (bs:struct `((output ,(bs:pointer %wlr-output-struct))
+               (enabled ,stdbool)
+               (mode ,(bs:pointer %wlr-output-mode-struct))
+               (custom-mode ,(bs:struct `((width ,int32)
+                                          (height ,int32)
+                                          (refresh ,int32))))
+               (x ,int32)
+               (y ,int32)
+               (transform ,int32) ;; enum wl_output_transform;
+               (scale ,float))))
+
+(define-public %wlr-output-head-v1-struct
+  (bs:struct `((state ,%wlr-output-head-v1-state-struct)
+               (manager ,(bs:pointer %wlr-output-manager-v1-struct))
+               (link ,%wl-list-struct)
+               (resources ,%wl-list-struct)
+               (mode-resources ,%wl-list-struct)
+               (output-destroy ,%wl-listener-struct))))
+
 (define-public %wlr-output-layout-struct
   (bs:struct
    `((outputs ,%wl-list-struct)
@@ -395,8 +342,8 @@
                (tokens ,%wl-list-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (request-activate ,%wl-signal-struct))))
-               (display ,(bs:pointer '*))
-               (global ,(bs:pointer '*))
+               (display ,(bs:pointer (delay %wl-display-struct)))
+               (global ,(bs:pointer %wl-global-struct))
                (display-destroy ,%wl-listener-struct))))
 
 (define-public %wlr-input-device-type-enum
@@ -466,13 +413,31 @@
 
 (define-public %wlr-renderer-struct
   (bs:struct `((impl ,(bs:pointer '*))
-               (rendering ,bool)
-               (rendering-with-buffer ,bool)
+               (rendering ,stdbool)
+               (rendering-with-buffer ,stdbool)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
+(define-public %wlr-subcompositor-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct)))))
+(define-public %wlr-compositor-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (renderer ,(bs:pointer %wlr-renderer-struct))
+               (subcompositor ,%wlr-subcompositor-struct)
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((new-surface ,%wl-signal-struct)
+                                     (destroy ,%wl-signal-struct)))))))
+
+(define-public %wlr-event-keyboard-key-struct
+  (bs:struct `((time-msec ,uint32)
+               (keycode ,uint32)
+               (update-state ,stdbool)
+               (state ,int32) ;; enum wl_keyboard_key_state
+               )))
+
 (define-public %wlr-scene-node-state-struct
   (bs:struct `((link ,%wl-list-struct)
                (children ,%wl-list-struct)
-               (enabled ,bool)
+               (enabled ,stdbool)
                (x ,int)
                (y ,int))))
 (define-public %wlr-scene-node-type-enum
@@ -493,7 +458,7 @@
 (define-public %wlr-scene-struct
   (bs:struct `((node ,%wlr-scene-node-struct)
                (outputs ,%wl-list-struct)
-               (presentation ,(bs:pointer '*))
+               (presentation ,(bs:pointer (delay %wlr-presentation-struct)))
                (presentation-destroy ,%wl-listener-struct)
                (peeding-buffers ,%wl-list-struct))))
 (define-public %wlr-scene-rect-struct
@@ -504,8 +469,8 @@
 
 (define-public %wlr-scene-buffer-struct
   (bs:struct `((node ,%wlr-scene-node-struct)
-               (buffer ,(bs:pointer '*))
-               (texture  ,(bs:pointer '*))
+               (buffer ,(bs:pointer %wlr-buffer-struct))
+               (texture  ,(bs:pointer %wlr-texture-struct))
                (src-box ,%wlr-fbox-struct)
                (dst-width ,int)
                (dst-height ,int)
@@ -513,14 +478,14 @@
                (pending-link ,%wl-list-struct))))
 
 (define-public %wlr-presentation-struct
-  (bs:struct `((global ,(bs:pointer '*))
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (clock ,int32) ;; clockid_t
                (events ,(bs:struct `((destroy ,%wl-listener-struct))))
                (display-destroy ,%wl-listener-struct))))
 (define-public %wlr-presentation-feedback-struct
   (bs:struct `((resources ,%wl-list-struct)
                (output ,%wlr-output-struct)
-               (output-committed ,bool)
+               (output-committed ,stdbool)
                (output-commit-seq ,uint32)
                (output-commit ,%wl-listener-struct)
                (output-present ,%wl-listener-struct)
@@ -534,7 +499,7 @@
                (flags ,uint32))))
 
 (define-public %wlr-layer-shell-v1-struct
-  (bs:struct `((global ,(bs:pointer '*))
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (display-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
@@ -558,13 +523,13 @@
 (define-public %wlr-layer-surface-v1-struct
   (bs:struct `((surface ,(bs:pointer %wlr-surface-struct))
                (output ,(bs:pointer %wlr-output-struct))
-               (resource ,(bs:pointer '*))
+               (resource ,(bs:pointer %wl-resource-struct))
                (shell ,(bs:pointer %wlr-layer-shell-v1-struct))
                (popups ,%wl-list-struct)
                (namespace ,cstring-pointer)
-               (added ,bool)
-               (configured ,bool)
-               (mapped ,bool)
+               (added ,stdbool)
+               (configured ,stdbool)
+               (mapped ,stdbool)
                (configure-list ,%wl-list-struct)
                (current ,%wlr-layer-surface-v1-state-struct)
                (pending ,%wlr-layer-surface-v1-state-struct)
@@ -576,7 +541,7 @@
                (data ,(bs:pointer 'void)))))
 
 (define-public %wlr-xdg-shell-struct
-  (bs:struct `((global ,(bs:pointer '*))
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (clients ,%wl-list-struct)
                (popup-grabs ,%wl-list-struct)
                (ping-timeout ,uint32)
@@ -584,9 +549,17 @@
                (events ,(bs:struct `((new-surface ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
+(define-public %wlr-xdg-client-struct
+  (bs:struct `((shell ,(bs:pointer %wlr-xdg-shell-struct))
+               (resource ,(bs:pointer %wl-resource-struct))
+               (client ,(bs:pointer %wl-client-struct))
+               (surfaces ,%wl-list-struct)
+               (link ,%wl-list-struct)
+               (ping-serial ,uint32)
+               (ping-timer ,(bs:pointer %wl-event-source-struct)))))
 (define-public %wlr-xdg-surface-struct
-  (bs:struct `((client ,(bs:pointer '*))
-               (resource ,(bs:pointer '*))
+  (bs:struct `((client ,(bs:pointer %wlr-xdg-client-struct))
+               (resource ,(bs:pointer %wl-resource-struct))
                (surface ,(bs:pointer '*))
                (link ,%wl-list-struct)
                (role ,int)
@@ -598,9 +571,9 @@
                            ,(bs:pointer
                              (delay %wlr-xdg-popup-struct))))))
                (popups ,%wl-list-struct)
-               (added ,bool)
-               (configured ,bool)
-               (mapped ,bool)
+               (added ,stdbool)
+               (configured ,stdbool)
+               (mapped ,stdbool)
                (configure-idle ,(bs:pointer '*))
                (scheduled-serial ,uint32)
                (configure-list ,%wl-list-struct)
@@ -630,7 +603,7 @@
 (define-public %wlr-xdg-toplevel-requested-struct
   (bs:struct `(,@(map (lambda (a) (list a int8))
                       '(maximized minimized fullscreen))
-               (fullscreen-output ,(bs:pointer '*))
+               (fullscreen-output ,(bs:pointer %wlr-output-struct))
                (fullscreen-output-destroy ,%wl-listener-struct))))
 
 (define-public %wlr-xdg-positioner-struct
@@ -645,8 +618,8 @@
 (define-public %wlr-xdg-popup-struct
   (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
                (link ,%wl-list-struct)
-               (resource ,(bs:pointer '*))
-               (committed ,bool)
+               (resource ,(bs:pointer %wl-resource-struct))
+               (committed ,stdbool)
                (parent ,(bs:pointer %wlr-surface-struct))
                (seat ,(bs:pointer (delay %wlr-seat-struct)))
                (geometry ,%wlr-box-struct)
@@ -654,14 +627,14 @@
                (grab-link ,%wl-list-struct))))
 
 (define-public %wlr-xdg-toplevel-state-struct
-  (bs:struct `(,@(map (lambda (o) `(,o ,bool))
+  (bs:struct `(,@(map (lambda (o) `(,o ,stdbool))
                       '(maximized fullscreen resizing activated))
                ,@(map (lambda (o) `(,o ,uint32))
                       '(tiled width height max-width max-height min-width min-height)))))
 (define-public %wlr-xdg-toplevel-struct
-  (bs:struct `((resource ,(bs:pointer '*))
+  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
                (base ,(bs:pointer %wlr-xdg-surface-struct))
-               (added ,bool)
+               (added ,stdbool)
                (parent ,(bs:pointer %wlr-xdg-surface-struct))
                (parent-unmap ,%wl-listener-struct)
                (current ,%wlr-xdg-toplevel-state-struct)
@@ -689,8 +662,8 @@
                (edges ,uint32))))
 (define-public %wlr-xdg-toplevel-set-fullscreen-event
   (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (fullscreen ,bool)
-               (output ,(bs:pointer '*)))))
+               (fullscreen ,stdbool)
+               (output ,(bs:pointer %wlr-output-struct)))))
 
 (define-public %wlr-cursor-struct
   (bs:struct `((state ,(bs:pointer '*))
@@ -730,7 +703,7 @@
                (end ,int)
                (count ,int))))
 (define-public %wlr-seat-client-struct
-  (bs:struct `((client ,(bs:pointer '*))
+  (bs:struct `((client ,(bs:pointer %wl-client-struct))
                (seat ,(bs:pointer (delay %wlr-seat-struct)))
                (link ,%wl-list-struct)
 
@@ -742,7 +715,7 @@
 
                (events ,(bs:struct `((destroy ,%wl-signal-struct))))
                (serials ,%wlr-serial-ringset-struct)
-               (needs-touch-frame ,bool))))
+               (needs-touch-frame ,stdbool))))
 
 (define-public WLR_POINTER_BUTTONS_CAP 16)
 
@@ -754,7 +727,7 @@
                (sy ,double)
                (grab ,(bs:pointer (delay %wlr-seat-pointer-grab-struct)))
                (default-grab ,(bs:pointer (delay %wlr-seat-pointer-grab-struct)))
-               (sent-axis-source ,bool)
+               (sent-axis-source ,stdbool)
                (cached-axis-source ,int32)
                (buttons ,(bs:vector WLR_POINTER_BUTTONS_CAP uint32))
                (button-count ,size_t)
@@ -780,8 +753,8 @@
                (touch-points ,%wl-list-struct)
                (grab-serial ,uint32)
                (grab-id ,uint32)
-               (grab ,(bs:pointer '*))
-               (default-grab ,(bs:pointer '*)))))
+               (grab ,(bs:pointer (delay %wlr-seat-touch-grab-struct)))
+               (default-grab ,(bs:pointer (delay %wlr-seat-touch-grab-struct))))))
 (define-public %wlr-seat-keyboard-grab-struct
   (bs:struct `((interface ,(bs:pointer '*))
                (seat ,(bs:pointer (delay %wlr-seat-struct)))
@@ -800,9 +773,15 @@
                (serial ,uint32)
                (hostpot-x ,int32)
                (hostpot-y ,int32))))
+(define-public %wlr-seat-pointer-request-set-cursor-event-struct
+  (bs:struct `((seat-client ,(bs:pointer %wlr-seat-client-struct))
+               (surface ,(bs:pointer %wlr-surface-struct))
+               (serial ,uint32)
+               (hostpot-x ,int32)
+               (hostpot-y ,int32))))
 (define-public %wlr-seat-struct
-  (bs:struct `((global ,(bs:pointer '*))
-               (display ,(bs:pointer '*))
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (display ,(bs:pointer (delay %wl-display-struct)))
                (clients ,%wl-list-struct)
                (name ,cstring-pointer)
                (capabilities ,uint32)
@@ -849,18 +828,35 @@
   (bs:struct `((source ,(bs:pointer (delay %wlr-data-source-struct)))
                (serial ,uint32))))
 
+(define-public %wlr-idle-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (idle-timers ,%wl-list-struct)
+               (event-loop ,(bs:pointer %wl-event-loop-struct))
+               (enabled ,stdbool)
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((activity-notify ,%wl-signal-struct)
+                                     (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-data-device-manager-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (data-sources ,%wl-list-struct)
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-data-source-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (mime-types ,%wl-array)
                (actions ,int32)
-               (accepted ,bool)
+               (accepted ,stdbool)
                (current-dnd-action ,int32)
                (compositor-action ,uint32)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
 (define-public %wlr-drap-icon-struct
   (bs:struct `((drag ,(bs:pointer (delay %wlr-drag-struct)))
                (surface ,(bs:pointer %wlr-surface-struct))
-               (mapped ,bool)
+               (mapped ,stdbool)
                (events ,(bs:struct `((map ,%wl-signal-struct)
                                      (unmap ,%wl-signal-struct)
                                      (destroy ,%wl-signal-struct))))
@@ -877,9 +873,9 @@
                (icon ,(bs:pointer %wlr-drap-icon-struct))
                (focus ,(bs:pointer %wlr-surface-struct))
                (source ,(bs:pointer %wlr-data-source-struct))
-               (started ,bool)
-               (dropped ,bool)
-               (cancelling ,bool)
+               (started ,stdbool)
+               (dropped ,stdbool)
+               (cancelling ,stdbool)
                (grab-touch-id ,int32)
                (touch-id ,int32)
                (events ,(bs:struct `((focus ,%wl-signal-struct)

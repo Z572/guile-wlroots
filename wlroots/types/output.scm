@@ -35,6 +35,7 @@
             wrap-wlr-output-cursor
             unwrap-wlr-output-cursor
             .backend
+            .display
             .name
             .description
             .phys-width
@@ -50,6 +51,7 @@
 
 (define-wlr-types-class wlr-output ()
   (backend      #:allocation #:bytestructure #:accessor .backend)
+  (display      #:allocation #:bytestructure #:accessor .display)
   (name         #:allocation #:bytestructure #:accessor .name)
   (description  #:allocation #:bytestructure #:accessor .description)
   (phys-width   #:allocation #:bytestructure #:accessor .phys-width)
@@ -104,4 +106,14 @@
     ((0) #f)
     (else #t)))
 
-(define-wlr-types-class wlr-output-cursor ())
+(define-wlr-types-class wlr-output-cursor ()
+  (x #:accessor .x)
+  (y #:accessor .y)
+  (enabled #:accessor .enabled)
+  (visible #:accessor .visible)
+  (width #:accessor .width)
+  (height #:accessor .height)
+  (hostpot-x #:accessor .hostpot-x)
+  (hostpot-y #:accessor .hostpot-y)
+  (surface #:accessor .surface)
+  #:descriptor %wlr-output-cursor-struct)

@@ -22,8 +22,8 @@
             unwrap-wlr-cursor
             wlr-cursor-create
             wlr-cursor-attach-output-layout
-            wlr-cursor-x
-            wlr-cursor-y
+            .x
+            .y
             wlr-cursor-set-surface
             wlr-cursor-move
             wlr-cursor-warp
@@ -32,10 +32,10 @@
             wlr-cursor-attach-input-device))
 
 (define-wlr-types-class wlr-cursor ()
-  (x #:accessor wlr-cursor-x
+  (x #:accessor .x
      #:allocation
      #:bytestructure)
-  (y #:accessor wlr-cursor-y
+  (y #:accessor .y
      #:allocation
      #:bytestructure)
   #:descriptor %wlr-cursor-struct)

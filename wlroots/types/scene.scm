@@ -6,6 +6,7 @@
   #:use-module (wayland listener)
   #:use-module (wlroots render renderer)
   #:use-module (srfi srfi-71)
+  #:use-module (wlroots time)
   #:use-module (wlroots types)
   #:use-module (wlroots types surface)
   #:use-module (wlroots types xdg-shell)
@@ -54,6 +55,10 @@
             wlr-scene-rect-set-color
             wlr-scene-rect-node
             wlr-scene-output-create
+            wlr-scene-output-destroy
+            wlr-scene-output-set-position
+            wlr-scene-output-commit
+            wlr-scene-output-send-frame-done
             wlr-scene-xdg-surface-create
             wlr-scene-subsurface-tree-create
             wrap-wlr-scene-node-state
@@ -190,6 +195,22 @@
   ('* "wlr_scene_output_create" '(* *))
   (wrap-wlr-scene-output (% (unwrap-wlr-scene scene) (unwrap-wlr-output output))))
 
+(define-wlr-procedure (wlr-scene-output-destroy scene-output)
+  (ffi:void "wlr_scene_output_destroy" '(*))
+  (% (unwrap-wlr-scene-output scene-output)))
+
+(define-wlr-procedure (wlr-scene-output-set-position scene-output lx ly)
+  (ffi:void "wlr_scene_output_set_position" (list '* ffi:int ffi:int))
+  (% (unwrap-wlr-scene-output scene-output) lx ly))
+
+(define-wlr-procedure (wlr-scene-output-commit scene-output)
+  (ffi:int "wlr_scene_output_commit" '(*))
+  (not (zero? (% (unwrap-wlr-scene-output scene-output)))))
+
+(define-wlr-procedure (wlr-scene-output-send-frame-done scene-output now)
+  (ffi:void "wlr_scene_output_send_frame_done" '(* *))
+  (% (unwrap-wlr-scene-output scene-output)
+     (unwrap-timespec now)))
 (define-wlr-procedure (wlr-scene-subsurface-tree-create parent surface)
   ('* "wlr_scene_subsurface_tree_create" '(* *))
   (wrap-wlr-scene-node (% (unwrap-wlr-scene-node parent)

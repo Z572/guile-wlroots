@@ -14,7 +14,12 @@
             WLR_MODIFIER_LOGO
             WLR_MODIFIER_MOD5
             wrap-wlr-event-keyboard-key
-            unwrap-wlr-event-keyboard-key))
+            unwrap-wlr-event-keyboard-key
+            .keymap-string))
+
+(define-wlr-types-class wlr-keyboard ()
+  (keymap-string #:accessor .keymap-string)
+  #:descriptor %wlr-keyboard-struct)
 
 (define-enumeration wlr-keyboard-led->value value->wlr-keyboard-led
   (WLR_LED_NUM_LOCK 1)

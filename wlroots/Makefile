@@ -17,6 +17,10 @@ SOURCES = %D%/config.scm     \
  %D%/types/presentation-time.scm \
  %D%/types/buffer.scm        \
  %D%/types/layer-shell.scm   \
+ %D%/types/touch.scm         \
+ %D%/types/switch.scm        \
+ %D%/types/tablet-tool.scm   \
+ %D%/types/tablet-pad.scm   \
  %D%/types/input-device.scm  \
  %D%/types/seat.scm          \
  %D%/types/data-device.scm   \

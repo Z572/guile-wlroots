@@ -346,6 +346,108 @@
                (global ,(bs:pointer %wl-global-struct))
                (display-destroy ,%wl-listener-struct))))
 
+(define-public WLR_LED_COUNT 3)
+(define-public WLR_MODIFIER_COUNT 8)
+(define-public WLR_KEYBOARD_KEYS_CAP 32)
+
+(define-public xkb_led_index_t uint32)
+(define-public xkb_mod_index_t uint32)
+(define-public xkb_mod_mask_t uint32)
+
+(define-public %wlr-keyboard-modifiers-struct
+  (bs:struct `((depressed ,xkb_mod_mask_t)
+               (latched ,xkb_mod_mask_t)
+               (locked ,xkb_mod_mask_t)
+               (group ,xkb_mod_mask_t))))
+(define-public %wlr-keyboard-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (group ,(bs:pointer '*))
+               (keymap-string ,cstring-pointer)
+               (keymap-size ,size_t)
+               (keymap-fd ,int)
+               (keymap ,(bs:pointer '*))
+               (xkb-state ,(bs:pointer '*))
+               (led-indexes ,(bs:vector WLR_LED_COUNT xkb_led_index_t))
+               (mod-indexes ,(bs:vector WLR_MODIFIER_COUNT xkb_mod_index_t))
+               (keycodes ,(bs:vector WLR_KEYBOARD_KEYS_CAP uint32))
+               (num-keycodes ,size_t)
+               (modifiers ,%wlr-keyboard-modifiers-struct)
+               (repeat-info ,(bs:struct `((rate ,int32)
+                                          (delay ,int32))))
+               (events ,(bs:struct `((key ,%wl-signal-struct)
+                                     (modifiers ,%wl-signal-struct)
+                                     (keymap ,%wl-signal-struct)
+                                     (repeat-info ,%wl-signal-struct)
+                                     (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-pointer-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (events
+                ,(bs:struct
+                  `((motion ,%wl-signal-struct)
+                    (motion-absolute ,%wl-signal-struct)
+                    (button ,%wl-signal-struct)
+                    (axis ,%wl-signal-struct)
+                    (frame ,%wl-signal-struct)
+
+                    (swipe-begin ,%wl-signal-struct)
+                    (swipe-update ,%wl-signal-struct)
+                    (swite-end ,%wl-signal-struct)
+
+                    (pinch-begin ,%wl-signal-struct)
+                    (pinch-update ,%wl-signal-struct)
+                    (pinch-end ,%wl-signal-struct)
+
+                    (hold-begin ,%wl-signal-struct)
+                    (hold-end ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-switch-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (events
+                ,(bs:struct
+                  `((toggle ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-touch-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (events
+                ,(bs:struct
+                  `((down ,%wl-signal-struct)
+                    (up ,%wl-signal-struct)
+                    (motion ,%wl-signal-struct)
+                    (cancel ,%wl-signal-struct)
+                    (frame ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-tablet-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (events
+                ,(bs:struct
+                  `((axis ,%wl-signal-struct)
+                    (proximity ,%wl-signal-struct)
+                    (tip ,%wl-signal-struct)
+                    (button ,%wl-signal-struct))))
+               (name ,cstring-pointer)
+               (paths ,%wl-array-struct)
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-tablet-pad-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (events
+                ,(bs:struct
+                  `((button ,%wl-signal-struct)
+                    (ring ,%wl-signal-struct)
+                    (strip ,%wl-signal-struct)
+                    (attach-tablet ,%wl-signal-struct))))
+               (button-count ,size_t)
+               (ring-count ,size_t)
+               (strip-count ,size_t)
+               (groups ,%wl-list-struct)
+               (paths ,%wl-array-struct)
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-input-device-type-enum
   (bs:enum '((WLR_INPUT_DEVICE_KEYBOARD 0)
              (WLR_INPUT_DEVICE_POINTER 1)
@@ -353,6 +455,7 @@
              (WLR_INPUT_DEVICE_TABLET_TOOL 3)
              (WLR_INPUT_DEVICE_TABLET_PAD 4)
              (WLR_INPUT_DEVICE_SWITCH 5))))
+
 (define-public %wlr-input-device-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (type ,%wlr-input-device-type-enum)
@@ -363,12 +466,12 @@
                (height-mm ,double)
                (output-name ,cstring-pointer)
                (union ,(bs:union `((_device ,(bs:pointer 'void))
-                                   (keyboard ,(bs:pointer '*))
-                                   (pointer ,(bs:pointer '*))
-                                   (switch-device ,(bs:pointer '*))
-                                   (touch ,(bs:pointer '*))
-                                   (tablet ,(bs:pointer '*))
-                                   (tablet-pad ,(bs:pointer '*)))))
+                                   (keyboard ,(bs:pointer %wlr-keyboard-struct))
+                                   (pointer ,(bs:pointer %wlr-pointer-struct))
+                                   (switch-device ,(bs:pointer %wlr-switch-struct))
+                                   (touch ,(bs:pointer %wlr-touch-struct))
+                                   (tablet ,(bs:pointer %wlr-tablet-struct))
+                                   (tablet-pad ,(bs:pointer %wlr-tablet-pad-struct)))))
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
 
 (define-public %wlr-button-state-enum

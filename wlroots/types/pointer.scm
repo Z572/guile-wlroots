@@ -28,7 +28,8 @@
             .button
             .state))
 
-
+(define-wlr-types-class wlr-pointer ()
+  #:descriptor %wlr-pointer-struct)
 
 (define-wlr-types-class wlr-event-pointer-motion ()
   (device #:accessor .device #:allocation #:bytestructure)

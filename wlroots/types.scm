@@ -847,7 +847,7 @@
 
 (define-public %wlr-data-source-struct
   (bs:struct `((impl ,(bs:pointer '*))
-               (mime-types ,%wl-array)
+               (mime-types ,%wl-array-struct)
                (actions ,int32)
                (accepted ,stdbool)
                (current-dnd-action ,int32)

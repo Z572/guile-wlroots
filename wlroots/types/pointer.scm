@@ -12,13 +12,12 @@
             unwrap-wlr-event-pointer-axis
             wrap-event-pointer-motion-absolute
             unwrap-event-pointer-motion-absolute
-            wlr-event-pointer-axis-time-msec
-            wlr-event-pointer-axis-orientation
-            wlr-event-pointer-axis-delta
-            wlr-event-pointer-axis-delta-discrete
-            wlr-event-pointer-axis-source
             .device
             .time-msec
+            .source
+            .delta
+            .delta-discrete
+            .orientation
             .delta-x
             .delta-y
             .x
@@ -57,9 +56,10 @@
   #:descriptor %wlr-event-pointer-button-struct)
 
 (define-wlr-types-class wlr-event-pointer-axis ()
-  (time-msec #:accessor wlr-event-pointer-axis-time-msec #:allocation #:bytestructure)
-  (source #:accessor wlr-event-pointer-axis-source #:allocation #:bytestructure)
-  (delta #:accessor wlr-event-pointer-axis-delta #:allocation #:bytestructure)
-  (delta-discrete #:accessor wlr-event-pointer-axis-delta-discrete #:allocation #:bytestructure)
-  (orientation #:accessor wlr-event-pointer-axis-orientation #:allocation #:bytestructure)
+  (device #:accessor .device)
+  (time-msec #:accessor .time-msec)
+  (source #:accessor .source)
+  (delta #:accessor .delta)
+  (delta-discrete #:accessor .delta-discrete)
+  (orientation #:accessor .orientation)
   #:descriptor %wlr-event-pointer-axis-struct)

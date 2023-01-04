@@ -10,6 +10,7 @@
   #:use-module (wlroots types surface)
   #:use-module (wlroots types xdg-shell)
   #:use-module (wlroots types buffer)
+  #:use-module (wlroots types output)
   #:use-module (wlroots types output-layout)
   #:use-module (wlroots types presentation-time)
   #:use-module (wlroots utils)
@@ -52,6 +53,7 @@
             wlr-scene-rect-set-size
             wlr-scene-rect-set-color
             wlr-scene-rect-node
+            wlr-scene-output-create
             wlr-scene-xdg-surface-create
             wlr-scene-subsurface-tree-create
             wrap-wlr-scene-node-state
@@ -183,6 +185,10 @@
   ('* "wlr_scene_buffer_create" '(* *))
   (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node parent)
                             (unwrap-wlr-buffer buffer))))
+
+(define-wlr-procedure (wlr-scene-output-create scene output)
+  ('* "wlr_scene_output_create" '(* *))
+  (wrap-wlr-scene-output (% (unwrap-wlr-scene scene) (unwrap-wlr-output output))))
 
 (define-wlr-procedure (wlr-scene-subsurface-tree-create parent surface)
   ('* "wlr_scene_subsurface_tree_create" '(* *))

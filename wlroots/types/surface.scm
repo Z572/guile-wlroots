@@ -17,10 +17,20 @@
             unwrap-wlr-surface
             wlr-surface-has-buffer
             wlr-surface-send-enter
-            wlr-surface-get-root-surface))
+            wlr-surface-get-root-surface
+            .resource
+            .renderer
+            .buffer
+            .sx
+            .sy))
 
 
 (define-wlr-types-class-public wlr-surface ()
+  (resource #:accessor .resource)
+  (renderer #:accessor .renderer)
+  (buffer #:accessor .buffer)
+  (sx #:accessor .sx)
+  (sy #:accessor .sy)
   #:descriptor %wlr-surface-struct)
 
 (define-wlr-procedure (wlr-surface-has-buffer surface)

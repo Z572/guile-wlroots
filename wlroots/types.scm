@@ -86,6 +86,11 @@
 (define-public %wlr-addon-set-struct
   (bs:struct `((addons ,%wl-list-struct))))
 
+(define-public %wlr-addon-struct
+  (bs:struct `((impl ,(bs:pointer '*))
+               (owner ,(bs:pointer 'void))
+               (link ,%wl-list-struct))))
+
 (define-public %wlr-buffer-struct
   (bs:struct `((width ,int)
                (height ,int)
@@ -579,6 +584,16 @@
                (dst-height ,int)
                (transform ,int) ;; enum wl_output_transform
                (pending-link ,%wl-list-struct))))
+
+(define-public %wlr-scene-output-struct
+  (bs:struct `((output ,(bs:pointer %wlr-output-struct))
+               (link ,%wl-list-struct)
+               (scene ,(bs:pointer %wlr-scene-struct))
+               (addon ,%wlr-addon-struct)
+               (damage ,(bs:pointer '*))
+               (x ,int)
+               (y ,int)
+               (prev-scanout ,stdbool))))
 
 (define-public %wlr-presentation-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))

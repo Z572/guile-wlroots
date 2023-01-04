@@ -61,7 +61,10 @@
             .state
             .enabled
             .x
+            .output
             .type
+            .scene
+            .prev-scanout
             .y))
 
 (define-wlr-types-class wlr-scene-node-state ()
@@ -91,6 +94,14 @@
         #:allocation
         #:bytestructure)
   #:descriptor %wlr-scene-rect-struct)
+
+(define-wlr-types-class wlr-scene-output ()
+  (output #:accessor .output)
+  (scene #:accessor .scene)
+  (x #:accessor .x)
+  (y #:accessor .y)
+  (prev-scanout #:accessor .prev-scanout)
+  #:descriptor %wlr-scene-output-struct)
 (define wlr-scene-rect-node .node)
 (define-wlr-types-class wlr-scene ()
   (node #:allocation #:bytestructure

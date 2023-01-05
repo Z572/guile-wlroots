@@ -15,7 +15,18 @@
             WLR_MODIFIER_MOD5
             wrap-wlr-event-keyboard-key
             unwrap-wlr-event-keyboard-key
-            .keymap-string))
+            .keymap-string
+            .depressed
+            .latched
+            .locked
+            .group))
+
+(define-wlr-types-class wlr-keyboard-modifiers ()
+  (depressed #:getter .depressed)
+  (latched #:getter .latched)
+  (locked #:getter .locked)
+  (group #:getter .group)
+  #:descriptor %wlr-keyboard-modifiers-struct)
 
 (define-wlr-types-class wlr-keyboard ()
   (keymap-string #:accessor .keymap-string)

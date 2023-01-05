@@ -19,7 +19,8 @@
             .depressed
             .latched
             .locked
-            .group))
+            .group
+            .modifiers))
 
 (define-wlr-types-class wlr-keyboard-modifiers ()
   (depressed #:getter .depressed)
@@ -30,6 +31,7 @@
 
 (define-wlr-types-class wlr-keyboard ()
   (keymap-string #:accessor .keymap-string)
+  (modifiers #:accessor .modifiers)
   #:descriptor %wlr-keyboard-struct)
 
 (define-enumeration wlr-keyboard-led->value value->wlr-keyboard-led

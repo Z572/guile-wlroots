@@ -11,6 +11,7 @@
   #:use-module (wlroots types data-device)
   #:use-module (wlroots types input-device)
   #:use-module (wlroots types surface)
+  #:use-module (wlroots types keyboard)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:use-module (bytestructures guile)
@@ -50,6 +51,7 @@
             wlr-seat-pointer-notify-axis
             wlr-seat-set-capabilities
             wlr-seat-keyboard-notify-key
+            wlr-seat-keyboard-notify-modifiers
             wlr-seat-keyboard-send-key
             .serial
             .selection-serial
@@ -180,6 +182,10 @@
   (ffi:void "wlr_seat_keyboard_notify_key"
             (list '* ffi:uint32 ffi:uint32 ffi:uint32))
   (% (unwrap-wlr-seat seat) time-msec key state))
+
+(define-wlr-procedure (wlr-seat-keyboard-notify-modifiers seat modifiers)
+  (ffi:void "wlr_seat_keyboard_notify_modifiers" '(* *))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-keyboard-modifiers modifiers)))
 
 (define-wlr-procedure (wlr-seat-keyboard-send-key seat time-msec key state)
   (ffi:void "wlr_seat_keyboard_send_key"

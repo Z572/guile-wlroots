@@ -1,6 +1,7 @@
 (define-module (wlroots types keyboard)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
+  #:use-module ((system foreign) #:prefix ffi:)
   #:export (WLR_LED_NUM_LOCK
             WLR_LED_CAPS_LOCK
             WLR_LED_SCROLL_LOCK
@@ -15,12 +16,17 @@
             WLR_MODIFIER_MOD5
             wrap-wlr-event-keyboard-key
             unwrap-wlr-event-keyboard-key
+            wlr-keyboard-get-modifiers
             .keymap-string
             .depressed
             .latched
             .locked
             .group
-            .modifiers))
+            .modifiers
+            .time-msec
+            .keycode
+            .update-state
+            .state))
 
 (define-wlr-types-class wlr-keyboard-modifiers ()
   (depressed #:getter .depressed)
@@ -50,4 +56,12 @@
   (WLR_MODIFIER_MOD5 128))
 
 (define-wlr-types-class wlr-event-keyboard-key ()
+  (time-msec #:accessor .time-msec)
+  (keycode #:accessor .keycode)
+  (update-state #:accessor .update-state)
+  (state #:accessor .state)
   #:descriptor %wlr-event-keyboard-key-struct)
+
+(define-wlr-procedure (wlr-keyboard-get-modifiers keyboard)
+  (ffi:uint32 "wlr_keyboard_get_modifiers" '(*))
+  (% (unwrap-wlr-keyboard keyboard)))

@@ -17,6 +17,7 @@
             unwrap-wlr-surface
             wlr-surface-has-buffer
             wlr-surface-send-enter
+            wlr-surface-send-leave
             wlr-surface-get-root-surface
             .resource
             .renderer
@@ -45,4 +46,8 @@
 
 (define-wlr-procedure (wlr-surface-send-enter surface output)
   (ffi:void "wlr_surface_send_enter" '(* *))
+  (% (unwrap-wlr-surface surface) (unwrap-wlr-output output)))
+
+(define-wlr-procedure (wlr-surface-send-leave surface output)
+  (ffi:void "wlr_surface_send_leave" '(* *))
   (% (unwrap-wlr-surface surface) (unwrap-wlr-output output)))

@@ -351,6 +351,26 @@
                (global ,(bs:pointer %wl-global-struct))
                (display-destroy ,%wl-listener-struct))))
 
+(define-public %wlr-xdg-activation-token-v1-struct
+  (bs:struct `((activation ,(bs:pointer %wlr-xdg-activation-v1-struct))
+               (surface ,(bs:pointer %wlr-surface-struct) )
+               (seat ,(bs:pointer (delay %wlr-seat-struct)))
+               (serial ,uint32)
+               (app-id ,cstring-pointer)
+               (link ,%wl-list-struct)
+               (data ,(bs:pointer 'void))
+               (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+               (token ,cstring-pointer)
+               (resource ,(bs:pointer %wl-resource-struct))
+               (timeout ,(bs:pointer %wl-event-source-struct))
+               (seat-destroy ,%wl-listener-struct)
+               (surface-destroy ,%wl-listener-struct))))
+
+(define-public %wlr-xdg-activation-v1-request-activate-event-struct
+  (bs:struct `((activation ,(bs:pointer %wlr-xdg-activation-v1-struct))
+               (token ,(bs:pointer %wlr-xdg-activation-token-v1-struct))
+               (surface ,(bs:pointer %wlr-surface-struct)))))
+
 (define-public WLR_LED_COUNT 3)
 (define-public WLR_MODIFIER_COUNT 8)
 (define-public WLR_KEYBOARD_KEYS_CAP 32)

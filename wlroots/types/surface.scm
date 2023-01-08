@@ -1,5 +1,6 @@
 (define-module (wlroots types surface)
   #:use-module (wlroots util box)
+  #:use-module (wlroots time)
   #:use-module (wlroots util addon)
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
@@ -18,6 +19,7 @@
             wlr-surface-has-buffer
             wlr-surface-send-enter
             wlr-surface-send-leave
+            wlr-surface-send-frame-done
             wlr-surface-get-root-surface
             .resource
             .renderer
@@ -51,3 +53,7 @@
 (define-wlr-procedure (wlr-surface-send-leave surface output)
   (ffi:void "wlr_surface_send_leave" '(* *))
   (% (unwrap-wlr-surface surface) (unwrap-wlr-output output)))
+
+(define-wlr-procedure (wlr-surface-send-frame-done surface timespec)
+  (ffi:void "wlr_surface_send_frame_done" '(* *))
+  (% (unwrap-wlr-surface surface) (unwrap-timespec timespec)))

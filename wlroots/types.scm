@@ -473,6 +473,16 @@
                (paths ,%wl-array-struct)
                (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-input-inhibit-manager-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (active-client ,(bs:pointer %wl-client-struct))
+               (active-inhibitor ,(bs:pointer %wl-resource-struct))
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((activate ,%wl-signal-struct)
+                                     (deactivate ,%wl-signal-struct)
+                                     (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-input-device-type-enum
   (bs:enum '((WLR_INPUT_DEVICE_KEYBOARD 0)
              (WLR_INPUT_DEVICE_POINTER 1)

@@ -22,6 +22,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/tablet-tool.scm   \
  %D%/types/tablet-pad.scm   \
  %D%/types/input-device.scm  \
+ %D%/types/input-inhibitor.scm \
  %D%/types/seat.scm          \
  %D%/types/data-device.scm   \
  %D%/types/compositor.scm    \

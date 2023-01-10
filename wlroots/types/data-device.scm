@@ -11,15 +11,15 @@
   #:use-module (oop goops)
   #:re-export (%wlr-drag-struct
                %wlr-data-source-struct
-               %wlr-drap-icon-struct)
+               %wlr-drag-icon-struct)
   #:export (<wlr-drag>
             <wlr-drop-icon>
             wrap-wlr-data-source
             unwrap-wlr-data-source
             wrap-wlr-data-device-manager
             unwrap-wlr-data-device-manager
-            wrap-wlr-drap-icon
-            unwrap-wlr-drap-icon
+            wrap-wlr-drag-icon
+            unwrap-wlr-drag-icon
             wrap-wlr-drag
             unwrap-wlr-drag
             wlr-data-device-manager-create
@@ -67,12 +67,12 @@
 (define-wlr-types-class wlr-data-source ()
   #:descriptor %wlr-data-source-struct)
 
-(define-wlr-types-class wlr-drap-icon ()
+(define-wlr-types-class wlr-drag-icon ()
   (drag    #:allocation #:bytestructure #:accessor .drag   )
   (surface #:allocation #:bytestructure #:accessor .surface)
   (mapped  #:allocation #:bytestructure #:accessor .mapped )
   (data    #:allocation #:bytestructure #:accessor .data   )
-  #:descriptor %wlr-drap-icon-struct)
+  #:descriptor %wlr-drag-icon-struct)
 
 (define-wlr-types-class wlr-data-device-manager ()
   #:descriptor %wlr-data-device-manager-struct)

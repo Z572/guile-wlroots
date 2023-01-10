@@ -996,7 +996,7 @@
                (current-dnd-action ,int32)
                (compositor-action ,uint32)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
-(define-public %wlr-drap-icon-struct
+(define-public %wlr-drag-icon-struct
   (bs:struct `((drag ,(bs:pointer (delay %wlr-drag-struct)))
                (surface ,(bs:pointer %wlr-surface-struct))
                (mapped ,stdbool)
@@ -1013,7 +1013,7 @@
                (seat ,(bs:pointer (delay %wlr-seat-struct)))
                (seat-client ,(bs:pointer (delay %wlr-seat-client-struct)))
                (focus-client ,(bs:pointer (delay %wlr-seat-client-struct)))
-               (icon ,(bs:pointer %wlr-drap-icon-struct))
+               (icon ,(bs:pointer %wlr-drag-icon-struct))
                (focus ,(bs:pointer %wlr-surface-struct))
                (source ,(bs:pointer %wlr-data-source-struct))
                (started ,stdbool)

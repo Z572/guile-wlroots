@@ -5,6 +5,7 @@
   #:use-module (wayland listener)
   #:use-module (wayland list)
   #:use-module (bytestructures guile)
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots types)
   #:use-module (wlroots types surface)
   #:use-module (wlroots utils)
@@ -23,7 +24,7 @@
             wrap-wlr-drag
             unwrap-wlr-drag
             wlr-data-device-manager-create
-
+            wlr-data-source-destroy
             .drag
             .surface
             .mapped
@@ -81,3 +82,8 @@
 (define-wlr-procedure (wlr-data-device-manager-create display)
   ('* "wlr_data_device_manager_create" '(*))
   (wrap-wlr-data-device-manager (% (unwrap-wl-display display))))
+
+(define-wlr-procedure (wlr-data-source-destroy source)
+  (ffi:void "wlr_data_source_destroy" '(*))
+  (% (unwrap-wlr-data-source source)))
+

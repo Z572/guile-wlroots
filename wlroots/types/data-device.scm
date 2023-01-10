@@ -4,6 +4,7 @@
   #:use-module (wayland signal)
   #:use-module (wayland listener)
   #:use-module (wayland list)
+  #:autoload (wlroots types seat) (unwrap-wlr-seat)
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots types)
@@ -25,6 +26,7 @@
             unwrap-wlr-drag
             wlr-data-device-manager-create
             wlr-data-source-destroy
+            wlr-seat-start-pointer-drag
             .drag
             .surface
             .mapped
@@ -87,3 +89,6 @@
   (ffi:void "wlr_data_source_destroy" '(*))
   (% (unwrap-wlr-data-source source)))
 
+(define-wlr-procedure (wlr-seat-start-pointer-drag seat drag serial)
+  (ffi:void "wlr_seat_start_pointer_drag" `(* * ,ffi:uint32))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-drag drag) serial))

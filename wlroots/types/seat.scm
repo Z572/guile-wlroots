@@ -15,15 +15,7 @@
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:use-module (bytestructures guile)
-  #:use-module ((system foreign) #:select ((uint32 . ffi:uint32)
-                                           (int32 . ffi:int32)
-                                           (float . ffi:float)
-                                           (int . ffi:int)
-                                           (void . ffi:void)
-                                           (double . ffi:double)
-                                           pointer-address
-                                           %null-pointer
-                                           string->pointer))
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:duplicates (merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-seat-keyboard-grab-struct
@@ -54,35 +46,36 @@
             wlr-seat-keyboard-notify-modifiers
             wlr-seat-keyboard-send-key
             wlr-seat-validate-pointer-grab-serial
-            .serial
-            .selection-serial
-            .pointer-state
-            .seat
-            .focused-client
-            .focused-surface
-            .sx
-            .sy
+            .accumulated-capabilities
+            .buttons
             .capabilities
-            .selection-offers
-            .last-event
+            .count
+            .data-devices
+            .default-grab
             .display
             .drag
-            .name
-            .accumulated-capabilities
-            .primary-selection-source
-            .primary-selection-serial
-            .keyboard-state
-            .touch-state
             .drag-serial
-            .grab-serial
-            .grab
-            .default-grab
-            .needs-touch-frame
-            .data-devices
             .end
-            .buttons
-            .count
-            .source))
+            .focused-client
+            .focused-surface
+            .grab
+            .grab-serial
+            .keyboard-state
+            .last-event
+            .name
+            .needs-touch-frame
+            .origin
+            .pointer-state
+            .primary-selection-serial
+            .primary-selection-source
+            .seat
+            .selection-offers
+            .selection-serial
+            .source
+            .sx
+            .sy
+            .touch-state
+            .serial))
 
 
 (define-wlr-types-class wlr-seat-touch-state ()
@@ -113,6 +106,11 @@
   #:descriptor %wlr-seat-pointer-request-set-cursor-event-struct)
 
 
+(define-wlr-types-class wlr-seat-request-start-drag-event ()
+  (drag #:accessor .drag)
+  (origin #:accessor .origin)
+  (serial #:accessor .serial)
+  #:descriptor %wlr-seat-request-start-drag-event-struct)
 
 (define-wlr-types-class-public wlr-seat-pointer-state ()
   (seat #:allocation #:bytestructure #:accessor .seat)
@@ -158,7 +156,7 @@
   ('* "wlr_seat_create" '(* *))
   (wrap-wlr-seat
    (% (unwrap-wl-display display)
-      (string->pointer name ))))
+      (ffi:string->pointer name))))
 (define-wlr-procedure (wlr-seat-pointer-notify-frame seat)
   (ffi:void "wlr_seat_pointer_notify_frame" '(*))
   (% (unwrap-wlr-seat seat)))

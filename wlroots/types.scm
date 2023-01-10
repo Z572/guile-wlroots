@@ -966,6 +966,11 @@
   (bs:struct `((source ,(bs:pointer (delay %wlr-data-source-struct)))
                (serial ,uint32))))
 
+(define-public %wlr-seat-request-start-drag-event-struct
+  (bs:struct `((drag ,(bs:pointer (delay %wlr-drag-struct)))
+               (origin ,(bs:pointer (delay %wlr-surface-struct)))
+               (serial ,uint32))))
+
 (define-public %wlr-idle-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (idle-timers ,%wl-list-struct)

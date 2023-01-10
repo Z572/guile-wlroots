@@ -53,6 +53,7 @@
             wlr-seat-keyboard-notify-key
             wlr-seat-keyboard-notify-modifiers
             wlr-seat-keyboard-send-key
+            wlr-seat-validate-pointer-grab-serial
             .serial
             .selection-serial
             .pointer-state
@@ -191,3 +192,6 @@
   (ffi:void "wlr_seat_keyboard_send_key"
             (list '* ffi:uint32 ffi:uint32 ffi:uint32))
   (% (unwrap-wlr-seat seat) time-msec key state))
+(define-wlr-procedure (wlr-seat-validate-pointer-grab-serial seat origin serial)
+  (ffi:int8 "wlr_seat_validate_pointer_grab_serial" `(* * ,ffi:uint32))
+  (not (zero? (% (unwrap-wlr-seat seat) (unwrap-wlr-surface origin) serial))))

@@ -50,6 +50,7 @@
 
             wlr-scene-node-set-enabled
             wlr-scene-node-reparent
+            wlr-scene-surface-create
             wlr-scene-rect-create
             wlr-scene-rect-set-size
             wlr-scene-rect-set-color
@@ -178,6 +179,12 @@
 (define-wlr-procedure (wlr-scene-node-lower-to-bottom node)
   (ffi:void "wlr_scene_node_lower_to_bottom" '(*))
   (% (unwrap-wlr-scene-node node)))
+
+(define-wlr-procedure (wlr-scene-surface-create parent surface)
+  ('* "wlr_scene_surface_create" '(* *))
+  (wrap-wlr-scene-surface
+   (% (unwrap-wlr-scene-node parent)
+      (unwrap-wlr-surface surface) )))
 
 (define-wlr-procedure (wlr-scene-rect-create parent width height color)
   ('* "wlr_scene_rect_create" (list '* ffi:int ffi:int '*))

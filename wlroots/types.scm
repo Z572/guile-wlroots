@@ -603,6 +603,15 @@
 (define-public %wlr-scene-tree-struct
   (bs:struct `((node ,%wlr-scene-node-struct))))
 
+(define-public %wlr-scene-surface-struct
+  (bs:struct `((node ,%wlr-scene-node-struct)
+               (surface ,%wlr-surface-struct)
+               (primary-output ,%wlr-output-struct)
+               (prev-width ,int)
+               (prev-height ,int)
+               (surface-destroy ,%wl-listener-struct)
+               (surface-commit ,%wl-listener-struct))))
+
 (define-public %wlr-scene-struct
   (bs:struct `((node ,%wlr-scene-node-struct)
                (outputs ,%wl-list-struct)

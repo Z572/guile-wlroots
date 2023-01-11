@@ -63,17 +63,21 @@
             wlr-scene-subsurface-tree-create
             wrap-wlr-scene-node-state
             unwrap-wlr-scene-node-state
-            .node
-            .parent
-            .state
+            .data
             .enabled
-            .x
             .output
-            .type
-            .scene
+            .parent
+            .prev-height
             .prev-scanout
+            .prev-width
+            .primary-output
+            .scene
+            .state
+            .surface
+            .type
+            .x
             .y
-            .data))
+            .node))
 
 (define-wlr-types-class wlr-scene-node-state ()
   (enabled #:accessor .enabled #:allocation #:bytestructure)
@@ -92,6 +96,14 @@
   (node #:allocation #:bytestructure
         #:accessor .node)
   #:descriptor %wlr-scene-tree-struct)
+
+(define-wlr-types-class wlr-scene-surface ()
+  (node #:accessor .node)
+  (surface #:accessor .surface)
+  (primary-output #:accessor .primary-output)
+  (prev-width #:getter .prev-width)
+  (prev-height #:getter .prev-height)
+  #:descriptor  %wlr-scene-surface-struct)
 
 (define-wlr-types-class wlr-scene-buffer ()
   (node #:accessor .node

@@ -332,6 +332,13 @@
                (mode-resources ,%wl-list-struct)
                (output-destroy ,%wl-listener-struct))))
 
+(define-public %wlr-output-configuration-head-v1-struct
+  (bs:struct `((state ,%wlr-output-head-v1-state-struct)
+               (config ,(bs:pointer %wlr-output-configuration-v1-struct))
+               (link ,%wl-list-struct)
+               (resource ,(bs:pointer %wl-resource-struct))
+               (output-destroy ,%wl-listener-struct))))
+
 (define-public %wlr-output-layout-struct
   (bs:struct
    `((outputs ,%wl-list-struct)

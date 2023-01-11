@@ -7,6 +7,7 @@
   #:use-module (wayland signal)
   #:use-module (wayland util)
   #:use-module (wlroots types)
+  #:use-module (wlroots types output)
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
   #:re-export (%wlr-output-manager-v1-struct)
@@ -19,14 +20,38 @@
             unwrap-wlr-output-configuration-v1
 
             wlr-output-manager-v1-create
+            wlr-output-configuration-head-v1-create
             wlr-output-configuration-v1-create
-            wlr-output-manager-v1-set-configuration))
+            wlr-output-manager-v1-set-configuration
+            .output
+            .enabled
+            .mode
+            .x
+            .y
+            .scale
+            .state
+            .resource))
 
 (define-wlr-types-class wlr-output-manager-v1 ()
   #:descriptor %wlr-output-manager-v1-struct)
 
 (define-wlr-types-class wlr-output-configuration-v1 ()
   #:descriptor %wlr-output-configuration-v1-struct)
+
+(define-wlr-types-class wlr-output-head-v1-state ()
+  (output #:accessor .output)
+  (enabled #:accessor .enabled)
+  (mode #:accessor .mode)
+  (x #:accessor .x)
+  (y #:accessor .y)
+  (scale #:accessor .scale)
+  #:descriptor %wlr-output-head-v1-state-struct)
+
+(define-wlr-types-class wlr-output-configuration-head-v1 ()
+  (state #:accessor .state)
+  (config #:accessor .config)
+  (resource #:accessor .resource)
+  #:descriptor %wlr-output-configuration-head-v1-struct)
 
 (define-wlr-procedure (wlr-output-manager-v1-create display)
   ('* "wlr_output_manager_v1_create" (list '*))
@@ -40,3 +65,7 @@
 (define-wlr-procedure (wlr-output-configuration-v1-create)
   ('* "wlr_output_configuration_v1_create" '())
   (wrap-wlr-output-configuration-v1 (%)))
+(define-wlr-procedure (wlr-output-configuration-head-v1-create config output)
+  ('* "wlr_output_configuration_head_v1_create" '(* *))
+  (wrap-wlr-output-configuration-head-v1
+   (% (unwrap-wlr-output-configuration-v1 config) (unwrap-wlr-output output))))

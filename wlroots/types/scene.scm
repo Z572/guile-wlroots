@@ -72,7 +72,8 @@
             .type
             .scene
             .prev-scanout
-            .y))
+            .y
+            .data))
 
 (define-wlr-types-class wlr-scene-node-state ()
   (enabled #:accessor .enabled #:allocation #:bytestructure)
@@ -82,9 +83,10 @@
   #:descriptor %wlr-scene-node-state-struct)
 
 (define-wlr-types-class wlr-scene-node ()
-  (type #:accessor .type #:allocation #:bytestructure)
-  (parent #:accessor .parent #:allocation #:bytestructure)
-  (state #:accessor .state #:allocation #:bytestructure)
+  (type #:accessor .type)
+  (parent #:accessor .parent)
+  (state #:accessor .state)
+  (data #:accessor .data)
   #:descriptor %wlr-scene-node-struct)
 (define-wlr-types-class wlr-scene-tree ()
   (node #:allocation #:bytestructure

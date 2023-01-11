@@ -591,12 +591,15 @@
              (WLR_SCENE_NODE_SURFACE 2)
              (WLR_SCENE_NODE_RECT 3)
              (WLR_SCENE_NODE_BUFFER 4))))
+
 (define-public %wlr-scene-node-struct
   (bs:struct `((type ,%wlr-scene-node-type-enum)
                (parent ,(bs:pointer (delay %wlr-scene-node-struct)))
                (state ,%wlr-scene-node-state-struct)
                (events
-                ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+                ,(bs:struct `((destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-scene-tree-struct
   (bs:struct `((node ,%wlr-scene-node-struct))))
 

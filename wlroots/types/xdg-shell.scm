@@ -60,7 +60,7 @@
             .pending
             .scheduled-serial
             .popups
-            .rold
+            .role
             .resource))
 
 (eval-when (expand load eval)
@@ -121,17 +121,17 @@
   (wrap-wlr-xdg-shell
    (% (unwrap-wl-display display))))
 (define-wlr-types-class wlr-xdg-surface ()
-  (resource #:allocation #:bytestructure #:accessor .resource)
-  (role #:allocation #:bytestructure #:accessor .rold )
-  (popups #:allocation #:bytestructure #:accessor .popups)
-  (added #:allocation #:bytestructure #:accessor .added)
-  (configured #:allocation #:bytestructure #:accessor .configured)
-  (mapped #:allocation #:bytestructure #:accessor .mapped)
+  (resource #:accessor .resource)
+  (role #:accessor .role )
+  (popups #:accessor .popups)
+  (added  #:accessor .added)
+  (configured #:accessor .configured)
+  (mapped #:accessor .mapped)
 
-  (scheduled-serial #:allocation #:bytestructure #:accessor .scheduled-serial)
+  (scheduled-serial #:accessor .scheduled-serial)
 
-  (current #:allocation #:bytestructure #:accessor .current)
-  (pending #:allocation #:bytestructure #:accessor .pending)
+  (current #:accessor .current)
+  (pending #:accessor .pending)
   #:descriptor %wlr-xdg-surface-struct)
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)

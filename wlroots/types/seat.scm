@@ -15,6 +15,7 @@
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:use-module (bytestructures guile)
+  #:use-module ((bytestructure-class) #:select (bs:enum->integer))
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:duplicates (merge-generics replace warn-override-core warn last)
@@ -29,6 +30,7 @@
   #:export (wrap-wlr-seat
             unwrap-wlr-seat
             wlr-seat-create
+            wlr-seat-pointer-notify-button
             wlr-seat-pointer-notify-frame
             WLR_POINTER_BUTTONS_CAP
 
@@ -157,6 +159,14 @@
   (wrap-wlr-seat
    (% (unwrap-wl-display display)
       (ffi:string->pointer name))))
+
+(define-wlr-procedure (wlr-seat-pointer-notify-button seat time_msec button state)
+  (ffi:uint32 "wlr_seat_pointer_notify_button" (list '* ffi:uint32 ffi:uint32 ffi:int))
+  (% (unwrap-wlr-seat seat)
+     time_msec
+     button
+     (bs:enum->integer %wlr-button-state-enum state)))
+
 (define-wlr-procedure (wlr-seat-pointer-notify-frame seat)
   (ffi:void "wlr_seat_pointer_notify_frame" '(*))
   (% (unwrap-wlr-seat seat)))

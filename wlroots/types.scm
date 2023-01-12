@@ -724,12 +724,16 @@
                (link ,%wl-list-struct)
                (ping-serial ,uint32)
                (ping-timer ,(bs:pointer %wl-event-source-struct)))))
+(define %wlr-xdg-surface-role-enum
+  (bs:enum '(WLR_XDG_SURFACE_ROLE_NONE
+             WLR_XDG_SURFACE_ROLE_TOPLEVEL
+             WLR_XDG_SURFACE_ROLE_POPUP)))
 (define-public %wlr-xdg-surface-struct
   (bs:struct `((client ,(bs:pointer %wlr-xdg-client-struct))
                (resource ,(bs:pointer %wl-resource-struct))
                (surface ,(bs:pointer '*))
                (link ,%wl-list-struct)
-               (role ,int)
+               (role ,%wlr-xdg-surface-role-enum)
                (union ,(bs:union
                         `((toplevel
                            ,(bs:pointer

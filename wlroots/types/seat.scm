@@ -30,6 +30,7 @@
   #:export (wrap-wlr-seat
             unwrap-wlr-seat
             wlr-seat-create
+            wlr-seat-destroy
             wlr-seat-pointer-notify-button
             wlr-seat-pointer-notify-frame
             WLR_POINTER_BUTTONS_CAP
@@ -159,6 +160,10 @@
   (wrap-wlr-seat
    (% (unwrap-wl-display display)
       (ffi:string->pointer name))))
+
+(define-wlr-procedure (wlr-seat-destroy seat)
+  (ffi:void "wlr_seat_destroy" '(*))
+  (% (unwrap-wlr-seat seat)))
 
 (define-wlr-procedure (wlr-seat-pointer-notify-button seat time_msec button state)
   (ffi:uint32 "wlr_seat_pointer_notify_button" (list '* ffi:uint32 ffi:uint32 ffi:int))

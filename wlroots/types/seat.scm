@@ -3,6 +3,7 @@
   #:use-module (wayland display)
   #:use-module (wayland client)
   #:use-module (wayland signal)
+  #:use-module (wayland protocol)
   #:use-module (wayland listener)
   #:use-module (srfi srfi-26)
   ;; #:use-module (wlroots render renderer)
@@ -33,6 +34,7 @@
             wlr-seat-create
             wlr-seat-destroy
             wlr-seat-client-for-wl-client
+            wlr-seat-set-capabilities
             wlr-seat-pointer-notify-button
             wlr-seat-pointer-notify-frame
             WLR_POINTER_BUTTONS_CAP
@@ -46,7 +48,6 @@
             wrap-wlr-seat-client
             unwrap-wlr-seat-client
             wlr-seat-pointer-notify-axis
-            wlr-seat-set-capabilities
             wlr-seat-keyboard-notify-key
             wlr-seat-keyboard-notify-modifiers
             wlr-seat-keyboard-send-key
@@ -171,6 +172,16 @@
   ('* "wlr_seat_client_for_wl_client" '(* *))
   (wrap-wlr-seat-client (% (unwrap-wlr-seat (unwrap-wl-client wl-client)))))
 
+(define-wlr-procedure (wlr-seat-set-capabilities seat capabilities)
+  (ffi:void "wlr_seat_set_capabilities" (list '* ffi:uint32))
+  (let ((cap (if (list? capabilities)
+                 (apply logior (map (cut bs:enum->integer
+                                         %wl-seat-capability-enum <>)
+                                    capabilities))
+                 capabilities)))
+
+    (% (unwrap-wlr-seat seat) cap)))
+
 (define-wlr-procedure (wlr-seat-pointer-notify-button seat time_msec button state)
   (ffi:uint32 "wlr_seat_pointer_notify_button" (list '* ffi:uint32 ffi:uint32 ffi:int))
   (% (unwrap-wlr-seat seat)
@@ -193,10 +204,6 @@
 (define-wlr-procedure (wlr-seat-pointer-notify-axis wlr-seat time-msec orientation value value-discrete source)
   (ffi:void "wlr_seat_pointer_notify_axis" (list '* ffi:uint32 ffi:int ffi:double ffi:int32 ffi:int))
   (% (unwrap-wlr-seat wlr-seat) time-msec orientation value value-discrete source))
-
-(define-wlr-procedure (wlr-seat-set-capabilities seat capabilities)
-  (ffi:void "wlr_seat_set_capabilities" `(* ,ffi:uint32))
-  (% (unwrap-wlr-seat seat) capabilities))
 
 (define-wlr-procedure (wlr-seat-keyboard-notify-key seat time-msec key state)
   (ffi:void "wlr_seat_keyboard_notify_key"

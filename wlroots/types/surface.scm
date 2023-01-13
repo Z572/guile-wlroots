@@ -25,7 +25,8 @@
             .renderer
             .buffer
             .sx
-            .sy))
+            .sy
+            .data))
 
 
 (define-wlr-types-class-public wlr-surface ()
@@ -34,6 +35,7 @@
   (buffer #:accessor .buffer)
   (sx #:accessor .sx)
   (sy #:accessor .sy)
+  (data #:accessor .data)
   #:descriptor %wlr-surface-struct)
 
 (define-wlr-procedure (wlr-surface-has-buffer surface)

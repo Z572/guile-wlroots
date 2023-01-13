@@ -1,6 +1,7 @@
 (define-module (wlroots types seat)
   #:use-module (wayland list)
   #:use-module (wayland display)
+  #:use-module (wayland client)
   #:use-module (wayland signal)
   #:use-module (wayland listener)
   #:use-module (srfi srfi-26)
@@ -31,6 +32,7 @@
             unwrap-wlr-seat
             wlr-seat-create
             wlr-seat-destroy
+            wlr-seat-client-for-wl-client
             wlr-seat-pointer-notify-button
             wlr-seat-pointer-notify-frame
             WLR_POINTER_BUTTONS_CAP
@@ -164,6 +166,10 @@
 (define-wlr-procedure (wlr-seat-destroy seat)
   (ffi:void "wlr_seat_destroy" '(*))
   (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-client-for-wl-client seat wl-client)
+  ('* "wlr_seat_client_for_wl_client" '(* *))
+  (wrap-wlr-seat-client (% (unwrap-wlr-seat (unwrap-wl-client wl-client)))))
 
 (define-wlr-procedure (wlr-seat-pointer-notify-button seat time_msec button state)
   (ffi:uint32 "wlr_seat_pointer_notify_button" (list '* ffi:uint32 ffi:uint32 ffi:int))

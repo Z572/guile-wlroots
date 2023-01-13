@@ -169,7 +169,7 @@
          (value (% (get-pointer node) lx ly nx ny)))
     (and (not (ffi:null-pointer? value))
          (values
-          (wrap-wlr-scene-node values)
+          (wrap-wlr-scene-node value)
           `(,(ref-double-pointer nx) .
             ,(ref-double-pointer ny))))))
 

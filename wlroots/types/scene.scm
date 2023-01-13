@@ -51,6 +51,7 @@
             wlr-scene-node-set-enabled
             wlr-scene-node-reparent
             wlr-scene-surface-create
+            wlr-scene-surface-from-node
             wlr-scene-rect-create
             wlr-scene-rect-set-size
             wlr-scene-rect-set-color
@@ -185,6 +186,10 @@
   (wrap-wlr-scene-surface
    (% (unwrap-wlr-scene-node parent)
       (unwrap-wlr-surface surface) )))
+
+(define-wlr-procedure (wlr-scene-surface-from-node node)
+  ('* "wlr_scene_surface_from_node" '(*))
+  (wrap-wlr-scene-surface (% (unwrap-wlr-scene-node node))))
 
 (define-wlr-procedure (wlr-scene-rect-create parent width height color)
   ('* "wlr_scene_rect_create" (list '* ffi:int ffi:int '*))

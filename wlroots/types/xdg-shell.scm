@@ -55,13 +55,20 @@
             .title
             .ping-timeout
             .data
+            .surface
             .geometry
             .configure-serial
             .pending
             .scheduled-serial
             .popups
             .role
-            .resource))
+            .resource
+            .shell
+            .client
+            .surfaces
+            .link
+            .ping-serial
+            .ping-timer))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -120,8 +127,21 @@
   ('* "wlr_xdg_shell_create" '(*))
   (wrap-wlr-xdg-shell
    (% (unwrap-wl-display display))))
-(define-wlr-types-class wlr-xdg-surface ()
+
+(define-wlr-types-class wlr-xdg-client ()
+  (shell #:accessor .shell)
   (resource #:accessor .resource)
+  (client #:accessor .client)
+  (surfaces #:accessor .surfaces)
+  (link #:accessor .link)
+  (ping-serial #:accessor .ping-serial)
+  (ping-timer #:accessor .ping-timer)
+  #:descriptor %wlr-xdg-client-struct)
+
+(define-wlr-types-class wlr-xdg-surface ()
+  (client #:accessor .client)
+  (resource #:accessor .resource)
+  (surface #:accessor .surface)
   (role #:accessor .role )
   (popups #:accessor .popups)
   (added  #:accessor .added)
@@ -132,6 +152,7 @@
 
   (current #:accessor .current)
   (pending #:accessor .pending)
+  (data #:accessor .data)
   #:descriptor %wlr-xdg-surface-struct)
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)

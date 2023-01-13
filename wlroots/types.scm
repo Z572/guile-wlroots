@@ -731,7 +731,7 @@
 (define-public %wlr-xdg-surface-struct
   (bs:struct `((client ,(bs:pointer %wlr-xdg-client-struct))
                (resource ,(bs:pointer %wl-resource-struct))
-               (surface ,(bs:pointer '*))
+               (surface ,(bs:pointer %wlr-surface-struct))
                (link ,%wl-list-struct)
                (role ,%wlr-xdg-surface-role-enum)
                (union ,(bs:union

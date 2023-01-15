@@ -20,7 +20,7 @@
   #:use-module ((bytestructure-class) #:select (bs:enum->integer))
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
-  #:duplicates (merge-generics replace warn-override-core warn last)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-seat-keyboard-grab-struct
                %wlr-seat-pointer-grab-struct
                %wlr-seat-touch-grab-struct
@@ -50,6 +50,7 @@
             wlr-seat-pointer-notify-axis
             wlr-seat-keyboard-notify-key
             wlr-seat-keyboard-notify-modifiers
+            wlr-seat-keyboard-notify-enter
             wlr-seat-keyboard-send-key
             wlr-seat-validate-pointer-grab-serial
             .accumulated-capabilities
@@ -213,6 +214,19 @@
 (define-wlr-procedure (wlr-seat-keyboard-notify-modifiers seat modifiers)
   (ffi:void "wlr_seat_keyboard_notify_modifiers" '(* *))
   (% (unwrap-wlr-seat seat) (unwrap-wlr-keyboard-modifiers modifiers)))
+
+(define-wlr-procedure (wlr-seat-keyboard-notify-enter
+                       seat surface keycodes num-keycodes modifiers)
+  (ffi:void "wlr_seat_keyboard_notify_enter" `(* * * ,ffi:size_t *))
+  (% (unwrap-wlr-seat seat)
+     (unwrap-wlr-surface surface)
+     (if keycodes
+         (bytestructure->pointer
+          (bytestructure (bs:vector (length keycodes) uint32)
+                         (list->vector keycodes)))
+         ffi:%null-pointer)
+     num-keycodes
+     (unwrap-wlr-keyboard-modifiers modifiers)))
 
 (define-wlr-procedure (wlr-seat-keyboard-send-key seat time-msec key state)
   (ffi:void "wlr_seat_keyboard_send_key"

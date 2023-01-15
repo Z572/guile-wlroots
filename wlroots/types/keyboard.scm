@@ -1,6 +1,7 @@
 (define-module (wlroots types keyboard)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
+  #:use-module (xkbcommon xkbcommon)
   #:use-module ((bytestructures guile) #:select (bytestructure-ref))
   #:use-module ((system foreign) #:prefix ffi:)
   #:export (WLR_LED_NUM_LOCK
@@ -17,6 +18,7 @@
             WLR_MODIFIER_MOD5
             wrap-wlr-event-keyboard-key
             unwrap-wlr-event-keyboard-key
+            wlr-keyboard-set-keymap
             wlr-keyboard-set-repeat-info
             wlr-keyboard-get-modifiers
             .keymap-string
@@ -79,6 +81,10 @@
   (update-state #:accessor .update-state)
   (state #:accessor .state)
   #:descriptor %wlr-event-keyboard-key-struct)
+
+(define-wlr-procedure (wlr-keyboard-set-keymap kb keymap)
+  (ffi:int8 "wlr_keyboard_set_keymap" '(* *))
+  (not (zero? (% (unwrap-wlr-keyboard kb) (unwrap-xkb-keymap keymap)))))
 
 (define-wlr-procedure (wlr-keyboard-set-repeat-info kb rate delay)
   (ffi:void "wlr_keyboard_set_repeat_info" `(* ,ffi:int32 ,ffi:int32))

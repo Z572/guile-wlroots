@@ -9,3 +9,4 @@
 - guile
 - [[https://github.com/Z572/guile-wayland][guile-wayland]]
 - [[https://github.com/Z572/util572][util572]]
+- [[https://github.com/Z572/guile-xkbcommon][guile-xkbcommon]]

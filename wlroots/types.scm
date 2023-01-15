@@ -12,6 +12,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (srfi srfi-71)
   #:use-module (srfi srfi-2)
+  #:use-module (xkbcommon xkbcommon)
   #:use-module (wayland signal)
   #:use-module (rnrs bytevectors)
   #:use-module (bytestructure-class)
@@ -382,10 +383,6 @@
 (define-public WLR_MODIFIER_COUNT 8)
 (define-public WLR_KEYBOARD_KEYS_CAP 32)
 
-(define-public xkb_led_index_t uint32)
-(define-public xkb_mod_index_t uint32)
-(define-public xkb_mod_mask_t uint32)
-
 (define-public %wlr-keyboard-modifiers-struct
   (bs:struct `((depressed ,xkb_mod_mask_t)
                (latched ,xkb_mod_mask_t)
@@ -397,8 +394,8 @@
                (keymap-string ,cstring-pointer)
                (keymap-size ,size_t)
                (keymap-fd ,int)
-               (keymap ,(bs:pointer '*))
-               (xkb-state ,(bs:pointer '*))
+               (keymap ,(bs:pointer %xkb-keymap-struct))
+               (xkb-state ,(bs:pointer %xkb-state-struct))
                (led-indexes ,(bs:vector WLR_LED_COUNT xkb_led_index_t))
                (mod-indexes ,(bs:vector WLR_MODIFIER_COUNT xkb_mod_index_t))
                (keycodes ,(bs:vector WLR_KEYBOARD_KEYS_CAP uint32))

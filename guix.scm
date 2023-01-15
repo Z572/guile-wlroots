@@ -141,7 +141,10 @@
                            "/guile-bytestructure-class/guix.scm"))
            (primitive-load
             (string-append (dirname (dirname (current-filename)))
-                           "/util572/guix.scm"))))
+                           "/util572/guix.scm"))
+           (primitive-load
+            (string-append (dirname (dirname (current-filename)))
+                           "/guile-xkbcommon/guix.scm"))))
     (synopsis "")
     (description "")
     (home-page "")

@@ -29,6 +29,8 @@
             .time-msec
             .keycode
             .update-state
+            .keymap
+            .xkb-state
             .state))
 
 (define-wlr-types-class wlr-keyboard-modifiers ()
@@ -40,6 +42,8 @@
 
 (define-wlr-types-class wlr-keyboard ()
   (keymap-string #:accessor .keymap-string)
+  (keymap #:accessor .keymap)
+  (xkb-state #:accessor .xkb-state)
   (keycodes #:allocation #:virtual #:getter .keycodes
             #:slot-ref
             (lambda (o)

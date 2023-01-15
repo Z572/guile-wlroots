@@ -1,6 +1,7 @@
 (define-module (wlroots types keyboard)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
+  #:use-module ((bytestructures guile) #:select (bytestructure-ref))
   #:use-module ((system foreign) #:prefix ffi:)
   #:export (WLR_LED_NUM_LOCK
             WLR_LED_CAPS_LOCK
@@ -18,6 +19,7 @@
             unwrap-wlr-event-keyboard-key
             wlr-keyboard-get-modifiers
             .keymap-string
+            .keycodes
             .depressed
             .latched
             .locked
@@ -37,6 +39,17 @@
 
 (define-wlr-types-class wlr-keyboard ()
   (keymap-string #:accessor .keymap-string)
+  (keycodes #:allocation #:virtual #:getter .keycodes
+            #:slot-ref
+            (lambda (o)
+              (let ((b (bytestructure-ref (get-bytestructure o) 'keycodes)))
+                (let loop ((n 0)
+                           (value '()))
+                  (if (>= n WLR_KEYBOARD_KEYS_CAP)
+                      (reverse value)
+                      (loop (+ n 1)
+                            (cons (bytestructure-ref b n) value))))))
+            #:slot-set! (const #f))
   (modifiers #:accessor .modifiers)
   #:descriptor %wlr-keyboard-struct)
 

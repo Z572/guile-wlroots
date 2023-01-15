@@ -17,6 +17,7 @@
             WLR_MODIFIER_MOD5
             wrap-wlr-event-keyboard-key
             unwrap-wlr-event-keyboard-key
+            wlr-keyboard-set-repeat-info
             wlr-keyboard-get-modifiers
             .keymap-string
             .keycodes
@@ -74,6 +75,10 @@
   (update-state #:accessor .update-state)
   (state #:accessor .state)
   #:descriptor %wlr-event-keyboard-key-struct)
+
+(define-wlr-procedure (wlr-keyboard-set-repeat-info kb rate delay)
+  (ffi:void "wlr_keyboard_set_repeat_info" `(* ,ffi:int32 ,ffi:int32))
+  (% (unwrap-wlr-keyboard kb) rate delay))
 
 (define-wlr-procedure (wlr-keyboard-get-modifiers keyboard)
   (ffi:uint32 "wlr_keyboard_get_modifiers" '(*))

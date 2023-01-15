@@ -163,7 +163,7 @@
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
   ('* "wlr_xdg_surface_from_wlr_surface" '(*))
   (wrap-wlr-xdg-surface
-   (% (unwrap-wlr-xdg-surface surface))))
+   (% (unwrap-wlr-surface surface))))
 
 (define-wlr-procedure (wlr-xdg-toplevel-set-activated surface activated)
   (ffi:uint32 "wlr_xdg_toplevel_set_activated" (list '* ffi:int))

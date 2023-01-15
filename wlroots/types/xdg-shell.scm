@@ -30,6 +30,7 @@
             unwrap-wlr-xdg-popup
             <wlr-xdg-popup>
             wlr-xdg-surface-mapped?
+            wlr-surface-is-xdg-surface
             wlr-xdg-surface-from-wlr-surface
             wlr-xdg-toplevel-set-activated
             wlr-xdg-toplevel-set-tiled
@@ -154,6 +155,10 @@
   (pending #:accessor .pending)
   (data #:accessor .data)
   #:descriptor %wlr-xdg-surface-struct)
+
+(define-wlr-procedure (wlr-surface-is-xdg-surface surface)
+  (ffi:int8 "wlr_surface_is_xdg_surface" '(*))
+  (not (zero? (% (unwrap-wlr-surface surface)))))
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
   ('* "wlr_xdg_surface_from_wlr_surface" '(*))

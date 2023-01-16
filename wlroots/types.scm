@@ -1059,3 +1059,88 @@
                (seat-client-destroy ,%wl-listener-struct)
                (icon-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-xwayland-struct
+  (bs:struct `((server ,(bs:pointer '*))
+               (xwm ,(bs:pointer '*))
+               (cursor ,(bs:pointer '*))
+               (display-name ,cstring-pointer*)
+               (wl-display ,(bs:pointer %wl-display-struct))
+               (compositor ,(bs:pointer %wlr-compositor-struct))
+               (seat ,(bs:pointer %wlr-seat-struct))
+               (events ,(bs:struct
+                         (map (lambda (a) (list a %wl-signal-struct))
+                              '(ready
+                                new-surface
+                                remove-startup-info))))
+               (user-event-handler ,(bs:pointer '*))
+               (server-ready ,%wl-listener-struct)
+               (server-destroy ,%wl-listener-struct)
+               (seat-destroy ,%wl-listener-struct)
+               (data ,(bs:pointer 'void)))))
+(define-public %wlr-xwayland-surface-struct
+  (bs:struct `((window-id ,uint32)
+               (xwm ,(bs:pointer '*))
+               (surface-id ,uint32)
+               (link ,%wl-list-struct)
+               (stack-link ,%wl-list-struct)
+               (unpaired-link ,%wl-list-struct)
+               (surface ,(bs:pointer %wlr-surface-struct))
+               (x ,int16)
+               (y ,int16)
+               (width ,uint16)
+               (height ,uint16)
+               (override-redirect ,stdbool)
+               (mapped ,stdbool)
+               (title ,cstring-pointer*)
+               (class ,cstring-pointer*)
+               (instance ,cstring-pointer*)
+               (role ,cstring-pointer*)
+               (startup-id ,cstring-pointer*)
+               (pid ,int)                   ;; pid_t
+               (has-utf8-title ,stdbool)
+               (children ,%wl-list-struct)
+               (parent ,(bs:pointer (delay %wlr-xwayland-surface-struct)))
+               (parent-link ,%wl-list-struct)
+               (window-type ,(bs:pointer '*))
+               (window-type-len ,size_t)
+               (protocols ,(bs:pointer '*))
+               (protocols-len ,size_t)
+               (decorations ,uint32)
+               (hints ,(bs:pointer '*))
+               (hints-urgency ,uint32)
+               (size-hints ,(bs:pointer '*))
+               (pinging ,stdbool)
+               (ping-timer ,(bs:pointer %wl-event-source-struct))
+               ,@(map (lambda (a) (list a stdbool))
+                      '(modal fullscreen maximized-vert maximized-horz minimized has-alpha))
+               (events ,(bs:struct
+                         (map (lambda (a) (list a %wl-signal-struct))
+                              '(destroy
+                                request-configure
+                                request-move
+                                request-resize
+                                request-minimize
+                                request-maximize
+                                request-fullscreen
+                                request-activate
+
+                                map
+                                unmap
+                                set-title
+                                set-class
+                                set-role
+                                set-parent
+                                set-pid
+                                set-startup-id
+                                set-window-type
+                                set-hints
+                                set-decorations
+                                set-override-redirect
+                                set-geometry
+                                ping-timeout
+
+
+                                ))))
+               (surface-destroy ,%wl-listener-struct)
+               (data ,(bs:pointer 'void)))))

@@ -19,7 +19,6 @@
   #:export (wlr-xdg-shell-create
             wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
-            .base
             wrap-wlr-xdg-surface
             unwrap-wlr-xdg-surface
             wrap-wlr-xdg-toplevel-resize-event
@@ -52,6 +51,10 @@
             .parent
             .current
             .base
+            .committed
+            .seat
+            .positioner
+            .grab-link
             .app-id
             .title
             .ping-timeout
@@ -87,12 +90,16 @@
   #:descriptor %wlr-xdg-surface-state-struct)
 
 (define-wlr-types-class wlr-xdg-popup ()
-  (base #:allocation #:bytestructure
-        #:getter .base)
+  (base #:getter .base)
+  (link #:getter .link)
+  (resource #:getter .resource)
+  (committed #:getter .committed)
+  (parent #:getter .parent)
+  (seat #:getter .seat)
+  (geometry #:getter .geometry)
+  (positioner #:getter .positioner)
+  (grab-link #:getter .grab-link)
   #:descriptor %wlr-xdg-popup-struct)
-
-
-
 
 (define-wlr-types-class-public wlr-xdg-toplevel-state ()
   (maximized  #:allocator #:bytestructure #:accessor .maximized )

@@ -1144,3 +1144,11 @@
                                 ))))
                (surface-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-xwayland-surface-configure-event-struct
+  (bs:struct `((surface ,(bs:pointer %wlr-xwayland-surface-struct))
+               (x ,int16)
+               (y ,int16)
+               (width ,uint16)
+               (height ,uint16)
+               (mask ,uint16))))

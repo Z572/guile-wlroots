@@ -42,6 +42,7 @@
             .stack-link
             .unpaired-link
             .surface
+            .mask
             .x
             .y
             .width
@@ -111,6 +112,15 @@
   (surface-destroy #:accessor .surface-destroy)
   (data #:accessor .data)
   #:descriptor %wlr-xwayland-surface-struct)
+
+(define-wlr-types-class wlr-xwayland-surface-configure-event ()
+  (surface #:accessor .surface)
+  (x #:accessor .x)
+  (y #:accessor .y)
+  (width #:accessor .width)
+  (height #:accessor .height)
+  (mask #:accessor .mask)
+  #:descriptor %wlr-xwayland-surface-configure-event-struct)
 
 (define (wlr-xwayland-display-name x)
   (.display-name x))

@@ -72,7 +72,13 @@
             .surfaces
             .link
             .ping-serial
-            .ping-timer))
+            .ping-timer
+            .width
+            .height
+            .fullscreen-output
+            .fullscreen-output-destroy
+            .requested
+            .scheduled))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -110,13 +116,36 @@
   #:descriptor %wlr-xdg-toplevel-state-struct)
 
 
+(define-wlr-types-class wlr-xdg-toplevel-configure ()
+  (maximized #:accessor .maximized)
+  (fullscreen #:accessor .fullscreen)
+  (resizing #:accessor .resizing)
+  (activated #:accessor .activated)
+  (tiled #:accessor .tiled)
+  (width #:accessor .width)
+  (height #:accessor .height)
+  #:descriptor %wlr-xdg-toplevel-configure-struct)
+
+(define-wlr-types-class wlr-xdg-toplevel-requested ()
+  (maximized #:accessor .maximized)
+  (minimized #:accessor .minimized)
+  (fullscreen #:accessor .fullscreen)
+  (fullscreen-output #:accessor .fullscreen-output)
+  (fullscreen-output-destroy #:accessor .fullscreen-output-destroy)
+  #:descriptor %wlr-xdg-toplevel-requested-struct)
+
 (define-wlr-types-class wlr-xdg-toplevel ()
-  (base #:allocation #:bytestructure #:accessor .base)
-  (added #:allocation #:bytestructure #:accessor .added)
-  (parent #:allocation #:bytestructure #:accessor .parent)
-  (current #:allocation #:bytestructure #:accessor .current)
-  (title #:allocation #:bytestructure #:accessor .title)
-  (app-id #:allocation #:bytestructure #:accessor .app-id)
+  (resource #:accessor .resource)
+  (base  #:accessor .base)
+  (added #:accessor .added)
+  (parent #:accessor .parent)
+  (parent-unmap #:accessor .parent-unmap)
+  (current #:accessor .current)
+  (pending #:accessor .pending)
+  (scheduled #:accessor .scheduled)
+  (requested #:accessor .requested)
+  (title #:accessor .title)
+  (app-id #:accessor .app-id)
   #:descriptor %wlr-xdg-toplevel-struct)
 
 

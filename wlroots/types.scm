@@ -764,12 +764,12 @@
                (serial ,uint32))))
 
 (define-public %wlr-xdg-toplevel-configure-struct
-  (bs:struct `(,@(map (lambda (a) (list a int8))
+  (bs:struct `(,@(map (lambda (a) (list a stdbool))
                       '(maximized fullscreen resizing activated))
                ,@(map (lambda (a) (list a uint32))
-                      '(titled width height)))))
+                      '(tiled width height)))))
 (define-public %wlr-xdg-toplevel-requested-struct
-  (bs:struct `(,@(map (lambda (a) (list a int8))
+  (bs:struct `(,@(map (lambda (a) (list a stdbool))
                       '(maximized minimized fullscreen))
                (fullscreen-output ,(bs:pointer %wlr-output-struct))
                (fullscreen-output-destroy ,%wl-listener-struct))))
@@ -809,8 +809,8 @@
                (pending ,%wlr-xdg-toplevel-state-struct)
                (scheduled ,%wlr-xdg-toplevel-configure-struct)
                (requested ,%wlr-xdg-toplevel-requested-struct)
-               (title ,cstring-pointer)
-               (app-id ,cstring-pointer)
+               (title ,cstring-pointer*)
+               (app-id ,cstring-pointer*)
                (events ,(bs:struct
                          (map (lambda (a) (list a %wl-signal-struct))
                               '(request-maximize

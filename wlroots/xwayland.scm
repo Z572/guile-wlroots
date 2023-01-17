@@ -47,6 +47,7 @@
             .y
             .width
             .height
+            .hints-urgency
             .override-redirect
             .mapped
             .title
@@ -101,6 +102,7 @@
   (children #:accessor .children)
   (parent #:accessor .parent)
   (parent-link #:accessor .parent-link)
+  (hints-urgency #:accessor .hints-urgency)
   (pinging #:accessor .pinging)
   (ping-timer #:accessor .ping-timer)
   (modal #:accessor .modal)

@@ -31,6 +31,7 @@
             wlr-xwayland-surface-from-wlr-surface
             wlr-xwayland-surface-configure
             wlr-xwayland-create
+            wlr-xwayland-surface-activate
             .display-name
             .wl-display
             .compositor
@@ -149,6 +150,10 @@
   (wrap-wlr-xwayland (% (unwrap-wl-display display)
                         (unwrap-wlr-compositor compositor)
                         (if lazy? 1 0))))
+
+(define-wlr-procedure (wlr-xwayland-surface-activate surface activated)
+  (ffi:void "wlr_xwayland_surface_activate" `(* ,ffi:int8))
+  (% (unwrap-wlr-xwayland-surface surface) (if activated 1 0)))
 
 (define-wlr-procedure (wlr-xwayland-surface-close surface)
   (ffi:void "wlr_xwayland_surface_close" (list '*))

@@ -40,7 +40,7 @@
 
 (define-wlr-procedure (wlr-surface-has-buffer surface)
   (ffi:int "wlr_surface_has_buffer" '(*))
-  (= (% (unwrap-wlr-surface surface)) 1))
+  (not (zero? (% (unwrap-wlr-surface surface)))))
 
 (define-wlr-procedure (wlr-surface-get-root-surface surface)
   ('* "wlr_surface_get_root_surface" '(*))

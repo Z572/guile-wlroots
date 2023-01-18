@@ -71,6 +71,8 @@
             .last-event
             .name
             .needs-touch-frame
+            .new-surface
+            .old-surface
             .origin
             .pointer-state
             .primary-selection-serial
@@ -78,11 +80,11 @@
             .seat
             .selection-offers
             .selection-serial
+            .serial
             .source
             .sx
             .sy
-            .touch-state
-            .serial))
+            .touch-state))
 
 
 (define-wlr-types-class wlr-seat-touch-state ()
@@ -158,6 +160,14 @@
   (touch-state #:allocation #:bytestructure #:getter .touch-state)
 
   #:descriptor %wlr-seat-struct)
+
+(define-wlr-types-class wlr-seat-pointer-focus-change-event ()
+  (seat #:accessor .seat)
+  (old-surface #:accessor .old-surface)
+  (new-surface #:accessor .new-surface)
+  (sx #:accessor .sx)
+  (sy #:accessor .sy)
+  #:descriptor %wlr-seat-pointer-focus-change-event-struct)
 
 (define-wlr-procedure (wlr-seat-create display name)
   ('* "wlr_seat_create" '(* *))

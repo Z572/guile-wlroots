@@ -1001,6 +1001,13 @@
                (origin ,(bs:pointer (delay %wlr-surface-struct)))
                (serial ,uint32))))
 
+(define-public %wlr-seat-pointer-focus-change-event-struct
+  (bs:struct `((seat ,(bs:pointer %wlr-seat-struct))
+               (old-surface ,(bs:pointer %wlr-surface-struct))
+               (new-surface ,(bs:pointer %wlr-surface-struct))
+               (sx ,double)
+               (sy ,double))))
+
 (define-public %wlr-idle-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (idle-timers ,%wl-list-struct)

@@ -40,45 +40,51 @@
             wlr-xdg-toplevel-title
             wlr-xdg-toplevel-set-size
             wlr-xdg-popup-unconstrain-from-box
-            .edges
             wlr-xdg-surface-toplevel
             wlr-xdg-surface-get-geometry
             wlr-xdg-surface-for-each-surface
-            .maximized
-            .fullscreen
-            .resizing
             .activated
-            .parent
-            .current
-            .base
-            .committed
-            .seat
-            .positioner
-            .grab-link
             .app-id
-            .title
-            .ping-timeout
-            .data
-            .surface
-            .geometry
-            .configure-serial
-            .pending
-            .scheduled-serial
-            .popups
-            .role
-            .resource
-            .shell
+            .base
             .client
-            .surfaces
-            .link
-            .ping-serial
-            .ping-timer
-            .width
-            .height
+            .committed
+            .configure-serial
+            .current
+            .data
+            .fullscreen
             .fullscreen-output
             .fullscreen-output-destroy
+            .geometry
+            .grab-link
+            .height
+            .height
+            .link
+            .max-height
+            .max-width
+            .maximized
+            .min-height
+            .min-width
+            .parent
+            .pending
+            .ping-serial
+            .ping-timeout
+            .ping-timer
+            .popups
+            .positioner
             .requested
-            .scheduled))
+            .resizing
+            .resource
+            .role
+            .scheduled
+            .scheduled-serial
+            .seat
+            .shell
+            .surface
+            .surfaces
+            .tiled
+            .title
+            .width
+            .edges))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -108,10 +114,17 @@
   #:descriptor %wlr-xdg-popup-struct)
 
 (define-wlr-types-class-public wlr-xdg-toplevel-state ()
-  (maximized  #:allocator #:bytestructure #:accessor .maximized )
-  (fullscreen #:allocator #:bytestructure #:accessor .fullscreen)
-  (resizing   #:allocator #:bytestructure #:accessor .resizing  )
-  (activated  #:allocator #:bytestructure #:accessor .activated )
+  (maximized  #:accessor .maximized )
+  (fullscreen #:accessor .fullscreen)
+  (resizing   #:accessor .resizing  )
+  (activated  #:accessor .activated )
+  (tiled      #:accessor .tiled     )
+  (width      #:accessor .width     )
+  (height     #:accessor .height    )
+  (max-width  #:accessor .max-width )
+  (max-height #:accessor .max-height)
+  (min-width  #:accessor .min-width )
+  (min-height #:accessor .min-height)
 
   #:descriptor %wlr-xdg-toplevel-state-struct)
 

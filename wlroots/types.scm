@@ -1078,6 +1078,20 @@
                (server-destroy ,%wl-listener-struct)
                (seat-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-xwayland-surface-size-hints-struct
+  (bs:struct `((flags ,uint32)
+               ,@(map (lambda (a) (list a int32))
+                      '( x y
+                         width height
+                         min-width min-height
+                         max-width max-height
+                         width-inc height-inc
+                         base-width base-height
+                         min-aspect-num min-aspect-den
+                         max-aspect-num max-aspect-den))
+               (win-gravity ,uint32))))
+
 (define-public %wlr-xwayland-surface-struct
   (bs:struct `((window-id ,uint32)
                (xwm ,(bs:pointer '*))
@@ -1109,7 +1123,7 @@
                (decorations ,uint32)
                (hints ,(bs:pointer '*))
                (hints-urgency ,uint32)
-               (size-hints ,(bs:pointer '*))
+               (size-hints ,(bs:pointer %wlr-xwayland-surface-size-hints-struct))
                (pinging ,stdbool)
                (ping-timer ,(bs:pointer %wl-event-source-struct))
                ,@(map (lambda (a) (list a stdbool))

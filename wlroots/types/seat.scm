@@ -169,6 +169,12 @@
   (sy #:accessor .sy)
   #:descriptor %wlr-seat-pointer-focus-change-event-struct)
 
+(define-wlr-types-class wlr-seat-keyboard-focus-change-event ()
+  (seat #:accessor .seat)
+  (old-surface #:accessor .old-surface)
+  (new-surface #:accessor .new-surface)
+  #:descriptor %wlr-seat-keyboard-focus-change-event-struct)
+
 (define-wlr-procedure (wlr-seat-create display name)
   ('* "wlr_seat_create" '(* *))
   (wrap-wlr-seat

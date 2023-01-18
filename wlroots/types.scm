@@ -1008,6 +1008,11 @@
                (sx ,double)
                (sy ,double))))
 
+(define-public %wlr-seat-keyboard-focus-change-event-struct
+  (bs:struct `((seat ,(bs:pointer %wlr-seat-struct))
+               (old-surface ,(bs:pointer %wlr-surface-struct))
+               (new-surface ,(bs:pointer %wlr-surface-struct)))))
+
 (define-public %wlr-idle-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (idle-timers ,%wl-list-struct)

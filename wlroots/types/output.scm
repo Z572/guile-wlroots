@@ -1,9 +1,5 @@
 (define-module (wlroots types output)
-  #:use-module ((system foreign)
-                #:select ((uint32 . ffi:uint32)
-                          (float . ffi:float)
-                          (int . ffi:int)
-                          (void . ffi:void)))
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots render allocator)
   #:use-module (wlroots render renderer)
   #:use-module (wlroots backend)
@@ -90,12 +86,11 @@
 
 (define .modes wlr-output-modes)
 
-(define wlr-output-init-render
-  (let ((proc (wlr->procedure ffi:int "wlr_output_init_render" '(* * *))))
-    (lambda (output allocator renderer)
-      (proc (unwrap-wlr-output output)
-            (unwrap-wlr-allocator allocator)
-            (unwrap-wlr-renderer renderer)))))
+(define-wlr-procedure (wlr-output-init-render output allocator renderer)
+  (ffi:int8 "wlr_output_init_render" '(* * *))
+  (not (zero? (% (unwrap-wlr-output output)
+                 (unwrap-wlr-allocator allocator)
+                 (unwrap-wlr-renderer renderer)))))
 (define-wlr-procedure (wlr-output-preferred-mode output)
   ('* "wlr_output_preferred_mode" '(*))
   (wrap-wlr-output-mode (% (unwrap-wlr-output output))))

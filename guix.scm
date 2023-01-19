@@ -144,7 +144,10 @@
                            "/util572/guix.scm"))
            (primitive-load
             (string-append (dirname (dirname (current-filename)))
-                           "/guile-xkbcommon/guix.scm"))))
+                           "/guile-xkbcommon/guix.scm"))
+           (primitive-load
+            (string-append (dirname (dirname (current-filename)))
+                           "/guile-libinput/guix.scm"))))
     (synopsis "")
     (description "")
     (home-page "")

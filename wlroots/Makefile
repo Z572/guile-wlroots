@@ -3,6 +3,7 @@ SOURCES = %D%/config.scm     \
  %D%/backend.scm             \
  %D%/backend/session.scm     \
  %D%/backend/wayland.scm     \
+ %D%/backend/x11.scm     \
  %D%/time.scm               \
  %D%/utils.scm               \
  %D%/xwayland.scm            \

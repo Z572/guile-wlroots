@@ -23,8 +23,8 @@
   (wrap-wlr-backend (% (unwrap-wl-display display))))
 
 (define-wlr-procedure (wlr-backend-start backend)
-  (ffi:int "wlr_backend_start" (list '*))
-  (% (unwrap-wlr-backend backend)))
+  (ffi:int8 "wlr_backend_start" (list '*))
+  (not (zero? (% (unwrap-wlr-backend backend)))))
 
 (define-wlr-procedure (wlr-backend-destroy backend)
   (ffi:void "wlr_backend_destroy" (list '*))

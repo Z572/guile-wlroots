@@ -34,36 +34,49 @@
             <wlr-output-cursor>
             wrap-wlr-output-cursor
             unwrap-wlr-output-cursor
+            .adaptive-sync-status
+            .allocator
             .backend
-            .display
-            .name
-            .description
-            .phys-width
-            .phys-height
             .current-mode
-            .width
-            .height
-            .refresh
+            .data
+            .description
+            .display
             .enabled
-            .scale
+            .height
+            .name
+            .needs-frame
             .non-desktop
-            .data))
+            .phys-height
+            .phys-width
+            .refresh
+            .renderer
+            .scale
+            .subpixel
+            .transform
+            .width))
 
 (define-wlr-types-class wlr-output ()
-  (backend      #:allocation #:bytestructure #:accessor .backend)
-  (display      #:allocation #:bytestructure #:accessor .display)
-  (name         #:allocation #:bytestructure #:accessor .name)
-  (description  #:allocation #:bytestructure #:accessor .description)
-  (phys-width   #:allocation #:bytestructure #:accessor .phys-width)
-  (phys-height  #:allocation #:bytestructure #:accessor .phys-height)
-  (current-mode #:allocation #:bytestructure #:accessor .current-mode)
-  (width        #:allocation #:bytestructure #:accessor .width)
-  (height       #:allocation #:bytestructure #:accessor .height)
-  (refresh      #:allocation #:bytestructure #:accessor .refresh)
-  (enabled      #:allocation #:bytestructure #:accessor .enabled)
-  (scale        #:allocation #:bytestructure #:accessor .scale)
-  (non-desktop  #:allocation #:bytestructure #:accessor .non-desktop)
-  (data         #:allocation #:bytestructure #:accessor .data)
+  (backend      #:accessor .backend)
+  (display      #:accessor .display)
+  (name         #:accessor .name)
+  (description  #:accessor .description)
+  (phys-width   #:accessor .phys-width)
+  (phys-height  #:accessor .phys-height)
+  (current-mode #:accessor .current-mode)
+  (width        #:accessor .width)
+  (height       #:accessor .height)
+  (refresh      #:accessor .refresh)
+  (enabled      #:accessor .enabled)
+  (scale        #:accessor .scale)
+  (subpixel     #:accessor .subpixel)
+  (transform    #:accessor .transform)
+  (adaptive-sync-status #:accessor .adaptive-sync-status)
+
+  (needs-frame #:accessor .needs-frame)
+  (non-desktop  #:accessor .non-desktop)
+  (allocator #:accessor .allocator)
+  (renderer #:accessor .renderer)
+  (data         #:accessor .data)
   #:descriptor %wlr-output-struct)
 
 (eval-when (expand load eval)

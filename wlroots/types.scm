@@ -7,6 +7,7 @@
   #:use-module (wayland global)
   #:use-module (wayland client)
   #:use-module (wayland event-loop)
+  #:use-module (wayland protocol)
   #:use-module (wayland resource)
   #:use-module (oop goops)
   #:use-module (srfi srfi-26)
@@ -231,14 +232,18 @@
                     (buffer-height ,int)))))))
 
 
+(define-public %wlr-output-adaptive-sync-status-enum
+  (bs:enum '(WLR_OUTPUT_ADAPTIVE_SYNC_DISABLED
+	         WLR_OUTPUT_ADAPTIVE_SYNC_ENABLED
+	         WLR_OUTPUT_ADAPTIVE_SYNC_UNKNOWN)))
 (define-public %wlr-output-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (backend ,(bs:pointer (delay %wlr-backend-struct)))
                (display ,(bs:pointer (delay %wl-display-struct)))
                (global ,(bs:pointer %wl-global-struct))
                (resources ,%wl-list-struct)
-               (name ,cstring-pointer)
-               (description ,cstring-pointer)
+               (name ,cstring-pointer*)
+               (description ,cstring-pointer*)
                (make ,(bs:vector 56 int8))
                (model ,(bs:vector 16 int8))
                (serial ,(bs:vector 16 int8))
@@ -251,9 +256,9 @@
                (refresh ,int32)
                (enabled ,stdbool)
                (scale ,float)
-               (subpixel ,int32)
-               (transform ,int32)
-               (adaptive-sync-status ,int32)
+               (subpixel ,%wl-output-subpixel-enum)
+               (transform ,%wl-output-transform-enum)
+               (adaptive-sync-status ,%wlr-output-adaptive-sync-status-enum)
                (render-format ,uint32)
                (needs-frame ,stdbool)
                (frame-pending ,stdbool)

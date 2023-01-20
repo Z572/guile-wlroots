@@ -67,6 +67,8 @@
             .focused-surface
             .grab
             .grab-serial
+            .hostpot-x
+            .hostpot-y
             .keyboard-state
             .last-event
             .name
@@ -78,10 +80,12 @@
             .primary-selection-serial
             .primary-selection-source
             .seat
+            .seat-client
             .selection-offers
             .selection-serial
             .serial
             .source
+            .surface
             .sx
             .sy
             .touch-state))
@@ -112,6 +116,11 @@
   #:descriptor %wlr-seat-request-set-selection-event-struct)
 
 (define-wlr-types-class wlr-seat-pointer-request-set-cursor-event ()
+  (seat-client #:accessor .seat-client)
+  (surface #:accessor .surface)
+  (serial #:accessor .serial)
+  (hostpot-x #:accessor .hostpot-x)
+  (hostpot-y #:accessor .hostpot-y)
   #:descriptor %wlr-seat-pointer-request-set-cursor-event-struct)
 
 

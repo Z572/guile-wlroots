@@ -67,8 +67,13 @@
             unwrap-wlr-scene-node-state
             .data
             .enabled
+            .node
             .output
+            .outputs
             .parent
+            .peeding-buffers
+            .presentation
+            .presentation-destroy
             .prev-height
             .prev-scanout
             .prev-width
@@ -78,8 +83,7 @@
             .surface
             .type
             .x
-            .y
-            .node))
+            .y))
 
 (define-wlr-types-class wlr-scene-node-state ()
   (enabled #:accessor .enabled #:allocation #:bytestructure)
@@ -127,8 +131,11 @@
   #:descriptor %wlr-scene-output-struct)
 (define wlr-scene-rect-node .node)
 (define-wlr-types-class wlr-scene ()
-  (node #:allocation #:bytestructure
-        #:accessor .node)
+  (node #:accessor .node)
+  (outputs #:accessor .outputs)
+  (presentation #:accessor .presentation)
+  (presentation-destroy #:accessor .presentation-destroy)
+  (peeding-buffers #:accessor .peeding-buffers)
   #:descriptor %wlr-scene-struct)
 
 (define-wlr-procedure (wlr-scene-create)

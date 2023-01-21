@@ -578,8 +578,7 @@
   (bs:struct `((time-msec ,uint32)
                (keycode ,uint32)
                (update-state ,stdbool)
-               (state ,int32) ;; enum wl_keyboard_key_state
-               )))
+               (state ,%wl-keyboard-key-state-enum))))
 
 (define-public %wlr-scene-node-state-struct
   (bs:struct `((link ,%wl-list-struct)

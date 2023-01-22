@@ -28,6 +28,7 @@
             wlr-xwayland-surface-surface
             wlr-xwayland-surface-set-fullscreen
             wlr-xwayland-surface-mapped?
+            wlr-surface-is-xwayland-surface
             wlr-xwayland-surface-from-wlr-surface
             wlr-xwayland-surface-configure
             wlr-xwayland-create
@@ -210,6 +211,10 @@
 (define-wlr-procedure (wlr-xwayland-surface-set-fullscreen surface fullscreen)
   (ffi:void "wlr_xwayland_surface_set_fullscreen" (list '* ffi:int))
   (% (unwrap-wlr-xwayland-surface surface) (if fullscreen 1 0)))
+
+(define-wlr-procedure (wlr-surface-is-xwayland-surface surface)
+  (ffi:int8 "wlr_surface_is_xwayland_surface" '(*))
+  (not (zero? (% (unwrap-wlr-surface surface)))))
 
 (define-wlr-procedure (wlr-xwayland-surface-from-wlr-surface surface)
   ('* "wlr_xwayland_surface_from_wlr_surface" '(*))

@@ -51,6 +51,7 @@
             wlr-seat-keyboard-notify-key
             wlr-seat-keyboard-notify-modifiers
             wlr-seat-keyboard-notify-enter
+            wlr-seat-get-keyboard
             wlr-seat-keyboard-send-key
             wlr-seat-validate-pointer-grab-serial
             .accumulated-capabilities
@@ -252,6 +253,10 @@
          ffi:%null-pointer)
      num-keycodes
      (unwrap-wlr-keyboard-modifiers modifiers)))
+
+(define-wlr-procedure (wlr-seat-get-keyboard seat)
+  ('* "wlr_seat_get_keyboard" '(*))
+  (wrap-wlr-keyboard (% (unwrap-wlr-seat seat))))
 
 (define-wlr-procedure (wlr-seat-keyboard-send-key seat time-msec key state)
   (ffi:void "wlr_seat_keyboard_send_key"

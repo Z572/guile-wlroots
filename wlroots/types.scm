@@ -1027,6 +1027,25 @@
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-idle-inhibit-manager-v1-struct
+  (bs:struct
+   `((inhibitors ,%wl-list-struct)
+     (global ,(bs:pointer %wl-global-struct))
+     (display-destroy ,(bs:pointer %wl-listener-struct))
+     (events ,(bs:struct
+               `((new-inhibitor ,%wl-signal-struct)
+                 (destroy ,%wl-signal-struct))))
+     (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-idle-inhibitor-v1-struct
+  (bs:struct
+   `((surface ,(bs:pointer %wlr-surface-struct))
+     (resource ,(bs:pointer %wl-resource-struct))
+     (surface-destroy ,(bs:pointer %wl-listener-struct))
+     (link ,%wl-list-struct)
+     (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+     (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-data-device-manager-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))
                (data-sources ,%wl-list-struct)

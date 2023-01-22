@@ -11,6 +11,7 @@
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-layer-shell-v1-struct
                %wlr-layer-surface-v1-struct
                %wlr-layer-surface-v1-state-struct)
@@ -31,6 +32,16 @@
             .current
             .pending
             .data
+            .committed
+            .anchor
+            .exclusive-zone
+            .keyboard-interactive
+            .desired-width
+            .desired-height
+            .layer
+            .configure-serial
+            .actual-width
+            .actual-height
 
             wlr-layer-surface-v1-from-wlr-surface))
 
@@ -51,6 +62,16 @@
   #:descriptor %wlr-layer-surface-v1-struct)
 
 (define-wlr-types-class wlr-layer-surface-v1-state ()
+  (committed #:accessor .committed)
+  (anchor #:accessor .anchor)
+  (exclusive-zone #:accessor .exclusive-zone)
+  (keyboard-interactive #:accessor .keyboard-interactive)
+  (desired-width #:accessor .desired-width)
+  (desired-height #:accessor .desired-height)
+  (layer #:accessor .layer)
+  (configure-serial #:accessor .configure-serial)
+  (actual-width #:accessor .actual-width)
+  (actual-height #:accessor .actual-height)
   #:descriptor %wlr-layer-surface-v1-state-struct)
 
 (define-wlr-procedure (wlr-layer-shell-v1-create display)

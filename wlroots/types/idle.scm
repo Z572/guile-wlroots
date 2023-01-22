@@ -7,6 +7,7 @@
   #:export (<wlr-idle>
             wlr-idle-create
             wlr-idle-notify-activity
+            wlr-idle-set-enabled
             wrap-wlr-idle
             unwrap-wlr-idle
             .global
@@ -33,3 +34,8 @@
   (ffi:void "wlr_idle_notify_activity" '(* *))
   (% (unwrap-wlr-idle idle)
      (unwrap-wlr-seat  seat)))
+(define-wlr-procedure (wlr-idle-set-enabled idle seat enabled)
+  (ffi:void "wlr_idle_set_enabled" `(* * ,ffi:int8))
+  (% (unwrap-wlr-idle idle)
+     (unwrap-wlr-seat seat)
+     (if enabled 1 0)))

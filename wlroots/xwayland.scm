@@ -30,6 +30,7 @@
             wlr-xwayland-surface-mapped?
             wlr-surface-is-xwayland-surface
             wlr-xwayland-surface-from-wlr-surface
+            wlr-xwayland-surface-restack
             wlr-xwayland-surface-configure
             wlr-xwayland-create
             wlr-xwayland-surface-activate
@@ -219,6 +220,12 @@
 (define-wlr-procedure (wlr-xwayland-surface-from-wlr-surface surface)
   ('* "wlr_xwayland_surface_from_wlr_surface" '(*))
   (wrap-wlr-xwayland-surface (% (unwrap-wlr-surface surface))))
+
+(define-wlr-procedure (wlr-xwayland-surface-restack surface sibling mode)
+  (ffi:void "wlr_xwayland_surface_restack" (list '* '* ffi:int32))
+  (% (unwrap-wlr-xwayland-surface surface)
+     (unwrap-wlr-xwayland-surface sibling)
+     mode))
 
 (define-wlr-procedure (wlr-xwayland-surface-configure surface x y width height)
   (ffi:void "wlr_xwayland_surface_configure" (list '*

@@ -28,7 +28,6 @@
             wrap-wlr-xdg-popup
             unwrap-wlr-xdg-popup
             <wlr-xdg-popup>
-            wlr-xdg-surface-mapped?
             wlr-surface-is-xdg-surface
             wlr-xdg-surface-from-wlr-surface
             wlr-xdg-toplevel-set-activated
@@ -36,8 +35,6 @@
             wlr-xdg-toplevel-set-fullscreen
             wlr-xdg-toplevel-set-resizing
             wlr-xdg-toplevel-send-close
-            wlr-xdg-toplevel-appid
-            wlr-xdg-toplevel-title
             wlr-xdg-toplevel-set-size
             wlr-xdg-popup-unconstrain-from-box
             wlr-xdg-surface-toplevel

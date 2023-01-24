@@ -207,7 +207,8 @@
 
 (define-wlr-procedure (wlr-surface-is-xdg-surface surface)
   (ffi:int8 "wlr_surface_is_xdg_surface" '(*))
-  (not (zero? (% (unwrap-wlr-surface surface)))))
+  (and (wlr-surface? surface)
+       (not (zero? (% (unwrap-wlr-surface surface))))))
 
 (define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
   ('* "wlr_xdg_surface_from_wlr_surface" '(*))

@@ -51,6 +51,7 @@
             wlr-seat-keyboard-notify-key
             wlr-seat-keyboard-notify-modifiers
             wlr-seat-keyboard-notify-enter
+            wlr-seat-keyboard-notify-clear-focus
             wlr-seat-get-keyboard
             wlr-seat-keyboard-send-key
             wlr-seat-validate-pointer-grab-serial
@@ -253,6 +254,10 @@
          ffi:%null-pointer)
      num-keycodes
      (unwrap-wlr-keyboard-modifiers modifiers)))
+
+(define-wlr-procedure (wlr-seat-keyboard-notify-clear-focus seat)
+  (ffi:void "wlr_seat_keyboard_notify_clear_focus" '(*))
+  (% (unwrap-wlr-seat seat)))
 
 (define-wlr-procedure (wlr-seat-get-keyboard seat)
   ('* "wlr_seat_get_keyboard" '(*))

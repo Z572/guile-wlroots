@@ -32,7 +32,10 @@
             .keycode
             .update-state
             .keymap
+            .keymap-size
+            .num-keycodes
             .xkb-state
+            .data
             .state))
 
 (define-wlr-types-class wlr-keyboard-modifiers ()
@@ -44,6 +47,8 @@
 
 (define-wlr-types-class wlr-keyboard ()
   (keymap-string #:accessor .keymap-string)
+  (keymap-size #:accessor .keymap-size)
+  (keymap-fd #:accessor .keymap-fd)
   (keymap #:accessor .keymap)
   (xkb-state #:accessor .xkb-state)
   (keycodes #:allocation #:virtual #:getter .keycodes
@@ -57,7 +62,9 @@
                       (loop (+ n 1)
                             (cons (bytestructure-ref b n) value))))))
             #:slot-set! (const #f))
+  (num-keycodes #:accessor .num-keycodes)
   (modifiers #:accessor .modifiers)
+  (data #:accessor .data)
   #:descriptor %wlr-keyboard-struct)
 
 (define-enumeration wlr-keyboard-led->value value->wlr-keyboard-led

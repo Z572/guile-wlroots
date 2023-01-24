@@ -22,6 +22,8 @@
             wrap-wlr-layer-surface-v1-state
             unwrap-wlr-layer-surface-v1-state
             wlr-layer-shell-v1-create
+            wlr-surface-is-layer-surface
+            wlr-layer-surface-v1-from-wlr-surface
             .surface
             .output
             .shell
@@ -42,8 +44,7 @@
             .configure-serial
             .actual-width
             .actual-height
-
-            wlr-layer-surface-v1-from-wlr-surface))
+            ))
 
 (define-wlr-types-class wlr-layer-shell ()
   #:descriptor %wlr-layer-shell-v1-struct)
@@ -77,6 +78,11 @@
 (define-wlr-procedure (wlr-layer-shell-v1-create display)
   ('* "wlr_layer_shell_v1_create" '(*))
   (wrap-wlr-layer-shell (% (unwrap-wl-display display))))
+
+(define-wlr-procedure (wlr-surface-is-layer-surface surface)
+  (ffi:int8 "wlr_surface_is_layer_surface" '(*))
+  (and (wlr-surface? surface)
+       (not (zero? (% (unwrap-wlr-surface surface))))))
 
 (define-wlr-procedure (wlr-layer-surface-v1-from-wlr-surface surface)
   ('* "wlr_layer_surface_v1_from_wlr_surface" '(*))

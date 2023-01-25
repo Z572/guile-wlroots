@@ -20,7 +20,8 @@
             wlr-output-layout-get-box
             wlr-output-layout-remove
             wlr-output-layout-add-auto
-            wlr-output-layout-adjacent-output))
+            wlr-output-layout-adjacent-output
+            wlr-output-layout-farthest-output))
 
 (define-wlr-types-class wlr-output-layout ()
   #:descriptor %wlr-output-layout-struct)
@@ -58,6 +59,15 @@
 
 (define-wlr-procedure (wlr-output-layout-adjacent-output layout direction reference ref-lx ref-ly)
   ('* "wlr_output_layout_adjacent_output" (list '* ffi:int32 '* ffi:double ffi:double))
+  (wrap-wlr-output
+   (% (unwrap-wlr-output-layout layout)
+      (bs:enum->integer %wlr-direction-enum direction)
+      (unwrap-wlr-output reference)
+      ref-lx
+      ref-ly)))
+
+(define-wlr-procedure (wlr-output-layout-farthest-output layout direction reference ref-lx ref-ly)
+  ('* "wlr_output_layout_farthest_output" (list '* ffi:int32 '* ffi:double ffi:double))
   (wrap-wlr-output
    (% (unwrap-wlr-output-layout layout)
       (bs:enum->integer %wlr-direction-enum direction)

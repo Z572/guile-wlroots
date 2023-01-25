@@ -345,6 +345,13 @@
                (resource ,(bs:pointer %wl-resource-struct))
                (output-destroy ,%wl-listener-struct))))
 
+(define-public %wlr-direction-enum
+  (bs:enum
+   '((WLR_DIRECTION_UP 1)
+     (WLR_DIRECTION_DOWN 2)
+     (WLR_DIRECTION_LEFT 4)
+     (WLR_DIRECTION_RIGHT 8))))
+
 (define-public %wlr-output-layout-struct
   (bs:struct
    `((outputs ,%wl-list-struct)

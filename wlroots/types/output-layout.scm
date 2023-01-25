@@ -10,6 +10,7 @@
   #:use-module (wayland signal)
   #:use-module (oop goops)
   #:use-module (bytestructures guile)
+  #:use-module (bytestructure-class)
   #:re-export (%wlr-output-layout-struct)
   #:export (wrap-wlr-output-layout
             unwrap-wlr-output-layout
@@ -18,7 +19,8 @@
             wlr-output-layout-output-at
             wlr-output-layout-get-box
             wlr-output-layout-remove
-            wlr-output-layout-add-auto))
+            wlr-output-layout-add-auto
+            wlr-output-layout-adjacent-output))
 
 (define-wlr-types-class wlr-output-layout ()
   #:descriptor %wlr-output-layout-struct)
@@ -53,3 +55,12 @@
 (define-wlr-procedure (wlr-output-layout-remove layout output)
   (ffi:void "wlr_output_layout_remove" '(* *))
   (% (unwrap-wlr-output-layout layout) (unwrap-wlr-output output)))
+
+(define-wlr-procedure (wlr-output-layout-adjacent-output layout direction reference ref-lx ref-ly)
+  ('* "wlr_output_layout_adjacent_output" (list '* ffi:int32 '* ffi:double ffi:double))
+  (wrap-wlr-output
+   (% (unwrap-wlr-output-layout layout)
+      (bs:enum->integer %wlr-direction-enum direction)
+      (unwrap-wlr-output reference)
+      ref-lx
+      ref-ly)))

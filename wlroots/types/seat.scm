@@ -37,6 +37,7 @@
             wlr-seat-set-capabilities
             wlr-seat-pointer-notify-button
             wlr-seat-pointer-notify-frame
+            wlr-seat-pointer-notify-enter
             wlr-seat-pointer-notify-clear-focus
             WLR_POINTER_BUTTONS_CAP
 
@@ -221,6 +222,10 @@
 (define-wlr-procedure (wlr-seat-pointer-notify-frame seat)
   (ffi:void "wlr_seat_pointer_notify_frame" '(*))
   (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-notify-enter seat surface sx sy)
+  (ffi:void "wlr_seat_pointer_notify_enter" `(* * ,ffi:double ,ffi:double))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-surface surface) sx sy))
 
 (define-wlr-procedure (wlr-seat-pointer-notify-clear-focus seat)
   (ffi:void "wlr_seat_pointer_notify_clear_focus" '(*))

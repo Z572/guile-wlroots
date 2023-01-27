@@ -37,6 +37,7 @@
             wlr-seat-set-capabilities
             wlr-seat-pointer-notify-button
             wlr-seat-pointer-notify-frame
+            wlr-seat-pointer-notify-clear-focus
             WLR_POINTER_BUTTONS_CAP
 
             wrap-wlr-seat-request-set-selection-event
@@ -219,6 +220,10 @@
 
 (define-wlr-procedure (wlr-seat-pointer-notify-frame seat)
   (ffi:void "wlr_seat_pointer_notify_frame" '(*))
+  (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-notify-clear-focus seat)
+  (ffi:void "wlr_seat_pointer_notify_clear_focus" '(*))
   (% (unwrap-wlr-seat seat)))
 
 (define-wlr-procedure (wlr-seat-set-selection seat source serial)

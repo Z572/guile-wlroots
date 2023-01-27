@@ -56,6 +56,7 @@
             .height
             .height
             .link
+            .mapped
             .max-height
             .max-width
             .maximized

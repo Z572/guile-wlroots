@@ -3,12 +3,13 @@ SOURCES = %D%/config.scm     \
  %D%/backend.scm             \
  %D%/backend/session.scm     \
  %D%/backend/wayland.scm     \
- %D%/backend/libinput.scm     \
- %D%/backend/x11.scm     \
- %D%/time.scm               \
+ %D%/backend/multi.scm       \
+ %D%/backend/libinput.scm    \
+ %D%/backend/x11.scm         \
+ %D%/time.scm                \
  %D%/utils.scm               \
  %D%/xwayland.scm            \
- %D%/render/texture.scm    \
+ %D%/render/texture.scm      \
  %D%/render/allocator.scm    \
  %D%/render/renderer.scm     \
  %D%/types.scm               \
@@ -24,7 +25,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/touch.scm         \
  %D%/types/switch.scm        \
  %D%/types/tablet-tool.scm   \
- %D%/types/tablet-pad.scm   \
+ %D%/types/tablet-pad.scm    \
  %D%/types/input-device.scm  \
  %D%/types/input-inhibitor.scm \
  %D%/types/seat.scm          \

@@ -1,4 +1,5 @@
 (define-module (wlroots backend)
+  #:autoload (wlroots backend session) (wrap-wlr-session)
   #:use-module (wlroots types)
   #:use-module (wlroots config)
   #:use-module (wlroots utils)
@@ -13,7 +14,8 @@
             unwrap-wlr-backend
             wrap-wlr-backend
             wlr-backend-start
-            wlr-backend-destroy))
+            wlr-backend-destroy
+            wlr-backend-get-session))
 
 (define-wlr-types-class wlr-backend ()
   #:descriptor %wlr-backend-struct)
@@ -29,3 +31,7 @@
 (define-wlr-procedure (wlr-backend-destroy backend)
   (ffi:void "wlr_backend_destroy" (list '*))
   (% (unwrap-wlr-backend backend)))
+
+(define-wlr-procedure (wlr-backend-get-session backend)
+  ('* "wlr_backend_get_session" (list '*))
+  (wrap-wlr-session (% (unwrap-wlr-backend backend))))

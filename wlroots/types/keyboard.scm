@@ -1,4 +1,5 @@
 (define-module (wlroots types keyboard)
+  #:use-module (wlroots types input-device)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (xkbcommon xkbcommon)
@@ -46,11 +47,14 @@
   #:descriptor %wlr-keyboard-modifiers-struct)
 
 (define-wlr-types-class wlr-keyboard ()
+  (base #:accessor .base)
   (keymap-string #:accessor .keymap-string)
   (keymap-size #:accessor .keymap-size)
   (keymap-fd #:accessor .keymap-fd)
   (keymap #:accessor .keymap)
   (xkb-state #:accessor .xkb-state)
+  (led-indexes #:accessor .led-indexes)
+  (mod-indexes #:accessor .mod-indexes)
   (keycodes #:allocation #:virtual #:getter .keycodes
             #:slot-ref
             (lambda (o)
@@ -82,12 +86,16 @@
   (WLR_MODIFIER_LOGO 64)
   (WLR_MODIFIER_MOD5 128))
 
-(define-wlr-types-class wlr-event-keyboard-key ()
+(define-wlr-types-class wlr-keyboard-key-event ()
   (time-msec #:accessor .time-msec)
   (keycode #:accessor .keycode)
   (update-state #:accessor .update-state)
   (state #:accessor .state)
-  #:descriptor %wlr-event-keyboard-key-struct)
+  #:descriptor %wlr-keyboard-key-event-struct)
+
+(define-wlr-procedure (wlr-keyboard-from-input-device input-device)
+  ('* "wlr_keyboard_from_input_device" (list '*))
+  (wrap-wlr-keyboard (% (unwrap-wlr-input-device input-device))))
 
 (define-wlr-procedure (wlr-keyboard-set-keymap kb keymap)
   (ffi:int8 "wlr_keyboard_set_keymap" '(* *))
@@ -96,6 +104,10 @@
 (define-wlr-procedure (wlr-keyboard-set-repeat-info kb rate delay)
   (ffi:void "wlr_keyboard_set_repeat_info" `(* ,ffi:int32 ,ffi:int32))
   (% (unwrap-wlr-keyboard kb) rate delay))
+
+(define-wlr-procedure (wlr-keyboard-led-update keyboard leds)
+  (ffi:void "wlr_keyboard_led_update" (list '* ffi:uint32))
+  (% (unwrap-wlr-keyboard keyboard) leds))
 
 (define-wlr-procedure (wlr-keyboard-get-modifiers keyboard)
   (ffi:uint32 "wlr_keyboard_get_modifiers" '(*))

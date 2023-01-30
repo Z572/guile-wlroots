@@ -3,8 +3,10 @@
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wlroots backend)
+  #:use-module (wlroots types buffer)
   #:use-module (wlroots render renderer)
-  #:use-module (system foreign)
+  #:use-module (wlroots render drm-format-set)
+  #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:export (wrap-wlr-allocator
             unwrap-wlr-allocator
@@ -22,5 +24,13 @@
                          (unwrap-wlr-renderer renderer))))
 
 (define-wlr-procedure (wlr-allocator-destroy allocator)
-  (void "wlr_allocator_destroy" '(*))
+  (ffi:void "wlr_allocator_destroy" '(*))
   (% (unwrap-wlr-allocator allocator)))
+
+(define-wlr-procedure (wlr-allocator-create-buffer alloc width height format)
+  ('* "wlr_allocator_create_buffer" (list '* ffi:int ffi:int '*))
+  (wrap-wlr-buffer
+   (% (unwrap-wlr-allocator alloc)
+      width
+      height
+      (unwrap-wlr-drm-format format))))

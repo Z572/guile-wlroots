@@ -1,7 +1,7 @@
 
 (define-module (wlroots types xdg-shell)
   #:use-module (wlroots types)
-  #:use-module (wlroots types surface)
+  #:use-module (wlroots types compositor)
   #:use-module (wlroots types seat)
   #:use-module (wayland)
   #:use-module (wlroots util box)
@@ -16,8 +16,7 @@
                %wlr-xdg-surface-configure-struct
                %wlr-xdg-toplevel-struct
                %wlr-xdg-toplevel-state-struct)
-  #:export (wlr-xdg-shell-create
-            wrap-wlr-xdg-shell
+  #:export (wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
             wrap-wlr-xdg-surface
             unwrap-wlr-xdg-surface
@@ -28,18 +27,36 @@
             wrap-wlr-xdg-popup
             unwrap-wlr-xdg-popup
             <wlr-xdg-popup>
-            wlr-surface-is-xdg-surface
-            wlr-xdg-surface-from-wlr-surface
+
+            wlr-xdg-surface-toplevel
+            wlr-xdg-shell-create
+            wlr-xdg-surface-from-resource
+            wlr-xdg-popup-from-resource
+            wlr-xdg-toplevel-from-resource
+            wlr-xdg-positioner-from-resource
+            wlr-xdg-surface-ping
+            wlr-xdg-toplevel-set-size
             wlr-xdg-toplevel-set-activated
-            wlr-xdg-toplevel-set-tiled
+            wlr-xdg-toplevel-set-maximized
             wlr-xdg-toplevel-set-fullscreen
             wlr-xdg-toplevel-set-resizing
+            wlr-xdg-toplevel-set-tiled
+            wlr-xdg-toplevel-set-bounds
+            wlr-xdg-toplevel-set-wm-capabilities
             wlr-xdg-toplevel-send-close
-            wlr-xdg-toplevel-set-size
+            wlr-xdg-toplevel-set-parent
+            wlr-xdg-popup-destroy
+            wlr-xdg-popup-get-position
+            wlr-xdg-positioner-rules-get-geometry
+            wlr-xdg-positioner-rules-unconstrain-box
+            wlr-xdg-popup-get-toplevel-coords
             wlr-xdg-popup-unconstrain-from-box
-            wlr-xdg-surface-toplevel
+            wlr-surface-is-xdg-surface
+            wlr-xdg-surface-from-wlr-surface
             wlr-xdg-surface-get-geometry
             wlr-xdg-surface-for-each-surface
+            wlr-xdg-surface-schedule-configure
+
             .activated
             .app-id
             .base
@@ -111,6 +128,11 @@
   (grab-link #:getter .grab-link)
   #:descriptor %wlr-xdg-popup-struct)
 
+(define-wlr-types-class wlr-xdg-popup-state ()
+  (geometry #:accessor .geometry)
+  (reactive #:accessor .reactive)
+  #:descriptor %wlr-xdg-popup-state-struct)
+
 (define-wlr-types-class-public wlr-xdg-toplevel-state ()
   (maximized  #:accessor .maximized )
   (fullscreen #:accessor .fullscreen)
@@ -125,7 +147,6 @@
   (min-height #:accessor .min-height)
 
   #:descriptor %wlr-xdg-toplevel-state-struct)
-
 
 (define-wlr-types-class wlr-xdg-toplevel-configure ()
   (maximized #:accessor .maximized)
@@ -159,10 +180,33 @@
   (app-id #:accessor .app-id)
   #:descriptor %wlr-xdg-toplevel-struct)
 
+(define-wlr-types-class wlr-xdg-positioner-rules ()
+  (anchor-rect #:accessor .anchor-rect)
+  (anchor #:accessor .anchor)
+  (gravity #:accessor .gravity)
+  (constraint-adjustment #:accessor .constraint-adjustment)
+  (reactive #:accessor .reactive)
+  (has-parent-configure-serial #:accessor .has-parent-configure-serial)
+  (parent-configure-serial #:accessor .parent-configure-serial)
+
+  #:descriptor %wlr-xdg-positioner-rules-struct)
+(define-wlr-types-class wlr-xdg-positioner ()
+  (resource #:accessor .resource)
+  (rules #:accessor .rules)
+  #:descriptor %wlr-xdg-positioner-struct)
+
+(define-wlr-types-class wlr-xdg-toplevel-move-event ()
+  (toplevel #:accessor .toplevel)
+  (seat #:accessor .seat)
+  (serial #:accessor .serial)
+  #:descriptor %wlr-xdg-toplevel-move-event-struct)
 
 (define-wlr-types-class wlr-xdg-toplevel-resize-event ()
+  (toplevel #:accessor .toplevel)
+  (seat #:accessor .seat)
+  (serial #:accessor .serial)
+  (edges #:accessor .edges)
   #:descriptor %wlr-xdg-toplevel-resize-event-struct)
-
 
 (define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event ()
   #:descriptor %wlr-xdg-toplevel-set-fullscreen-event)
@@ -171,10 +215,6 @@
   (bytestructure-ref
    (pointer->bytestructure (unwrap-wlr-xdg-toplevel-resize-event o) %wlr-xdg-toplevel-resize-event-struct)
    'edges))
-(define-wlr-procedure (wlr-xdg-shell-create display)
-  ('* "wlr_xdg_shell_create" '(*))
-  (wrap-wlr-xdg-shell
-   (% (unwrap-wl-display display))))
 
 (define-wlr-types-class wlr-xdg-client ()
   (shell #:accessor .shell)
@@ -203,6 +243,124 @@
   (data #:accessor .data)
   #:descriptor %wlr-xdg-surface-struct)
 
+(define-wlr-types-class wlr-xdg-toplevel-show-window-menu-event ()
+  (toplevel #:accessor .toplevel)
+  (seat #:accessor .seat)
+  (serial #:accessor .serial)
+  (x #:accessor .x)
+  (y #:accessor .y)
+  #:descriptor %wlr-xdg-toplevel-show-window-menu-event-struct)
+
+(define-wlr-procedure (wlr-xdg-shell-create display version)
+  ('* "wlr_xdg_shell_create" (list '* ffi:uint32))
+  (wrap-wlr-xdg-shell (% (unwrap-wl-display display) version)))
+
+(define-wlr-procedure (wlr-xdg-surface-from-resource resource)
+  ('* "wlr_xdg_surface_from_resource" (list '*))
+  (wrap-wlr-xdg-surface(% (unwrap-wl-resource resource))))
+
+(define-wlr-procedure (wlr-xdg-popup-from-resource resource)
+  ('* "wlr_xdg_popup_from_resource" (list '*))
+  (wrap-wlr-xdg-popup (% (unwrap-wl-resource resource))))
+
+(define-wlr-procedure (wlr-xdg-toplevel-from-resource resource)
+  ('* "wlr_xdg_toplevel_from_resource" (list '*))
+  (wrap-wlr-xdg-toplevel (% (unwrap-wl-resource resource))))
+
+(define-wlr-procedure (wlr-xdg-positioner-from-resource resource)
+  ('* "wlr_xdg_positioner_from_resource" (list '*))
+  (wrap-wlr-xdg-positioner(% (unwrap-wl-resource resource))))
+
+(define-wlr-procedure (wlr-xdg-surface-ping surface)
+  (ffi:void "wlr_xdg_surface_ping" (list '*))
+  (% (unwrap-wlr-xdg-surface surface)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-size toplevel width height)
+  (ffi:uint32 "wlr_xdg_toplevel_set_size" (list '* ffi:uint32 ffi:uint32))
+  (% (unwrap-wlr-xdg-toplevel toplevel) width height))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-activated toplevel activated)
+  (ffi:uint32 "wlr_xdg_toplevel_set_activated" (list '* ffi:int))
+  "Returns the associated configure serial."
+  (% (unwrap-wlr-xdg-toplevel toplevel) (if activated 1 0)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-maximized toplevel maximized)
+  (ffi:uint32 "wlr_xdg_toplevel_set_maximized" (list '* ffi:int8))
+  (% (unwrap-wlr-xdg-toplevel toplevel) (if maximized 1 0)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-fullscreen toplevel fullscreen)
+  (ffi:uint32 "wlr_xdg_toplevel_set_fullscreen" (list '* ffi:int))
+  (% (unwrap-wlr-xdg-toplevel toplevel) (if fullscreen 1 0)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-resizing toplevel fullscreen)
+  (ffi:uint32 "wlr_xdg_toplevel_set_resizing" (list '* ffi:int))
+  (% (unwrap-wlr-xdg-toplevel toplevel) (if fullscreen 1 0)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-tiled toplevel tiled-edges)
+  (ffi:uint32 "wlr_xdg_toplevel_set_tiled" (list '* ffi:uint32))
+  (% (unwrap-wlr-xdg-toplevel toplevel) tiled-edges))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-bounds toplevel width height)
+  (ffi:uint32 "wlr_xdg_toplevel_set_bounds" (list '* ffi:int32 ffi:int32))
+  (% (unwrap-wlr-xdg-toplevel toplevel) width height))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-wm-capabilities toplevel caps)
+  (ffi:uint32 "wlr_xdg_toplevel_set_wm_capabilities" (list '* ffi:uint32))
+  (% (unwrap-wlr-xdg-toplevel toplevel) caps))
+
+(define-wlr-procedure (wlr-xdg-toplevel-send-close toplevel)
+  (ffi:void "wlr_xdg_toplevel_send_close" (list '*))
+  "Request that this xdg toplevel closes."
+  (% (unwrap-wlr-xdg-toplevel toplevel)))
+
+(define-wlr-procedure (wlr-xdg-toplevel-set-parent toplevel parent)
+  (ffi:int8 "wlr_xdg_toplevel_set_parent" (list '* '*))
+  (not (zero? (% (unwrap-wlr-xdg-toplevel toplevel)
+                 (unwrap-wlr-xdg-toplevel parent)))))
+
+(define-wlr-procedure (wlr-xdg-popup-destroy popup)
+  (ffi:void "wlr_xdg_popup_destroy" (list '*))
+  (% (unwrap-wlr-xdg-popup popup)))
+
+(define-wlr-procedure (wlr-xdg-popup-get-position popup)
+  (ffi:void "wlr_xdg_popup_get_position" (list '* '* '*))
+  (let* ((bs (bs:pointer int))
+         (x (bytestructure bs))
+         (y (bytestructure bs)))
+    (% (unwrap-wlr-xdg-popup popup) (bytestructure->pointer x) (bytestructure->pointer y))
+    (cons x y)))
+
+(define-wlr-procedure (wlr-xdg-positioner-rules-get-geometry rules #:optional (box (make <wlr-box>)))
+  (ffi:void "wlr_xdg_positioner_rules_get_geometry" (list '* '*))
+  (% (unwrap-wlr-xdg-positioner-rules rules) (unwrap-wlr-box box))
+  box)
+
+(define-wlr-procedure (wlr-xdg-positioner-rules-unconstrain-box rules constraint box)
+  (ffi:void "wlr_xdg_positioner_rules_unconstrain_box" (list '* '* '*))
+  (% (unwrap-wlr-xdg-positioner-rules rules)
+     (unwrap-wlr-box constraint)
+     (unwrap-wlr-box box)))
+
+(define-wlr-procedure (wlr-xdg-popup-get-toplevel-coords
+                       popup
+                       popup_sx
+                       popup_sy)
+  (ffi:void "wlr_xdg_popup_get_toplevel_coords"
+            (list '* ffi:int ffi:int '* '*))
+  (let* ((bs (bs:pointer int))
+         (toplevel_sx (bytestructure bs))
+         (toplevel_sy (bytestructure bs)))
+    (% (unwrap-wlr-xdg-popup popup) popup_sx popup_sy
+       (bytestructure->pointer toplevel_sx)
+       (bytestructure->pointer toplevel_sy))
+    (cons toplevel_sx toplevel_sy)))
+
+(define-wlr-procedure (wlr-xdg-popup-unconstrain-from-box
+                       popup #:optional (box (make <wlr-box>)))
+  (ffi:void "wlr_xdg_popup_unconstrain_from_box" (list '* '*))
+  (% (unwrap-wlr-xdg-popup popup) (unwrap-wlr-box box))
+  box)
+
 (define-wlr-procedure (wlr-surface-is-xdg-surface surface)
   (ffi:int8 "wlr_surface_is_xdg_surface" '(*))
   (and (wlr-surface? surface)
@@ -213,43 +371,12 @@
   (wrap-wlr-xdg-surface
    (% (unwrap-wlr-surface surface))))
 
-(define-wlr-procedure (wlr-xdg-toplevel-set-activated surface activated)
-  (ffi:uint32 "wlr_xdg_toplevel_set_activated" (list '* ffi:int))
-  "Returns the associated configure serial."
-  (% (unwrap-wlr-xdg-surface surface) (if activated 1 0)))
-
-(define-wlr-procedure (wlr-xdg-toplevel-send-close surface)
-  (ffi:void "wlr_xdg_toplevel_send_close" (list '*))
-  "Request that this xdg toplevel closes."
-  (% (unwrap-wlr-xdg-surface surface)))
-
-
-(define-wlr-procedure (wlr-xdg-toplevel-set-tiled surface tiled-edges)
-  (ffi:uint32 "wlr_xdg_toplevel_set_tiled" (list '* ffi:uint32))
-  (% (unwrap-wlr-xdg-surface surface) tiled-edges))
-
-(define-wlr-procedure (wlr-xdg-toplevel-set-fullscreen surface fullscreen)
-  (ffi:uint32 "wlr_xdg_toplevel_set_fullscreen" (list '* ffi:int))
-  (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))
-
-(define-wlr-procedure (wlr-xdg-toplevel-set-resizing surface fullscreen)
-  (ffi:uint32 "wlr_xdg_toplevel_set_resizing" (list '* ffi:int))
-  (% (unwrap-wlr-xdg-surface surface) (if fullscreen 1 0)))
-
-(define-wlr-procedure (wlr-xdg-popup-unconstrain-from-box popup box)
-  (ffi:void "wlr_xdg_popup_unconstrain_from_box" (list '* '*))
-  (% (unwrap-wlr-xdg-popup popup) (unwrap-wlr-box box)))
-
 (define-wlr-procedure (wlr-xdg-surface-get-geometry surface)
   (ffi:void "wlr_xdg_surface_get_geometry" (list '* '*))
   "return a box"
   (let ((box (make <wlr-box>)))
     (% (unwrap-wlr-xdg-surface surface) (unwrap-wlr-box box))
     box))
-
-(define-wlr-procedure (wlr-xdg-toplevel-set-size surface width height)
-  (ffi:uint32 "wlr_xdg_toplevel_set_size" (list '* ffi:uint32 ffi:uint32))
-  (% (unwrap-wlr-xdg-surface surface) width height))
 
 (define-wlr-procedure (wlr-xdg-surface-for-each-surface proc xdg-surface)
   (ffi:void "wlr_xdg_surface_for_each_surface" `(* * *))
@@ -259,3 +386,7 @@
                  (proc (wrap-wlr-surface surface) sx sy))
       (list '* ffi:int ffi:int '*))
      ffi:%null-pointer))
+
+(define-wlr-procedure (wlr-xdg-surface-schedule-configure surface)
+  (ffi:uint32 "wlr_xdg_surface_schedule_configure" (list '*))
+  (% (unwrap-wlr-xdg-surface surface)))

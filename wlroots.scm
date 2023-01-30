@@ -4,7 +4,10 @@
   (begin
     (define %public-modules
       (map (lambda (a) (cons 'wlroots a))
-           '((backend)
+           '((types)
+             (utils)
+             (backend)
+             (backend session)
              (util box)
              (util log)
              (render allocator)
@@ -18,7 +21,6 @@
              (types pointer)
              (types scene)
              (types seat)
-             (types surface)
              (types xcursor)
              (types xdg-shell)
              (types compositor)

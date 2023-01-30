@@ -1,11 +1,12 @@
 (define-module (wlroots types layer-shell)
-  #:use-module (wlroots types surface)
+  #:use-module (wayland resource)
   #:use-module (wayland listener)
   #:use-module (wayland signal)
   #:use-module (wayland list)
   #:use-module (wayland display)
-  #:use-module (wlroots types output)
   #:use-module (wlroots types)
+  #:use-module (wlroots types output)
+  #:use-module (wlroots types compositor)
   #:use-module (wayland util)
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
@@ -21,9 +22,14 @@
             unwrap-wlr-layer-surface-v1
             wrap-wlr-layer-surface-v1-state
             unwrap-wlr-layer-surface-v1-state
+
             wlr-layer-shell-v1-create
+            wlr-layer-surface-v1-configure
+            wlr-layer-surface-v1-destroy
             wlr-surface-is-layer-surface
             wlr-layer-surface-v1-from-wlr-surface
+            wlr-layer-surface-v1-from-resource
+
             .surface
             .output
             .shell
@@ -79,6 +85,14 @@
   ('* "wlr_layer_shell_v1_create" '(*))
   (wrap-wlr-layer-shell (% (unwrap-wl-display display))))
 
+(define-wlr-procedure (wlr-layer-surface-v1-configure surface width height)
+  (ffi:uint32 "wlr_layer_surface_v1_configure" (list '* ffi:uint32 ffi:uint32))
+  (% (unwrap-wlr-layer-surface-v1 surface) width height))
+
+(define-wlr-procedure (wlr-layer-surface-v1-destroy surface)
+  (ffi:void "wlr_layer_surface_v1_destroy" (list '*))
+  (% (unwrap-wlr-layer-surface-v1 surface)))
+
 (define-wlr-procedure (wlr-surface-is-layer-surface surface)
   (ffi:int8 "wlr_surface_is_layer_surface" '(*))
   (and (wlr-surface? surface)
@@ -87,3 +101,7 @@
 (define-wlr-procedure (wlr-layer-surface-v1-from-wlr-surface surface)
   ('* "wlr_layer_surface_v1_from_wlr_surface" '(*))
   (wrap-wlr-layer-surface-v1 (% (unwrap-wlr-surface surface))))
+
+(define-wlr-procedure (wlr-layer-surface-v1-from-resource resource)
+  ('* "wlr_layer_surface_v1_from_resource" (list '*))
+  (wrap-wlr-layer-surface-v1 (% (unwrap-wl-resource resource))))

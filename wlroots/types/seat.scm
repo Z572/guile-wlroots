@@ -4,6 +4,7 @@
   #:use-module (wayland client)
   #:use-module (wayland signal)
   #:use-module (wayland protocol)
+  #:use-module (wayland resource)
   #:use-module (wayland listener)
   #:use-module (srfi srfi-26)
   ;; #:use-module (wlroots render renderer)
@@ -12,12 +13,11 @@
   #:use-module (wlroots types)
   #:use-module (wlroots types data-device)
   #:use-module (wlroots types input-device)
-  #:use-module (wlroots types surface)
   #:use-module (wlroots types keyboard)
+  #:use-module (wlroots types compositor)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
   #:use-module (bytestructures guile)
-  #:use-module ((bytestructure-class) #:select (bs:enum->integer))
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
@@ -29,36 +29,75 @@
                %wlr-seat-request-set-selection-event-struct
                %wlr-seat-struct
                %wlr-seat-client-struct)
-  #:export (wrap-wlr-seat
+  #:export (WLR_POINTER_BUTTONS_CAP
             unwrap-wlr-seat
+            unwrap-wlr-seat-client
+            unwrap-wlr-seat-pointer-request-set-cursor-event
+            unwrap-wlr-seat-request-set-selection-event
+            wlr-seat-client-for-wl-client
+            wlr-seat-client-for-wl-client
+            wlr-seat-client-from-pointer-resource
+            wlr-seat-client-from-resource
+            wlr-seat-client-next-serial
+            wlr-seat-client-validate-event-serial
             wlr-seat-create
             wlr-seat-destroy
-            wlr-seat-client-for-wl-client
-            wlr-seat-set-capabilities
-            wlr-seat-pointer-notify-button
-            wlr-seat-pointer-notify-frame
-            wlr-seat-pointer-notify-enter
-            wlr-seat-pointer-notify-clear-focus
-            wlr-seat-pointer-notify-motion
-            WLR_POINTER_BUTTONS_CAP
-
-            wrap-wlr-seat-request-set-selection-event
-            unwrap-wlr-seat-request-set-selection-event
-            wrap-wlr-seat-pointer-request-set-cursor-event
-            unwrap-wlr-seat-pointer-request-set-cursor-event
-            wlr-seat-set-selection
-            wlr-seat-set-keyboard
-            wrap-wlr-seat-client
-            unwrap-wlr-seat-client
-            wlr-seat-pointer-notify-axis
+            wlr-seat-get-keyboard
+            wlr-seat-get-keyboard
+            wlr-seat-keyboard-clear-focus
+            wlr-seat-keyboard-has-grab
+            wlr-seat-keyboard-notify-clear-focus
+            wlr-seat-keyboard-notify-enter
             wlr-seat-keyboard-notify-key
             wlr-seat-keyboard-notify-modifiers
-            wlr-seat-keyboard-notify-enter
-            wlr-seat-keyboard-notify-clear-focus
-            wlr-seat-get-keyboard
             wlr-seat-keyboard-send-key
+            wlr-seat-keyboard-send-modifiers
+            wlr-seat-keyboard-start-grab
+            wlr-seat-pointer-clear-focus
+            wlr-seat-pointer-end-grab
+            wlr-seat-pointer-enter
+            wlr-seat-pointer-has-grab
+            wlr-seat-pointer-notify-axis
+            wlr-seat-pointer-notify-button
+            wlr-seat-pointer-notify-clear-focus
+            wlr-seat-pointer-notify-enter
+            wlr-seat-pointer-notify-frame
+            wlr-seat-pointer-notify-motion
+            wlr-seat-pointer-send-axis
+            wlr-seat-pointer-send-button
+            wlr-seat-pointer-send-frame
+            wlr-seat-pointer-send-motion
+            wlr-seat-pointer-start-grab
+            wlr-seat-pointer-warp
+            wlr-seat-set-capabilities
+            wlr-seat-set-keyboard
+            wlr-seat-set-name
+            wlr-seat-set-selection
+            wlr-seat-touch-end-grab
+            wlr-seat-touch-get-point
+            wlr-seat-touch-has-grab
+            wlr-seat-touch-notify-cancel
+            wlr-seat-touch-notify-down
+            wlr-seat-touch-notify-frame
+            wlr-seat-touch-notify-motion
+            wlr-seat-touch-notify-up
+            wlr-seat-touch-num-points
+            wlr-seat-touch-point-clear-focus
+            wlr-seat-touch-point-focus
+            wlr-seat-touch-send-cancel
+            wlr-seat-touch-send-down
+            wlr-seat-touch-send-frame
+            wlr-seat-touch-send-motion
+            wlr-seat-touch-send-up
+            wlr-seat-touch-start-grab
+            wlr-seat-validate-grab-serial
             wlr-seat-validate-pointer-grab-serial
-            .accumulated-capabilities
+            wlr-seat-validate-touch-grab-serial
+            wlr-surface-accepts-touch
+            wrap-wlr-seat-client
+            wrap-wlr-seat-pointer-request-set-cursor-event
+            wrap-wlr-seat-request-set-selection-event
+            wrap-wlr-seat
             .buttons
             .capabilities
             .count
@@ -93,7 +132,9 @@
             .surface
             .sx
             .sy
-            .touch-state))
+            .touch-id
+            .touch-state
+            .accumulated-capabilities))
 
 
 (define-wlr-types-class wlr-seat-touch-state ()
@@ -115,6 +156,26 @@
   (needs-touch-frame #:allocation #:bytestructure #:accessor .needs-touch-frame)
   #:descriptor %wlr-seat-client-struct)
 
+(define-wlr-types-class wlr-seat-keyboard-grab ()
+  (interface #:accessor .interface)
+  (seat #:accessor .seat)
+  (data #:accessor .data)
+  #:descriptor %wlr-seat-keyboard-grab-struct)
+
+(define-wlr-types-class wlr-touch-point ()
+  (touch-id #:accessor .touch-id)
+  (surface #:accessor .surface)
+  (client #:accessor .client)
+  (focus-surface #:accessor .focus-surface)
+  (focus-client #:accessor .focus-client)
+  (sx #:accessor .sx)
+  (sy #:accessor .sy)
+  (surface-destroy #:accessor .surface-destroy)
+  (focus-surface-destroy #:accessor .focus-surface-destroy)
+  (client-destroy #:accessor .client-destroy)
+  (link #:accessor .link)
+  #:descriptor %wlr-touch-point-struct)
+
 (define-wlr-types-class wlr-seat-request-set-selection-event ()
   (source #:accessor .source #:allocation #:bytestructure)
   (serial #:accessor .serial #:allocation #:bytestructure)
@@ -127,7 +188,10 @@
   (hostpot-x #:accessor .hostpot-x)
   (hostpot-y #:accessor .hostpot-y)
   #:descriptor %wlr-seat-pointer-request-set-cursor-event-struct)
-
+(define-wlr-types-class wlr-seat-request-set-primary-selection-event ()
+  (source #:accessor .source)
+  (serial #:accessor .serial)
+  #:descriptor %wlr-seat-request-set-primary-selection-event-struct)
 
 (define-wlr-types-class wlr-seat-request-start-drag-event ()
   (drag #:accessor .drag)
@@ -189,6 +253,16 @@
   (new-surface #:accessor .new-surface)
   #:descriptor %wlr-seat-keyboard-focus-change-event-struct)
 
+(define-wlr-types-class wlr-seat-touch-grab ()
+  (seat #:accessor .seat)
+  (data #:accessor .data)
+  #:descriptor %wlr-seat-touch-grab-struct)
+
+(define-wlr-types-class wlr-seat-pointer-grab ()
+  (seat #:accessor .seat)
+  (data #:accessor .data)
+  #:descriptor %wlr-seat-pointer-grab-struct)
+
 (define-wlr-procedure (wlr-seat-create display name)
   ('* "wlr_seat_create" '(* *))
   (wrap-wlr-seat
@@ -213,6 +287,60 @@
 
     (% (unwrap-wlr-seat seat) cap)))
 
+(define-wlr-procedure (wlr-seat-set-name wlr-seat name)
+  (ffi:void "wlr_seat_set_name" (list '* '*))
+  (% (unwrap-wlr-seat wlr-seat) (ffi:string->pointer name)))
+
+(define-wlr-procedure
+  (wlr-seat-pointer-surface-has-focus wlr-seat surface)
+  (ffi:int8 "wlr_seat_pointer_surface_has_focus" (list '* '*))
+  (not (zero? (% (unwrap-wlr-seat wlr-seat) (unwrap-wlr-surface surface)))))
+
+(define-wlr-procedure (wlr-seat-pointer-enter wlr-seat surface sx sy)
+  (ffi:void "wlr_seat_pointer_enter" (list '* '* ffi:double ffi:double))
+  (% (unwrap-wlr-seat wlr-seat) (unwrap-wlr-surface surface) sx sy))
+
+(define-wlr-procedure (wlr-seat-pointer-clear-focus wlr-seat)
+  (ffi:void "wlr_seat_pointer_clear_focus" (list '*))
+  (% (unwrap-wlr-seat wlr-seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-send-motion wlr-seat time_msec sx sy)
+  (ffi:void
+   "wlr_seat_pointer_send_motion"
+   (list '* ffi:uint32 ffi:double ffi:double))
+  (% (unwrap-wlr-seat wlr-seat) time_msec sx sy))
+
+(define-wlr-procedure (wlr-seat-pointer-send-button
+                       wlr-seat time_msec button state)
+  (ffi:uint32
+   "wlr_seat_pointer_send_button"
+   (list '* ffi:uint32 ffi:uint32 ffi:int32))
+  (% (unwrap-wlr-seat wlr-seat)
+     time_msec
+     button
+     (bs:enum->integer %wlr-button-state-enum state)))
+
+(define-wlr-procedure (wlr-seat-pointer-send-axis
+                       wlr-seat time_msec orientation value
+                       value_discrete source)
+  (ffi:void "wlr_seat_pointer_send_axis" (list '* ffi:uint32
+                                               ffi:int32
+                                               ffi:double ffi:int32 ffi:int32))
+  (% (unwrap-wlr-seat wlr-seat)
+     time_msec
+     (bs:enum->integer %wlr-axis-orientation-enum orientation)
+     value
+     value_discrete
+     (bs:enum->integer %wlr-axis-source-enum source)))
+
+(define-wlr-procedure (wlr-seat-pointer-send-frame wlr-seat)
+  (ffi:void "wlr_seat_pointer_send_frame" (list '*))
+  (% (unwrap-wlr-seat wlr-seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-notify-enter seat surface sx sy)
+  (ffi:void "wlr_seat_pointer_notify_enter" `(* * ,ffi:double ,ffi:double))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-surface surface) sx sy))
+
 (define-wlr-procedure (wlr-seat-pointer-notify-button seat time_msec button state)
   (ffi:uint32 "wlr_seat_pointer_notify_button" (list '* ffi:uint32 ffi:uint32 ffi:int))
   (% (unwrap-wlr-seat seat)
@@ -220,17 +348,13 @@
      button
      (bs:enum->integer %wlr-button-state-enum state)))
 
-(define-wlr-procedure (wlr-seat-pointer-notify-frame seat)
-  (ffi:void "wlr_seat_pointer_notify_frame" '(*))
-  (% (unwrap-wlr-seat seat)))
-
-(define-wlr-procedure (wlr-seat-pointer-notify-enter seat surface sx sy)
-  (ffi:void "wlr_seat_pointer_notify_enter" `(* * ,ffi:double ,ffi:double))
-  (% (unwrap-wlr-seat seat) (unwrap-wlr-surface surface) sx sy))
-
 (define-wlr-procedure (wlr-seat-pointer-notify-clear-focus seat)
   (ffi:void "wlr_seat_pointer_notify_clear_focus" '(*))
   (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-warp wlr-seat sx sy)
+  (ffi:void "wlr_seat_pointer_warp" (list '* ffi:double ffi:double))
+  (% (unwrap-wlr-seat wlr-seat) sx sy))
 
 (define-wlr-procedure (wlr-seat-pointer-notify-motion seat time sx sy)
   (ffi:void "wlr_seat_pointer_notify_motion" (list '* ffi:uint32 ffi:double ffi:double))
@@ -240,13 +364,64 @@
   (ffi:void "wlr_seat_set_selection" `(* * ,ffi:uint32))
   (% (unwrap-wlr-seat seat) (unwrap-wlr-data-source source) serial))
 
+(define-wlr-procedure (wlr-seat-pointer-notify-axis wlr-seat time-msec orientation value value-discrete source)
+  (ffi:void "wlr_seat_pointer_notify_axis" (list '* ffi:uint32 ffi:int ffi:double ffi:int32 ffi:int))
+  (% (unwrap-wlr-seat wlr-seat)
+     time-msec
+     (bs:enum->integer %wlr-axis-orientation-enum orientation)
+     value
+     value-discrete
+     (bs:enum->integer %wlr-axis-source-enum source)))
+
+(define-wlr-procedure (wlr-seat-pointer-notify-frame seat)
+  (ffi:void "wlr_seat_pointer_notify_frame" '(*))
+  (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-start-grab wlr-seat grab)
+  (ffi:void "wlr_seat_pointer_start_grab" (list '* '*))
+  (% (unwrap-wlr-seat wlr-seat) (unwrap-wlr-seat-pointer-grab grab)))
+
+(define-wlr-procedure (wlr-seat-pointer-end-grab wlr-seat)
+  (ffi:void "wlr_seat_pointer_end_grab" (list '*))
+  (% (unwrap-wlr-seat wlr-seat)))
+
+(define-wlr-procedure (wlr-seat-pointer-has-grab seat)
+  (ffi:int8 "wlr_seat_pointer_has_grab" (list '*))
+  (not (zero? (% (unwrap-wlr-seat seat)))))
+
 (define-wlr-procedure (wlr-seat-set-keyboard seat dev)
   (ffi:void "wlr_seat_set_keyboard" `(* *))
   (% (unwrap-wlr-seat seat) (unwrap-wlr-input-device dev)))
 
-(define-wlr-procedure (wlr-seat-pointer-notify-axis wlr-seat time-msec orientation value value-discrete source)
-  (ffi:void "wlr_seat_pointer_notify_axis" (list '* ffi:uint32 ffi:int ffi:double ffi:int32 ffi:int))
-  (% (unwrap-wlr-seat wlr-seat) time-msec orientation value value-discrete source))
+(define-wlr-procedure (wlr-seat-get-keyboard seat)
+  ('* "wlr_seat_get_keyboard" '(*))
+  (wrap-wlr-keyboard (% (unwrap-wlr-seat seat))))
+
+(define-wlr-procedure (wlr-seat-keyboard-send-key seat time-msec key state)
+  (ffi:void "wlr_seat_keyboard_send_key"
+            (list '* ffi:uint32 ffi:uint32 ffi:uint32))
+  (% (unwrap-wlr-seat seat) time-msec key state))
+
+(define-wlr-procedure (wlr-seat-keyboard-send-modifiers seat modifiers)
+  (ffi:void "wlr_seat_keyboard_send_modifiers" (list '* '*))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-keyboard-modifiers modifiers)))
+
+(define-wlr-procedure
+  (wlr-seat-keyboard-enter seat surface keycodes num_keycodes modifiers)
+  (ffi:void "wlr_seat_keyboard_enter" (list '* '* '* ffi:size_t '*))
+  (% (unwrap-wlr-seat seat)
+     (unwrap-wlr-surface surface)
+     (if keycodes
+         (bytestructure->pointer
+          (bytestructure (bs:vector (length keycodes) uint32)
+                         (list->vector keycodes)))
+         ffi:%null-pointer)
+     num_keycodes
+     (unwrap-wlr-keyboard-modifiers modifiers)))
+
+(define-wlr-procedure (wlr-seat-keyboard-clear-focus wlr-seat)
+  (ffi:void "wlr_seat_keyboard_clear_focus" (list '*))
+  (% (unwrap-wlr-seat wlr-seat)))
 
 (define-wlr-procedure (wlr-seat-keyboard-notify-key seat time-msec key state)
   (ffi:void "wlr_seat_keyboard_notify_key"
@@ -274,14 +449,146 @@
   (ffi:void "wlr_seat_keyboard_notify_clear_focus" '(*))
   (% (unwrap-wlr-seat seat)))
 
-(define-wlr-procedure (wlr-seat-get-keyboard seat)
-  ('* "wlr_seat_get_keyboard" '(*))
-  (wrap-wlr-keyboard (% (unwrap-wlr-seat seat))))
+(define-wlr-procedure (wlr-seat-keyboard-start-grab wlr-seat grab)
+  (ffi:void "wlr_seat_keyboard_start_grab" (list '* '*))
+  (% (unwrap-wlr-seat wlr-seat) (unwrap-wlr-seat-keyboard-grab grab)))
 
-(define-wlr-procedure (wlr-seat-keyboard-send-key seat time-msec key state)
-  (ffi:void "wlr_seat_keyboard_send_key"
-            (list '* ffi:uint32 ffi:uint32 ffi:uint32))
-  (% (unwrap-wlr-seat seat) time-msec key state))
+(define-wlr-procedure (wlr-seat-keyboard-end-grab wlr-seat)
+  (ffi:void "wlr_seat_keyboard_end_grab" (list '*))
+  (% (unwrap-wlr-seat wlr-seat)))
+
+(define-wlr-procedure (wlr-seat-keyboard-has-grab seat)
+  (ffi:int8 "wlr_seat_keyboard_has_grab" (list '*))
+  (not (zero? (% (unwrap-wlr-seat seat)))))
+
+(define-wlr-procedure (wlr-seat-touch-get-point seat touch_id)
+  ('* "wlr_seat_touch_get_point" (list '* ffi:int32))
+  (wrap-wlr-touch-point (% (unwrap-wlr-seat seat) touch_id)))
+
+(define-wlr-procedure (wlr-seat-touch-point-focus
+                       seat surface time_msec touch_id sx sy)
+  (ffi:void "wlr_seat_touch_point_focus"
+            (list '* '* ffi:uint32 ffi:int32 ffi:double ffi:double))
+  (% (unwrap-wlr-seat seat)
+     (unwrap-wlr-surface surface)
+     time_msec
+     touch_id
+     sx
+     sy))
+
+(define-wlr-procedure (wlr-seat-touch-point-clear-focus seat time_msec touch_id)
+  (ffi:void "wlr_seat_touch_point_clear_focus" (list '* ffi:uint32 ffi:int32))
+  (% (unwrap-wlr-seat seat) time_msec touch_id))
+
+(define-wlr-procedure (wlr-seat-touch-send-down seat surface time_msec touch_id sx sy)
+  (ffi:uint32 "wlr_seat_touch_send_down"
+              (list '* '* ffi:uint32 ffi:int32 ffi:double ffi:double))
+  (% (unwrap-wlr-seat seat)
+     (unwrap-wlr-surface surface)
+     time_msec
+     touch_id
+     sx
+     sy))
+
+;;
+(define-wlr-procedure (wlr-seat-touch-send-up seat time_msec touch_id)
+  (ffi:void "wlr_seat_touch_send_up" (list '* ffi:uint32 ffi:int32))
+  (% (unwrap-wlr-seat seat) time_msec touch_id))
+
+(define-wlr-procedure (wlr-seat-touch-send-motion seat time_msec touch_id sx sy)
+  (ffi:void
+   "wlr_seat_touch_send_motion"
+   (list '* ffi:uint32 ffi:int32 ffi:double ffi:double))
+  (% (unwrap-wlr-seat seat) time_msec touch_id sx sy))
+
+(define-wlr-procedure (wlr-seat-touch-send-cancel seat surface)
+  (ffi:void "wlr_seat_touch_send_cancel" (list '* '*))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-surface surface)))
+
+(define-wlr-procedure (wlr-seat-touch-send-frame seat)
+  (ffi:void "wlr_seat_touch_send_frame" (list '*))
+  (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-touch-notify-down
+                       seat surface time_msec touch_id sx sy)
+  (ffi:uint32
+   "wlr_seat_touch_notify_down"
+   (list '* '* ffi:uint32 ffi:int32 ffi:double ffi:double))
+  (% (unwrap-wlr-seat seat)
+     (unwrap-wlr-surface surface)
+     time_msec
+     touch_id
+     sx
+     sy))
+
+(define-wlr-procedure (wlr-seat-touch-notify-up seat time_msec touch_id)
+  (ffi:void "wlr_seat_touch_notify_up" (list '* ffi:uint32 ffi:int32))
+  (% (unwrap-wlr-seat seat) time_msec touch_id))
+
+(define-wlr-procedure (wlr-seat-touch-notify-motion
+                       seat time_msec touch_id sx sy)
+  (ffi:void "wlr_seat_touch_notify_motion"
+            (list '* ffi:uint32 ffi:int32 ffi:double ffi:double))
+  (% (unwrap-wlr-seat seat) time_msec touch_id sx sy))
+
+(define-wlr-procedure (wlr-seat-touch-notify-cancel seat surface)
+  (ffi:void "wlr_seat_touch_notify_cancel" (list '* '*))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-surface surface)))
+
+(define-wlr-procedure (wlr-seat-touch-notify-frame seat)
+  (ffi:void "wlr_seat_touch_notify_frame" (list '*))
+  (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-touch-num-points seat)
+  (ffi:int "wlr_seat_touch_num_points" (list '*))
+  (% (unwrap-wlr-seat seat)))
+
+(define-wlr-procedure (wlr-seat-touch-start-grab wlr-seat grab)
+  (ffi:void "wlr_seat_touch_start_grab" (list '* '*))
+  (% (unwrap-wlr-seat wlr-seat) (unwrap-wlr-seat-touch-grab grab)))
+
+(define-wlr-procedure (wlr-seat-touch-end-grab wlr-seat)
+  (ffi:void "wlr_seat_touch_end_grab" (list '*))
+  (% (unwrap-wlr-seat wlr-seat)))
+
+(define-wlr-procedure (wlr-seat-touch-has-grab seat)
+  (ffi:int8 "wlr_seat_touch_has_grab" (list '*))
+  (not (zero? (% (unwrap-wlr-seat seat)))))
+
+(define-wlr-procedure (wlr-seat-validate-grab-serial seat serial)
+  (ffi:int8 "wlr_seat_validate_grab_serial" (list '* ffi:uint32))
+  (not (zero? (% (unwrap-wlr-seat seat) serial))))
+
+;;
 (define-wlr-procedure (wlr-seat-validate-pointer-grab-serial seat origin serial)
   (ffi:int8 "wlr_seat_validate_pointer_grab_serial" `(* * ,ffi:uint32))
   (not (zero? (% (unwrap-wlr-seat seat) (unwrap-wlr-surface origin) serial))))
+
+(define-wlr-procedure (wlr-seat-validate-touch-grab-serial
+                       seat origin serial point_ptr)
+  (ffi:int8 "wlr_seat_validate_touch_grab_serial" (list '* '* ffi:uint32 '*))
+  (not (zero? (% (unwrap-wlr-seat seat)
+                 (unwrap-wlr-surface origin) serial point_ptr))))
+
+(define-wlr-procedure (wlr-seat-client-next-serial client)
+  (ffi:uint32 "wlr_seat_client_next_serial" (list '*))
+  (% (unwrap-wlr-seat-client client)))
+
+(define-wlr-procedure (wlr-seat-client-validate-event-serial client serial)
+  (ffi:int8 "wlr_seat_client_validate_event_serial" (list '* ffi:uint32))
+  (not (zero? (% (unwrap-wlr-seat-client client) serial))))
+
+(define-wlr-procedure (wlr-seat-client-from-resource resource)
+  ('* "wlr_seat_client_from_resource" (list '*))
+  (wrap-wlr-seat-client (% (unwrap-wl-resource resource))))
+
+(define-wlr-procedure (wlr-seat-client-from-pointer-resource resource)
+  ('* "wlr_seat_client_from_pointer_resource" (list '*))
+  (wrap-wlr-seat-client (% (unwrap-wl-resource resource))))
+
+(define-wlr-procedure (wlr-surface-accepts-touch wlr-seat surface)
+  (ffi:int8 "wlr_surface_accepts_touch" (list '* '*))
+  (not (zero? (% (unwrap-wlr-seat wlr-seat) (unwrap-wlr-surface surface)))))
+
+
+;;

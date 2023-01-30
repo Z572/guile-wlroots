@@ -3,18 +3,19 @@
   #:use-module (wlroots utils)
   #:use-module (wlroots types buffer)
   #:use-module (wlroots render renderer)
+  #:use-module (wlroots render dmabuf)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (rnrs bytevectors)
   #:use-module (wlroots types)
   #:export (wlr-texture-from-pixels
-            wlr-texture-is-opaque
-            wlr-texture-write-pixels
             wlr-texture-destroy
-            wlr-texture-from-buffer))
+            wlr-texture-from-buffer
+            wlr-texture-from-dmabuf))
 
-(define-bytestructure-class <wlr-texture> ()
-  %wlr-texture-struct
-  wrap-wlr-texture unwrap-wlr-texture wlr-texture?)
+(define-wlr-types-class wlr-texture ()
+  (width #:accessor .width)
+  (height #:accessor .height)
+  #:descriptor %wlr-texture-struct)
 
 (define-wlr-procedure (wlr-texture-from-pixels renderer fmt stride width height
                                                data)
@@ -23,24 +24,10 @@
   (wrap-wlr-texture (% (unwrap-wlr-renderer renderer)
                        fmt stride width height data)))
 
-(define-wlr-procedure (wlr-texture-is-opaque texture)
-  (ffi:int8 "wlr_texture_is_opaque" (list '*))
-  (not (zero? (% (unwrap-wlr-texture texture)))))
-
-(define-wlr-procedure (wlr-texture-write-pixels
-                       texture stride
-                       width height
-                       src_x src_y
-                       dst_x dst_y data)
-  (ffi:int8 "wlr_texture_write_pixels"
-            (list '* ffi:uint32 ffi:uint32 ffi:uint32 ffi:uint32 ffi:uint32
-                  ffi:uint32 ffi:uint32 '*))
-  (not (zero?
-        (% (unwrap-wlr-texture texture)
-           stride width height src_x src_y
-           dst_x dst_y (cond ((ffi:pointer? data) data)
-                             ((bytevector? data)
-                              (ffi:bytevector->pointer data)))))))
+(define-wlr-procedure (wlr-texture-from-dmabuf renderer attribs)
+  ('* "wlr_texture_from_dmabuf" (list '* '*))
+  (wrap-wlr-texture
+   (% (unwrap-wlr-renderer renderer) (unwrap-wlr-dmabuf-attributes attribs))))
 
 (define-wlr-procedure (wlr-texture-destroy texture)
   (ffi:void "wlr_texture_destroy" (list '*))

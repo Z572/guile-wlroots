@@ -5,7 +5,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (wlroots render renderer)
   #:use-module (wlroots types output-layout)
-  #:use-module (wlroots types surface)
+  #:use-module (wlroots types compositor)
   #:use-module (wlroots types)
   #:use-module (wayland util)
   #:use-module (wlroots utils)

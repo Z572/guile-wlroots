@@ -18,6 +18,7 @@
   #:use-module (wayland signal)
   #:use-module (bytestructures guile)
   #:use-module (bytestructure-class)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-output-state-struct
                %wlr-output-struct)
   #:export (wrap-wlr-output
@@ -44,9 +45,9 @@
             <wlr-output-cursor>
             wrap-wlr-output-cursor
             unwrap-wlr-output-cursor
-            .adaptive-sync-status
             .allocator
             .backend
+            .buffer
             .current-mode
             .data
             .description
@@ -63,8 +64,25 @@
             .scale
             .subpixel
             .transform
-            .width))
+            .width
+            .adaptive-sync-status))
 
+(define-wlr-types-class wlr-output-state ()
+  (committed #:accessor .committed)
+  (allow-artifacts #:accessor .allow-artifacts)
+  (damage #:accessor .damage)
+  (enabled #:accessor .enabled)
+  (scale #:accessor .scale)
+  (transform #:accessor .transform)
+  (adaptive-sync-enabled #:accessor .adaptive-sync-enabled)
+  (render-format #:accessor .render-format)
+  (subpixel #:accessor .subpixel)
+  (buffer #:accessor .buffer)
+  (mode-type #:accessor .mode-type)
+  (mode #:accessor .mode)
+  (gamma-lut #:accessor .gamma-lut)
+  (gamma-lut-size #:accessor .gamma-lut-size)
+  #:descriptor %wlr-output-state-struct)
 (define-wlr-types-class wlr-output ()
   (backend      #:accessor .backend)
   (display      #:accessor .display)

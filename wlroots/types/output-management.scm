@@ -10,6 +10,7 @@
   #:use-module (wlroots types output)
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-output-manager-v1-struct)
   #:export (<wlr-output-manager-v1>
             wrap-wlr-output-manager-v1
@@ -23,13 +24,13 @@
             wlr-output-configuration-head-v1-create
             wlr-output-configuration-v1-create
             wlr-output-manager-v1-set-configuration
+            .state
             .output
             .enabled
             .mode
             .x
             .y
             .scale
-            .state
             .resource))
 
 (define-wlr-types-class wlr-output-manager-v1 ()
@@ -51,6 +52,7 @@
   (state #:accessor .state)
   (config #:accessor .config)
   (resource #:accessor .resource)
+  (output-destroy #:accessor .output-destroy)
   #:descriptor %wlr-output-configuration-head-v1-struct)
 
 (define-wlr-procedure (wlr-output-manager-v1-create display)
@@ -65,7 +67,24 @@
 (define-wlr-procedure (wlr-output-configuration-v1-create)
   ('* "wlr_output_configuration_v1_create" '())
   (wrap-wlr-output-configuration-v1 (%)))
+
+(define-wlr-procedure (wlr-output-configuration-v1-destroy config)
+  (ffi:void "wlr_output_configuration_v1_destroy" (list '*))
+  (% (unwrap-wlr-output-configuration-v1 config)))
+
+(define-wlr-procedure (wlr-output-configuration-v1-send-succeeded config)
+  (ffi:void "wlr_output_configuration_v1_send_succeeded" (list '*))
+  (% (unwrap-wlr-output-configuration-v1 config)))
+
+(define-wlr-procedure (wlr-output-configuration-v1-send-failed config)
+  (ffi:void "wlr_output_configuration_v1_send_failed" (list '*))
+  (% (unwrap-wlr-output-configuration-v1 config)))
+
 (define-wlr-procedure (wlr-output-configuration-head-v1-create config output)
   ('* "wlr_output_configuration_head_v1_create" '(* *))
   (wrap-wlr-output-configuration-head-v1
    (% (unwrap-wlr-output-configuration-v1 config) (unwrap-wlr-output output))))
+
+(define-wlr-procedure (wlr-output-head-v1-state-apply head_state output_state)
+  (ffi:void "wlr_output_head_v1_state_apply" (list '* '*))
+  (% (unwrap-wlr-output-head-v1-state head_state) (unwrap-wlr-output-state output_state)))

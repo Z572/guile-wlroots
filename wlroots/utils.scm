@@ -59,7 +59,16 @@
   (let ((ptr (wlr->pointer name)))
     (pointer->procedure return ptr params)))
 
-(define-make-ffi-procedure define-wlr-procedure wlr->procedure)
+(define-syntax define-wlr-procedure
+  (lambda (x)
+    (syntax-case x ()
+      ((_ (name args ...) (return-type cname arg-types) body ...)
+       (with-syntax ((% (datum->syntax x '%)))
+         #'(begin
+             (define-public name
+               (let ((% (wlr->procedure return-type cname arg-types)))
+                 (lambda* (args ...)
+                   body ...)))))))))
 
 ;;; copy define from (system vm dwarf) module
 (define-syntax-rule (define-enumeration code->name name->code

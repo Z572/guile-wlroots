@@ -63,7 +63,16 @@
             .subpixel
             .transform
             .width
-            .adaptive-sync-status))
+            .committed
+            .allow-artifacts
+            .adaptive-sync-status
+            .adaptive-sync-enabled
+            .render-format
+            .damage
+            .mode-type
+            .gamma-lut-size
+            .gamma-lut
+            .mode))
 
 (define-wlr-types-class wlr-output-state ()
   (committed #:accessor .committed)
@@ -205,7 +214,11 @@
 
 (define-wlr-procedure (wlr-output-test-state output state)
   (ffi:int8 "wlr_output_test_state" (list '* '*))
-  (not (zero? (% (unwrap-wlr-output output) state))))
+  (not (zero? (% (unwrap-wlr-output output) (unwrap-wlr-output-state state)))))
+
+(define-wlr-procedure (wlr-output-commit-state output state)
+  (ffi:int8 "wlr_output_commit_state" (list '* '*))
+  (not (zero? (% (unwrap-wlr-output output) (unwrap-wlr-output-state state)))))
 
 (define-wlr-procedure
   (wlr-output-schedule-frame output)

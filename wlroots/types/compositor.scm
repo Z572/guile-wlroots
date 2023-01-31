@@ -22,18 +22,46 @@
             wlr-surface-get-root-surface
             .resource
             .renderer
+            .current
+            .pending
+            .seq
+            .committed
+            .dx
+            .dy
+            .scale
+            .width
+            .height
+            .buffer-width
+            .buffer-height
             .buffer
+            .transform
             .sx
             .sy
             .data))
 
-(define-wlr-types-class-public wlr-surface ()
+(define-wlr-types-class wlr-surface-state ()
+  (committed #:accessor .committed)
+  (seq #:accessor .seq)
+  (buffer #:accessor .buffer)
+  (dx #:accessor .dx)
+  (dy #:accessor .dy)
+  (transform #:accessor .transform)
+  (scale #:accessor .scale)
+  (width #:accessor .width)
+  (height #:accessor .height)
+  (buffer-width #:accessor .buffer-width)
+  (buffer-height #:accessor .buffer-height)
+  #:descriptor %wlr-surface-state-struct)
+(define-wlr-types-class wlr-surface ()
   (resource #:accessor .resource)
   (renderer #:accessor .renderer)
   (buffer #:accessor .buffer)
   (sx #:accessor .sx)
   (sy #:accessor .sy)
+  (current #:accessor .current)
+  (pending #:accessor .pending)
   (data #:accessor .data)
+  (current-outputs #:accessor .current-outputs)
   #:descriptor %wlr-surface-struct)
 
 (define-wlr-types-class wlr-surface-output ()

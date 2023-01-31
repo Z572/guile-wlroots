@@ -202,7 +202,7 @@
 
 (define-wlr-procedure (wlr-scene-tree-create parent)
   ('* "wlr_scene_tree_create" '(*))
-  (wrap-wlr-scene-tree (% (unwrap-wlr-scene-node parent))))
+  (wrap-wlr-scene-tree (% (unwrap-wlr-scene-tree parent))))
 (define-wlr-procedure (wlr-scene-node-at node lx ly)
   ('* "wlr_scene_node_at" (list '* ffi:double ffi:double '* '*))
   (define (ref-double-pointer p)
@@ -243,7 +243,7 @@
 (define-wlr-procedure (wlr-scene-surface-create parent surface)
   ('* "wlr_scene_surface_create" '(* *))
   (wrap-wlr-scene-surface
-   (% (unwrap-wlr-scene-node parent)
+   (% (unwrap-wlr-scene-tree parent)
       (unwrap-wlr-surface surface) )))
 
 (define-wlr-procedure (wlr-scene-surface-from-buffer scene-buffer)
@@ -253,7 +253,7 @@
 (define-wlr-procedure (wlr-scene-rect-create parent width height color)
   ('* "wlr_scene_rect_create" (list '* ffi:int ffi:int '*))
   (wrap-wlr-scene-rect
-   (% (unwrap-wlr-scene-node parent)
+   (% (unwrap-wlr-scene-tree parent)
       width
       height
       (color->pointer color))))
@@ -268,7 +268,7 @@
 
 (define-wlr-procedure (wlr-scene-buffer-create parent buffer)
   ('* "wlr_scene_buffer_create" '(* *))
-  (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node parent)
+  (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-tree parent)
                             (unwrap-wlr-buffer buffer))))
 
 (define-wlr-procedure (wlr-scene-buffer-set-buffer scene-buffer buffer)
@@ -312,23 +312,22 @@
      (unwrap-timespec now)))
 (define-wlr-procedure (wlr-scene-subsurface-tree-create parent surface)
   ('* "wlr_scene_subsurface_tree_create" '(* *))
-  (wrap-wlr-scene-node (% (unwrap-wlr-scene-node parent)
+  (wrap-wlr-scene-tree (% (unwrap-wlr-scene-tree parent)
                           (unwrap-wlr-surface surface))))
 
 (define-wlr-procedure (wlr-scene-xdg-surface-create parent xdg-surface)
   ('* "wlr_scene_xdg_surface_create" '(* *))
-  (wrap-wlr-scene-node (% (unwrap-wlr-scene-node parent)
+  (wrap-wlr-scene-tree (% (unwrap-wlr-scene-tree parent)
                           (unwrap-wlr-xdg-surface xdg-surface))))
 
 (define-wlr-procedure (wlr-scene-layer-surface-v1-create parent layer-surface)
   ('* "wlr_scene_layer_surface_v1_create" (list '* '*))
   (wrap-wlr-scene-layer-surface-v1
-   (% parent (unwrap-wlr-layer-surface-v1 layer-surface))))
-(define-wlr-procedure
-  (wlr-scene-layer-surface-v1-configure
-   scene-layer-surface
-   full-area
-   usable-area)
+   (% (unwrap-wlr-scene-tree parent)
+      (unwrap-wlr-layer-surface-v1 layer-surface))))
+
+(define-wlr-procedure (wlr-scene-layer-surface-v1-configure
+                       scene-layer-surface full-area usable-area)
   (ffi:void "wlr_scene_layer_surface_v1_configure" (list '* '* '*))
   (% (unwrap-wlr-scene-layer-surface-v1 scene-layer-surface)
      (unwrap-wlr-box full-area)

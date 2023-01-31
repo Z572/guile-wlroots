@@ -895,12 +895,21 @@
                (transform ,%wl-output-transform-enum)
                (opaque-region ,(bs:pointer '*)))))
 
+(define WLR_DAMAGE_RING_PREVIOUS_LEN 2)
+(define-public %wlr-damage-ring-struct
+  (bs:struct `((width ,int32)
+               (height ,int32)
+               (current ,%pixman-region32-t-struct)
+               (previous ,(bs:vector WLR_DAMAGE_RING_PREVIOUS_LEN
+                                     %pixman-region32-t-struct))
+               (previous-idx ,size_t))))
+
 (define-public %wlr-scene-output-struct
   (bs:struct `((output ,(bs:pointer %wlr-output-struct))
                (link ,%wl-list-struct)
                (scene ,(bs:pointer %wlr-scene-struct))
                (addon ,%wlr-addon-struct)
-               (damage ,(bs:pointer '*))
+               (damage ,%wlr-damage-ring-struct)
                (x ,int)
                (y ,int)
                (events ,(bs:struct `((destroy ,%wl-signal-struct))))
@@ -970,14 +979,13 @@
                (resource ,(bs:pointer %wl-resource-struct))
                (shell ,(bs:pointer %wlr-layer-shell-v1-struct))
                (popups ,%wl-list-struct)
-               (namespace ,cstring-pointer)
+               (namespace ,cstring-pointer*)
                (added ,stdbool)
                (configured ,stdbool)
                (mapped ,stdbool)
                (configure-list ,%wl-list-struct)
                (current ,%wlr-layer-surface-v1-state-struct)
                (pending ,%wlr-layer-surface-v1-state-struct)
-               (surface-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (map ,%wl-signal-struct)
                                      (unmap ,%wl-signal-struct)
@@ -1040,12 +1048,11 @@
                (added ,stdbool)
                (configured ,stdbool)
                (mapped ,stdbool)
-               (configure-idle ,(bs:pointer '*))
+               (configure-idle ,(bs:pointer (delay %wl-event-source-struct)))
                (scheduled-serial ,uint32)
                (configure-list ,%wl-list-struct)
                (current ,%wlr-xdg-surface-state-struct)
                (pending ,%wlr-xdg-surface-state-struct)
-               (surface-destroy ,%wl-listener-struct)
                (surface-commit ,%wl-listener-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)
                                      (ping-timeout ,%wl-signal-struct)
@@ -1112,15 +1119,6 @@
      (offset ,(bs:vector 4 uint32))
      (stride ,(bs:vector 4 uint32))
      (fd ,(bs:vector 4 int)))))
-
-(define WLR_DAMAGE_RING_PREVIOUS_LEN 2)
-(define-public %wlr-damage-ring-struct
-  (bs:struct `((width ,int32)
-               (height ,int32)
-               (current ,%pixman-region32-t-struct)
-               (previous ,(bs:vector WLR_DAMAGE_RING_PREVIOUS_LEN
-                                     %pixman-region32-t-struct))
-               (previous-idx ,size_t))))
 
 (define-public %wlr-xdg-popup-struct
   (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))

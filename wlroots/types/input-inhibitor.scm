@@ -2,7 +2,8 @@
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wayland display)
-  #:re-export (%wlr-input-inhibit-manager-struct)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wlr-input-inhibit-manager-create
             .global
             .active-client

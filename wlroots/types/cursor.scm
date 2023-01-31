@@ -9,36 +9,19 @@
   #:use-module (wlroots types)
   #:use-module (wayland util)
   #:use-module (wlroots utils)
-  #:use-module ((system foreign) #:select ((void . ffi:void)
-                                           (int32 . ffi:int32)
-                                           (int . ffi:int)
-                                           (double . ffi:double)
-                                           (pointer->bytevector . ffi:pointer->bytevector)))
+  #:use-module ((system foreign) #:prefix ffi:)
   ;; #:use-module (system foreign)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
-  #:re-export (%wlr-cursor-struct)
-  #:export (wrap-wlr-cursor
-            unwrap-wlr-cursor
-            wlr-cursor-create
-            wlr-cursor-attach-output-layout
-            .x
-            .y
-            wlr-cursor-set-surface
-            wlr-cursor-move
-            wlr-cursor-warp
-            wlr-cursor-warp-absolute
-            wlr-cursor-warp-closest
-            wlr-cursor-attach-input-device))
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+  #:export (.x
+            .y))
 
 (define-wlr-types-class wlr-cursor ()
-  (x #:accessor .x
-     #:allocation
-     #:bytestructure)
-  (y #:accessor .y
-     #:allocation
-     #:bytestructure)
+  (x #:accessor .x)
+  (y #:accessor .y)
   #:descriptor %wlr-cursor-struct)
+
 (define-wlr-procedure (wlr-cursor-create)
   ('* "wlr_cursor_create" '())
   (wrap-wlr-cursor (%)))

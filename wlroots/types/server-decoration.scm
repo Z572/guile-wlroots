@@ -4,6 +4,8 @@
   #:use-module (wlroots utils)
   #:use-module (wlroots types)
   #:use-module (wlroots types seat)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wlr-server-decoration-manager-create
             wlr-server-decoration-manager-set-default-mode
             .resource

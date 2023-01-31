@@ -7,7 +7,7 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
-  #:re-export (%wlr-renderer-struct)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wrap-wlr-renderer unwrap-wlr-renderer wlr-renderer-autocreate
                               wlr-renderer-init-wl-display
                               .rendering

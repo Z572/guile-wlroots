@@ -6,7 +6,20 @@
   #:use-module (wlroots types compositor)
   #:use-module (wlroots types keyboard)
   #:use-module (bytestructure-class)
-  #:use-module (wlroots types))
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+  #:use-module (wlroots types)
+  #:export (.resource .input-method .link .mapped .surface .data
+                      .resource
+                      .input-method
+                      .keyboard
+                      .keyboard-keymap
+                      .keyboard-repeat-info
+                      .global
+                      .input-methods
+                      .display-destroy
+                      .keyboard-destroy
+                      .events))
 
 (define-wlr-types-class wlr-input-method-v2-preedit-string ()
   (text #:accessor .text)
@@ -14,34 +27,18 @@
   (cursor-end #:accessor .cursor-end)
   #:descriptor %wlr-input-method-v2-preedit-string-struct)
 
-(define-bytestructure-class
-  <wlr-input-method-v2-delete-surrounding-text>
-  ()
-  %wlr-input-method-v2-delete-surrounding-text-struct
-  wrap-wlr-input-method-v2-delete-surrounding-text
-  unwrap-wlr-input-method-v2-delete-surrounding-text
-  wlr-input-method-v2-delete-surrounding-text?
+(define-wlr-types-class wlr-input-method-v2-delete-surrounding-text ()
   (before-length #:accessor .before-length)
-  (after-length #:accessor .after-length))
+  (after-length #:accessor .after-length)
+  #:descriptor %wlr-input-method-v2-delete-surrounding-text-struct)
 
-(define-bytestructure-class
-  <wlr-input-method-v2-state>
-  ()
-  %wlr-input-method-v2-state-struct
-  wrap-wlr-input-method-v2-state
-  unwrap-wlr-input-method-v2-state
-  wlr-input-method-v2-state?
+(define-wlr-types-class wlr-input-method-v2-state ()
   (preedit #:accessor .preedit)
   (commit-text #:accessor .commit-text)
-  (delete #:accessor .delete))
+  (delete #:accessor .delete)
+  #:descriptor %wlr-input-method-v2-state-struct)
 
-(define-bytestructure-class
-  <wlr-input-method-v2>
-  ()
-  %wlr-input-method-v2-struct
-  wrap-wlr-input-method-v2
-  unwrap-wlr-input-method-v2
-  wlr-input-method-v2?
+(define-wlr-types-class wlr-input-method-v2 ()
   (resource #:accessor .resource)
   (seat #:accessor .seat)
   (seat-client #:accessor .seat-client)
@@ -54,79 +51,41 @@
   (keyboard-grab #:accessor .keyboard-grab)
   (link #:accessor .link)
   (seat-client-destroy #:accessor .seat-client-destroy)
-  (events #:accessor .events))
-(begin
-  (define-bytestructure-class
-    <wlr-input-popup-surface-v2>
-    ()
-    %wlr-input-popup-surface-v2-struct
-    wrap-wlr-input-popup-surface-v2
-    unwrap-wlr-input-popup-surface-v2
-    wlr-input-popup-surface-v2?
-    (resource #:accessor .resource)
-    (input-method #:accessor .input-method)
-    (link #:accessor .link)
-    (mapped #:accessor .mapped)
-    (surface #:accessor .surface)
-    (events #:accessor .events)
-    (data #:accessor .data))
-  (export .resource .input-method .link .mapped .surface .events .data))
-(define-bytestructure-class
-  <wlr-input-method-keyboard-grab-v2>
-  ()
-  %wlr-input-method-keyboard-grab-v2-struct
-  wrap-wlr-input-method-keyboard-grab-v2
-  unwrap-wlr-input-method-keyboard-grab-v2
-  wlr-input-method-keyboard-grab-v2?
+  #:descriptor %wlr-input-method-v2-struct)
+(define-wlr-types-class wlr-input-popup-surface-v2 ()
+  (resource #:accessor .resource)
+  (input-method #:accessor .input-method)
+  (link #:accessor .link)
+  (mapped #:accessor .mapped)
+  (surface #:accessor .surface)
+  (data #:accessor .data)
+  #:descriptor %wlr-input-popup-surface-v2-struct)
+(define-wlr-types-class wlr-input-method-keyboard-grab-v2 ()
   (resource #:accessor .resource)
   (input-method #:accessor .input-method)
   (keyboard #:accessor .keyboard)
   (keyboard-keymap #:accessor .keyboard-keymap)
   (keyboard-repeat-info #:accessor .keyboard-repeat-info)
   (keyboard-destroy #:accessor .keyboard-destroy)
-  (events #:accessor .events))
-(begin
+  #:descriptor %wlr-input-method-keyboard-grab-v2-struct  )
 
-
-  (export
-   .resource
-   .input-method
-   .keyboard
-   .keyboard-keymap
-   .keyboard-repeat-info
-   .keyboard-destroy
-   .events))
-(define-bytestructure-class
-  <wlr-input-method-manager-v2>
-  ()
-  %wlr-input-method-manager-v2-struct
-  wrap-wlr-input-method-manager-v2
-  unwrap-wlr-input-method-manager-v2
-  wlr-input-method-manager-v2?
+(define-wlr-types-class wlr-input-method-manager-v2 ()
   (global #:accessor .global)
   (input-methods #:accessor .input-methods)
   (display-destroy #:accessor .display-destroy)
-  (events #:accessor .events))
+  #:descriptor %wlr-input-method-manager-v2-struct)
 
-(begin
-
-
-  (export .global .input-methods .display-destroy .events))
-
-(define-wlr-procedure
-  (wlr-input-method-manager-v2-create display)
+(define-wlr-procedure (wlr-input-method-manager-v2-create display)
   ('* "wlr_input_method_manager_v2_create" (list '*))
   (wrap-wlr-input-method-manager-v2 (% (unwrap-wl-display display))))
-(define-wlr-procedure
-  (wlr-input-method-v2-send-activate input-method)
+(define-wlr-procedure (wlr-input-method-v2-send-activate input-method)
   (ffi:void "wlr_input_method_v2_send_activate" (list '*))
   (% (unwrap-wlr-input-method-v2 input-method)))
-(define-wlr-procedure
-  (wlr-input-method-v2-send-deactivate input-method)
+(define-wlr-procedure (wlr-input-method-v2-send-deactivate input-method)
   (ffi:void "wlr_input_method_v2_send_deactivate" (list '*))
   (% (unwrap-wlr-input-method-v2 input-method)))
-(define-wlr-procedure
-  (wlr-input-method-v2-send-surrounding-text input-method text cursor anchor)
+(define-wlr-procedure (wlr-input-method-v2-send-surrounding-text
+                       input-method text cursor anchor)
   (ffi:void
    "wlr_input_method_v2_send_surrounding_text"
    (list '* '* ffi:uint32 ffi:uint32))
@@ -136,9 +95,8 @@
      anchor))
 (define-wlr-procedure (wlr-input-method-v2-send-content-type
                        input-method hint purpose)
-  (ffi:void
-   "wlr_input_method_v2_send_content_type"
-   (list '* ffi:uint32 ffi:uint32))
+  (ffi:void "wlr_input_method_v2_send_content_type"
+            (list '* ffi:uint32 ffi:uint32))
   (% (unwrap-wlr-input-method-v2 input-method) hint purpose))
 (define-wlr-procedure (wlr-input-method-v2-send-text-change-cause
                        input-method cause)

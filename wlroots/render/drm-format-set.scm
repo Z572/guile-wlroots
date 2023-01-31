@@ -1,4 +1,6 @@
 (define-module (wlroots render drm-format-set)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:use-module (wlroots types)
   #:use-module (wayland util)
   #:use-module (bytestructures guile)

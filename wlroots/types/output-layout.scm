@@ -11,8 +11,16 @@
   #:use-module (oop goops)
   #:use-module (bytestructures guile)
   #:use-module (bytestructure-class)
-  #:re-export (%wlr-output-layout-struct)
-  #:export (wrap-wlr-output-layout
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+  #:export (.data
+            .outputs
+            .output
+            .x
+            .y
+            .link
+            .state
+            .addon
+            wrap-wlr-output-layout
             unwrap-wlr-output-layout
             wlr-output-layout-create
             wlr-direction->value value->wlr-direction

@@ -9,7 +9,8 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:use-module (bytestructures guile)
-  #:re-export (%wlr-backend-struct)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:export (wlr-backend-autocreate
             unwrap-wlr-backend
             wrap-wlr-backend

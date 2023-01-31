@@ -12,7 +12,7 @@
   #:use-module (wlroots time)
   #:use-module (wlroots types)
   #:use-module (wlroots types data-device)
-  #:use-module (wlroots types input-device)
+  #:autoload (wlroots types input-device) (unwrap-wlr-input-device)
   #:use-module (wlroots types keyboard)
   #:use-module (wlroots types compositor)
   #:use-module (wlroots utils)
@@ -134,6 +134,10 @@
             .sy
             .touch-id
             .touch-state
+            .focus-client
+            .focus-surface
+            .client
+            .surface
             .accumulated-capabilities))
 
 

@@ -17,6 +17,8 @@
   #:use-module (wayland signal)
   #:use-module (rnrs bytevectors)
   #:use-module (bytestructure-class)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:use-module ((system foreign)
                 #:select(pointer-address pointer? %null-pointer make-pointer null-pointer? bytevector->pointer))
   #:use-module (bytestructures guile)
@@ -480,8 +482,26 @@
                (locked ,xkb_mod_mask_t)
                (group ,xkb_mod_mask_t))))
 
+(define-public %wlr-input-device-type-enum
+  (bs:enum '((WLR_INPUT_DEVICE_KEYBOARD 0)
+             (WLR_INPUT_DEVICE_POINTER 1)
+             (WLR_INPUT_DEVICE_TOUCH 2)
+             (WLR_INPUT_DEVICE_TABLET_TOOL 3)
+             (WLR_INPUT_DEVICE_TABLET_PAD 4)
+             (WLR_INPUT_DEVICE_SWITCH 5))))
+
+(define-public %wlr-input-device-struct
+  (bs:struct `((type ,%wlr-input-device-type-enum)
+               (vendor ,unsigned-int)
+               (product ,unsigned-int)
+               (name ,cstring-pointer*)
+               (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-pointer-struct
-  (bs:struct `((impl ,(bs:pointer '*))
+  (bs:struct `((base ,%wlr-input-device-struct)
+               (impl ,(bs:pointer '*))
+               (output-name ,cstring-pointer*)
                (events
                 ,(bs:struct
                   `((motion ,%wl-signal-struct)
@@ -625,21 +645,6 @@
                                      (destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-input-device-type-enum
-  (bs:enum '((WLR_INPUT_DEVICE_KEYBOARD 0)
-             (WLR_INPUT_DEVICE_POINTER 1)
-             (WLR_INPUT_DEVICE_TOUCH 2)
-             (WLR_INPUT_DEVICE_TABLET_TOOL 3)
-             (WLR_INPUT_DEVICE_TABLET_PAD 4)
-             (WLR_INPUT_DEVICE_SWITCH 5))))
-
-(define-public %wlr-input-device-struct
-  (bs:struct `((type ,%wlr-input-device-type-enum)
-               (vendor ,unsigned-int)
-               (product ,unsigned-int)
-               (name ,cstring-pointer*)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
 
 (define-public %wlr-keyboard-struct
   (bs:struct `((base ,%wlr-input-device-struct)
@@ -667,33 +672,91 @@
   (bs:enum '((WLR_BUTTON_RELEASED 0)
              (WLR_BUTTON_PRESSED 1))))
 
-(define-public %wlr-event-pointer-button-struct
-  (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
-               (time-msec ,uint32)
-               (button ,uint32)
-               (state ,%wlr-button-state-enum))))
+(define-public %wlr-pointer-button-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (button ,uint32)
+     (state ,int32))))
 
-(define-public %wlr-event-pointer-motion-struct
-  (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
-               (time-msec ,uint32)
-               (delta-x ,double)
-               (delta-y ,double)
-               (unaccel-dx ,double)
-               (unaccel-dy ,double))))
+(define-public %wlr-pointer-motion-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (delta-x ,double)
+     (delta-y ,double)
+     (unaccel-dx ,double)
+     (unaccel-dy ,double))))
 
-(define-public %wlr-event-pointer-motion-absolute-struct
-  (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
-               (time-msec ,uint32)
-               (x ,double)
-               (y ,double))))
+(define-public %wlr-pointer-motion-absolute-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (x ,double)
+     (y ,double))))
 
-(define-public %wlr-event-pointer-axis-struct
-  (bs:struct `((device ,(bs:pointer %wlr-input-device-struct))
-               (time-msec ,uint32)
-               (source ,int)
-               (orientation ,int)
-               (delta ,double)
-               (delta-discrete ,int32))))
+(define-public %wlr-pointer-axis-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (source ,int32)
+     (orientation ,int32)
+     (delta ,double)
+     (delta-discrete ,int32))))
+
+(define-public %wlr-pointer-swipe-begin-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (fingers ,uint32))))
+
+(define-public %wlr-pointer-swipe-update-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (fingers ,uint32)
+     (dx ,double)
+     (dy ,double))))
+
+(define-public %wlr-pointer-swipe-end-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (cancelled ,stdbool))))
+
+(define-public %wlr-pointer-pinch-begin-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (fingers ,uint32))))
+
+(define-public %wlr-pointer-pinch-update-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (fingers ,uint32)
+     (dx ,double)
+     (dy ,double)
+     (scale ,double)
+     (rotation ,double))))
+
+(define-public %wlr-pointer-pinch-end-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (cancelled ,stdbool))))
+
+(define-public %wlr-pointer-hold-begin-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (fingers ,uint32))))
+
+(define-public %wlr-pointer-hold-end-event-struct
+  (bs:struct
+   `((pointer ,(bs:pointer %wlr-pointer-struct))
+     (time-msec ,uint32)
+     (cancelled ,stdbool))))
 
 (define-public %wlr-backend-struct
   (bs:struct

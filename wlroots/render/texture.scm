@@ -1,4 +1,7 @@
 (define-module (wlroots render texture)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wlroots types buffer)

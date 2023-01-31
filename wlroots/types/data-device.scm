@@ -11,6 +11,7 @@
   #:use-module (wlroots types compositor)
   #:use-module (wlroots utils)
   #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-drag-struct
                %wlr-data-source-struct
                %wlr-drag-icon-struct)

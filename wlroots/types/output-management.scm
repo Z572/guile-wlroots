@@ -11,7 +11,6 @@
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
-  #:re-export (%wlr-output-manager-v1-struct)
   #:export (<wlr-output-manager-v1>
             wrap-wlr-output-manager-v1
             unwrap-wlr-output-manager-v1

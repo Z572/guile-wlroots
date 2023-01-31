@@ -8,9 +8,8 @@
   #:use-module (wlroots types)
   #:use-module (wlroots types output)
   #:use-module (wlroots utils)
-  #:re-export (%wlr-presentation-struct
-               %wlr-presentation-feedback-struct
-               %wlr-presentation-event-struct)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wlr-presentation-create
             wrap-wlr-presentation
             unwrap-wlr-presentation

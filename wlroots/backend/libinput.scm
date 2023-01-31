@@ -1,4 +1,7 @@
 (define-module (wlroots backend libinput)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:use-module (libinput)
   #:use-module (wayland display)
   #:use-module (wlroots backend)

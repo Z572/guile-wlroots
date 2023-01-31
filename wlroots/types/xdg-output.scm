@@ -5,6 +5,8 @@
   #:use-module (wlroots util box)
   #:use-module (wlroots types)
   #:use-module (wlroots types output-layout)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export
   (wlr-xdg-output-manager-v1-create
    .description

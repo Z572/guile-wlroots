@@ -4,6 +4,8 @@
   #:use-module (wlroots utils)
   #:use-module (wlroots types input-device)
   #:use-module (wlroots types output)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:use-module ((system foreign) #:prefix ffi:)
   #:export (wlr-wl-backend-create
             wlr-wl-backend-get-remote-display

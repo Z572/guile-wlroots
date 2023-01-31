@@ -13,7 +13,8 @@
                                            string->pointer))
   #:use-module (wlroots types cursor)
   #:use-module (oop goops)
-  #:re-export (%wlr-xcursor-manager-struct)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:export (wrap-wlr-xcursor-manager
             unwrap-wlr-xcursor-manager
             wlr-xcursor-manager-create

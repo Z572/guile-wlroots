@@ -19,8 +19,6 @@
   #:use-module (bytestructures guile)
   #:use-module (bytestructure-class)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
-  #:re-export (%wlr-output-state-struct
-               %wlr-output-struct)
   #:export (wrap-wlr-output
             unwrap-wlr-output
             wlr-output-init-render

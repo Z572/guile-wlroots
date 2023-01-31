@@ -1,5 +1,4 @@
 (define-module (wlroots types xdg-activation)
-  #:use-module (oop goops)
   #:use-module (wayland list)
   #:use-module (wayland listener)
   #:use-module (wayland signal)
@@ -8,7 +7,9 @@
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (bytestructures guile)
-  #:re-export (%wlr-xdg-activation-v1-struct)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:export (wlr-xdg-activation-v1-create
             <wlr-xdg-activation-v1>
             wrap-wlr-xdg-activation-v1

@@ -7,15 +7,11 @@
   #:use-module (wlroots util box)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wayland util)
-  #:re-export (%wlr-xdg-shell-struct
-               %wlr-xdg-surface-struct
-               %wlr-xdg-toplevel-resize-event-struct
-               %wlr-xdg-surface-configure-struct
-               %wlr-xdg-toplevel-struct
-               %wlr-xdg-toplevel-state-struct)
   #:export (wrap-wlr-xdg-shell
             unwrap-wlr-xdg-shell
             wrap-wlr-xdg-surface

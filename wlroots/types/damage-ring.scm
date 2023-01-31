@@ -2,7 +2,10 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wlroots util box)
-  #:use-module (wlroots types))
+  #:use-module (wlroots types)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+  #:export (.width .height .current .previous-idx))
 
 (define-wlr-types-class wlr-damage-ring ()
   (width #:accessor .width)

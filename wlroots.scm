@@ -1,4 +1,6 @@
-(define-module (wlroots))
+(define-module (wlroots)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last))
 
 (eval-when (eval load compile)
   (begin

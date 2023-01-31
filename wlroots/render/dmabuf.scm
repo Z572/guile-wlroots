@@ -1,4 +1,6 @@
 (define-module (wlroots render dmabuf)
+  #:use-module (oop goops)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wlroots util box)

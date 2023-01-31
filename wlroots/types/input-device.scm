@@ -6,11 +6,9 @@
   #:use-module (bytestructure-class)
   #:use-module (wayland util)
   #:use-module (wlroots utils)
+  #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
-  #:re-export (%wlr-input-device-struct)
-  #:export (wrap-wlr-input-device
-            unwrap-wlr-input-device
-            .type
+  #:export (.type
             .vendor
             .product
             .name

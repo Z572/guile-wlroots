@@ -1,10 +1,12 @@
 (define-module (wlroots types keyboard)
+  #:use-module (oop goops)
   #:use-module (wlroots types input-device)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (xkbcommon xkbcommon)
   #:use-module ((bytestructures guile) #:select (bytestructure-ref))
   #:use-module ((system foreign) #:prefix ffi:)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (WLR_LED_NUM_LOCK
             WLR_LED_CAPS_LOCK
             WLR_LED_SCROLL_LOCK
@@ -17,8 +19,6 @@
             WLR_MODIFIER_MOD3
             WLR_MODIFIER_LOGO
             WLR_MODIFIER_MOD5
-            wrap-wlr-event-keyboard-key
-            unwrap-wlr-event-keyboard-key
             wlr-keyboard-set-keymap
             wlr-keyboard-set-repeat-info
             wlr-keyboard-get-modifiers

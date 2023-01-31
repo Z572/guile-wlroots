@@ -3,6 +3,7 @@
   #:use-module (oop goops)
   #:use-module (wlroots utils)
   #:use-module ((system foreign) #:prefix ffi:)
+  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-buffer-struct)
   #:export (wrap-wlr-buffer
             unwrap-wlr-buffer

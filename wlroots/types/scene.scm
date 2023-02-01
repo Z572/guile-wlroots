@@ -278,9 +278,11 @@
 (define-wlr-procedure (wlr-scene-buffer-set-source-box scene-buffer box)
   (ffi:void "wlr_scene_buffer_set_source_box" (list '* '*))
   (% (unwrap-wlr-scene-buffer scene-buffer) (unwrap-wlr-fbox box)))
+
 (define-wlr-procedure (wlr-scene-buffer-set-dest-size scene-buffer width height)
   (ffi:void "wlr_scene_buffer_set_dest_size" (list '* ffi:int ffi:int))
   (% (unwrap-wlr-scene-buffer scene-buffer) width height))
+
 (define-wlr-procedure (wlr-scene-buffer-set-transform scene-buffer transform)
   (ffi:void "wlr_scene_buffer_set_transform" (list '* ffi:int32))
   (% (unwrap-wlr-scene-buffer scene-buffer)
@@ -288,7 +290,7 @@
 
 (define-wlr-procedure (wlr-scene-buffer-send-frame-done scene-buffer now)
   (ffi:void "wlr_scene_buffer_send_frame_done" (list '* '*))
-  (% (unwrap-wlr-scene-buffer scene-buffer) now))
+  (% (unwrap-wlr-scene-buffer scene-buffer) (unwrap-timespec now)))
 
 (define-wlr-procedure (wlr-scene-output-create scene output)
   ('* "wlr_scene_output_create" '(* *))
@@ -310,6 +312,10 @@
   (ffi:void "wlr_scene_output_send_frame_done" '(* *))
   (% (unwrap-wlr-scene-output scene-output)
      (unwrap-timespec now)))
+(define-wlr-procedure (wlr-scene-get-scene-output scene output)
+  ('* "wlr_scene_get_scene_output" (list '* '*))
+  (wrap-wlr-scene-output (% (unwrap-wlr-scene scene) (unwrap-wlr-output output))))
+
 (define-wlr-procedure (wlr-scene-subsurface-tree-create parent surface)
   ('* "wlr_scene_subsurface_tree_create" '(* *))
   (wrap-wlr-scene-tree (% (unwrap-wlr-scene-tree parent)

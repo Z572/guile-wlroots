@@ -20,24 +20,31 @@
             wlr-surface-send-leave
             wlr-surface-send-frame-done
             wlr-surface-get-root-surface
-            .resource
-            .renderer
-            .current
-            .pending
-            .seq
+            .buffer
+            .buffer-height
+            .buffer-width
             .committed
+            .current
+            .current-outputs
+            .data
             .dx
             .dy
-            .scale
-            .width
             .height
-            .buffer-width
-            .buffer-height
-            .buffer
-            .transform
+            .pending
+            .renderer
+            .scale
+            .seq
             .sx
             .sy
-            .data))
+            .transform
+            .output
+            .surface
+            .link
+            .width
+            .bind
+            .global
+            .destroy
+            .resource))
 
 (define-wlr-types-class wlr-surface-state ()
   (committed #:accessor .committed)

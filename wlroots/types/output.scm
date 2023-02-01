@@ -90,11 +90,17 @@
   (gamma-lut #:accessor .gamma-lut)
   (gamma-lut-size #:accessor .gamma-lut-size)
   #:descriptor %wlr-output-state-struct)
+
 (define-wlr-types-class wlr-output ()
   (backend      #:accessor .backend)
   (display      #:accessor .display)
+  (global       #:accessor .global)
+  (resources    #:accessor .resources )
   (name         #:accessor .name)
   (description  #:accessor .description)
+  (make         #:accessor .make)
+  (model        #:accessor .model)
+  (serial       #:accessor .serial)
   (phys-width   #:accessor .phys-width)
   (phys-height  #:accessor .phys-height)
   (current-mode #:accessor .current-mode)
@@ -106,8 +112,9 @@
   (subpixel     #:accessor .subpixel)
   (transform    #:accessor .transform)
   (adaptive-sync-status #:accessor .adaptive-sync-status)
-
+  (render-format #:accessor .render-format)
   (needs-frame #:accessor .needs-frame)
+  (commit-seq #:accessor .commit-seq)
   (non-desktop  #:accessor .non-desktop)
   (allocator #:accessor .allocator)
   (renderer #:accessor .renderer)
@@ -301,7 +308,32 @@
   (ffi:int8 "wlr_output_cursor_move" (list '* ffi:double ffi:double))
   (not (zero? (% (unwrap-wlr-output-cursor cursor) x y))))
 
-(define-wlr-procedure
-  (wlr-output-cursor-destroy cursor)
+(define-wlr-procedure (wlr-output-cursor-destroy cursor)
   (ffi:void "wlr_output_cursor_destroy" (list '*))
   (% (unwrap-wlr-output-cursor cursor)))
+
+(define-wlr-procedure (wlr-output-state-set-enabled state enabled)
+  (ffi:void "wlr_output_state_set_enabled" (list '* ffi:int8))
+  (% (unwrap-wlr-output-state state) (if enabled 1 0)))
+
+(define-wlr-procedure (wlr-output-state-set-mode state mode)
+  (ffi:void "wlr_output_state_set_mode" (list '* '*))
+  (% (unwrap-wlr-output-state state) (unwrap-wlr-output-mode mode)))
+
+(define-wlr-procedure (wlr-output-state-set-scale state scale)
+  (ffi:void "wlr_output_state_set_scale" (list '* ffi:float))
+  (% (unwrap-wlr-output-state state) scale))
+
+(define-wlr-procedure (wlr-output-state-set-transform state transform)
+  (ffi:void "wlr_output_state_set_transform" (list '* ffi:int32))
+  (% (unwrap-wlr-output-state state)
+     (bs:enum->integer %wl-output-transform-enum transform)))
+
+(define-wlr-procedure (wlr-output-state-set-adaptive-sync-enabled state enabled)
+  (ffi:void "wlr_output_state_set_adaptive_sync_enabled" (list '* ffi:int8))
+  (% (unwrap-wlr-output-state state) (if enabled 1 0)))
+
+(define-wlr-procedure (wlr-output-state-set-subpixel state subpixel)
+  (ffi:void "wlr_output_state_set_subpixel" (list '* ffi:int32))
+  (% (unwrap-wlr-output-state state)
+     (bs:enum->integer %wl-output-subpixel-enum subpixel)))

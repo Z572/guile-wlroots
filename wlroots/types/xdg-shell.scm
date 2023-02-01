@@ -383,6 +383,15 @@
       (list '* ffi:int ffi:int '*))
      ffi:%null-pointer))
 
+(define-wlr-procedure (wlr-xdg-surface-for-each-popup-surface proc xdg-surface)
+  (ffi:void "wlr_xdg_surface_for_each_popup_surface" `(* * *))
+  (% (unwrap-wlr-xdg-surface xdg-surface)
+     (ffi:procedure->pointer
+      ffi:void (lambda (surface sx sy data)
+                 (proc (wrap-wlr-surface surface) sx sy))
+      (list '* ffi:int ffi:int '*))
+     ffi:%null-pointer))
+
 (define-wlr-procedure (wlr-xdg-surface-schedule-configure surface)
   (ffi:uint32 "wlr_xdg_surface_schedule_configure" (list '*))
   (% (unwrap-wlr-xdg-surface surface)))

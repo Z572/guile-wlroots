@@ -246,6 +246,10 @@
    (% (unwrap-wlr-scene-tree parent)
       (unwrap-wlr-surface surface) )))
 
+(define-wlr-procedure (wlr-scene-buffer-from-node node)
+  ('* "wlr_scene_buffer_from_node" '(*))
+  (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node node))))
+
 (define-wlr-procedure (wlr-scene-surface-from-buffer scene-buffer)
   ('* "wlr_scene_surface_from_buffer" (list '*))
   (% scene-buffer))

@@ -107,6 +107,7 @@
             .scene
             .state
             .surface
+            .children
             .type
             .x
             .y))
@@ -121,8 +122,8 @@
   (data #:accessor .data)
   #:descriptor %wlr-scene-node-struct)
 (define-wlr-types-class wlr-scene-tree ()
-  (node #:allocation #:bytestructure
-        #:accessor .node)
+  (node #:accessor .node)
+  (children #:accessor .children)
   #:descriptor %wlr-scene-tree-struct)
 
 (define-wlr-types-class wlr-scene-surface ()

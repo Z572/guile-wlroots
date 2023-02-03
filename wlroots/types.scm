@@ -841,7 +841,7 @@
                 ,(bs:struct `((destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void))
                (addons ,%wlr-addon-set-struct)
-               (visible ,(bs:pointer '*)))))
+               (visible ,%pixman-region32-t-struct))))
 
 (define-public %wlr-scene-tree-struct
   (bs:struct `((node ,%wlr-scene-node-struct)

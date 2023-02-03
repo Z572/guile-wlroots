@@ -1279,7 +1279,7 @@
                (events ,(bs:struct `((focus-change ,%wl-signal-struct)))))))
 (define-public %wlr-seat-keyboard-state-struct
   (bs:struct `((seat ,(bs:pointer (delay %wlr-seat-struct)))
-               (keyboard ,(bs:pointer '*))
+               (keyboard ,(bs:pointer (delay %wlr-keyboard-struct)))
                (focused-client ,(bs:pointer %wlr-seat-client-struct))
                (focused-surface ,(bs:pointer %wlr-surface-struct))
                (keyboard-destroy ,%wl-listener-struct)
@@ -1380,7 +1380,7 @@
                (selection-source ,(bs:pointer (delay %wlr-data-source-struct)))
                (selection-serial ,uint32)
                (selection-offers ,%wl-list-struct)
-               (primary-selection-source ,(bs:pointer '*))
+               (primary-selection-source ,(bs:pointer (delay %wlr-primary-selection-source-struct)))
                (primary-selection-serial ,uint32)
 
                (drag ,(bs:pointer (delay %wlr-drag-struct)))

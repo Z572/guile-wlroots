@@ -43,36 +43,38 @@
             <wlr-output-cursor>
             wrap-wlr-output-cursor
             unwrap-wlr-output-cursor
-            .allocator
+            .adaptive-sync-enabled
+            .adaptive-sync-status
+            .allow-artifacts
             .backend
             .buffer
+            .committed
             .current-mode
+            .damage
             .data
             .description
             .display
             .enabled
+            .gamma-lut
+            .gamma-lut-size
+            .global
             .height
+            .mode
+            .mode-type
             .name
             .needs-frame
             .non-desktop
             .phys-height
             .phys-width
             .refresh
+            .render-format
             .renderer
             .scale
             .subpixel
             .transform
+            .surface
             .width
-            .committed
-            .allow-artifacts
-            .adaptive-sync-status
-            .adaptive-sync-enabled
-            .render-format
-            .damage
-            .mode-type
-            .gamma-lut-size
-            .gamma-lut
-            .mode))
+            .allocator))
 
 (define-wlr-types-class wlr-output-state ()
   (committed #:accessor .committed)

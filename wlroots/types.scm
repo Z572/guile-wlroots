@@ -893,7 +893,7 @@
                (dst-width ,int)
                (dst-height ,int)
                (transform ,%wl-output-transform-enum)
-               (opaque-region ,(bs:pointer '*)))))
+               (opaque-region ,%pixman-region32-t-struct))))
 
 (define WLR_DAMAGE_RING_PREVIOUS_LEN 2)
 (define-public %wlr-damage-ring-struct

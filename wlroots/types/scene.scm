@@ -253,7 +253,7 @@
 
 (define-wlr-procedure (wlr-scene-surface-from-buffer scene-buffer)
   ('* "wlr_scene_surface_from_buffer" (list '*))
-  (% scene-buffer))
+  (wrap-wlr-scene-surface (% (unwrap-wlr-scene-buffer scene-buffer))))
 
 (define-wlr-procedure (wlr-scene-rect-create parent width height color)
   ('* "wlr_scene_rect_create" (list '* ffi:int ffi:int '*))

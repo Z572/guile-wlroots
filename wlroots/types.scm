@@ -1599,6 +1599,39 @@
                (seat-client-destroy ,%wl-listener-struct)
                (icon-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
+(define-public %wlr-screencopy-manager-v1-struct
+  (bs:struct
+   `((global ,(bs:pointer %wl-global-struct))
+     (frames ,%wl-list-struct)
+     (display-destroy ,%wl-listener-struct)
+     (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+     (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-screencopy-v1-client-struct
+  (bs:struct
+   `((ref ,int)
+     (manager ,(bs:pointer %wlr-screencopy-manager-v1-struct))
+     (damages ,%wl-list-struct))))
+
+(define-public %wlr-screencopy-frame-v1-struct
+  (bs:struct
+   `((resource ,(bs:pointer %wl-resource-struct))
+     (client ,(bs:pointer %wlr-screencopy-v1-client-struct))
+     (link ,%wl-list-struct)
+     (shm-format ,uint32)
+     (dmabuf-format ,uint32)
+     (box ,%wlr-box-struct)
+     (shm-stride ,int)
+     (overlay-cursor ,stdbool)
+     (cursor-locked ,stdbool)
+     (with-damage ,stdbool)
+     (buffer-cap ,int32)
+     (buffer ,(bs:pointer %wlr-buffer-struct))
+     (output ,(bs:pointer %wlr-output-struct))
+     (output-commit ,%wl-listener-struct)
+     (output-destroy ,%wl-listener-struct)
+     (output-enable ,%wl-listener-struct)
+     (data ,(bs:pointer 'void)))))
 
 (define-public %wlr-xwayland-struct
   (bs:struct `((server ,(bs:pointer '*))

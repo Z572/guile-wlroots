@@ -1,4 +1,5 @@
 (define-module (wlroots types scene)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (srfi srfi-71)
   #:use-module (wayland display)
   #:use-module (wayland list)
@@ -121,6 +122,7 @@
   (y #:accessor .y)
   (data #:accessor .data)
   #:descriptor %wlr-scene-node-struct)
+
 (define-wlr-types-class wlr-scene-tree ()
   (node #:accessor .node)
   (children #:accessor .children)
@@ -176,6 +178,24 @@
   (layer-surface-map #:accessor .layer-surface-map)
   (layer-surface-unmap #:accessor .layer-surface-unmap)
   #:descriptor %wlr-scene-layer-surface-v1-struct)
+
+;;
+
+(define-public (wlr-scene-tree-children tree)
+  (assert (wlr-scene-tree? tree))
+  (wl-list->list (.children tree) <wlr-scene-node> 'link))
+
+(define-public (wlr-scene-object-from-node node)
+  "return a scene object frome NODE"
+  (assert (wlr-scene-node? node))
+  (case (.type node)
+    ((WLR_SCENE_NODE_TREE) (wl-container-of node <wlr-scene-tree> 'node))
+    ((WLR_SCENE_NODE_RECT) (wl-container-of node <wlr-scene-rect> 'node))
+    ((WLR_SCENE_NODE_BUFFER)
+     (let ((buffer (wl-container-of node <wlr-scene-buffer> 'node)))
+       (or (wlr-scene-surface-from-buffer buffer) buffer)))))
+
+;;
 
 (define-wlr-procedure (wlr-scene-create)
   ('* "wlr_scene_create" '())

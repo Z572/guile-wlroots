@@ -1633,6 +1633,25 @@
      (output-enable ,%wl-listener-struct)
      (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-gamma-control-manager-v1-struct
+  (bs:struct
+   `((global ,(bs:pointer %wl-global-struct))
+     (controls ,%wl-list-struct)
+     (display-destroy ,%wl-listener-struct)
+     (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+     (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-gamma-control-v1-struct
+  (bs:struct
+   `((resource ,(bs:pointer %wl-resource-struct))
+     (output ,(bs:pointer %wlr-output-struct))
+     (link ,%wl-list-struct)
+     (table ,(bs:pointer uint16))
+     (ramp-size ,size_t)
+     (output-commit-listener ,%wl-listener-struct)
+     (output-destroy-listener ,%wl-listener-struct)
+     (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-xwayland-struct
   (bs:struct `((server ,(bs:pointer '*))
                (xwm ,(bs:pointer '*))

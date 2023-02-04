@@ -37,6 +37,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/data-device.scm   \
  %D%/types/data-control.scm   \
  %D%/types/screencopy.scm   \
+ %D%/types/gamma-control.scm   \
  %D%/types/compositor.scm    \
  %D%/types/subcompositor.scm    \
  %D%/types/xdg-shell.scm     \

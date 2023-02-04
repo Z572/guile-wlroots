@@ -35,6 +35,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/input-method.scm \
  %D%/types/seat.scm          \
  %D%/types/data-device.scm   \
+ %D%/types/data-control.scm   \
  %D%/types/compositor.scm    \
  %D%/types/subcompositor.scm    \
  %D%/types/xdg-shell.scm     \

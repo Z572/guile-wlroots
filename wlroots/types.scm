@@ -1537,6 +1537,27 @@
                (events ,(bs:struct `((destroy ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-data-control-manager-v1-struct
+  (bs:struct
+   `((global ,(bs:pointer %wl-global-struct))
+     (devices ,%wl-list-struct)
+     (events ,(bs:struct
+               `((destroy ,%wl-signal-struct)
+                 (new-device ,%wl-signal-struct))))
+     (display-destroy ,%wl-listener-struct))))
+
+(define-public %wlr-data-control-device-v1-struct
+  (bs:struct
+   `((resource ,(bs:pointer %wl-resource-struct))
+     (manager ,(bs:pointer %wlr-data-control-manager-v1-struct))
+     (link ,%wl-list-struct)
+     (seat ,(bs:pointer %wlr-seat-struct))
+     (selection-offer-resource ,(bs:pointer %wl-resource-struct))
+     (primary-selection-offer-resource ,(bs:pointer %wl-resource-struct))
+     (seat-destroy ,%wl-listener-struct)
+     (seat-set-selection ,%wl-listener-struct)
+     (seat-set-primary-selection ,%wl-listener-struct))))
+
 (define-public %wlr-data-source-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (mime-types ,%wl-array-struct)

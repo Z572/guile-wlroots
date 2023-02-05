@@ -512,7 +512,7 @@
 
                     (swipe-begin ,%wl-signal-struct)
                     (swipe-update ,%wl-signal-struct)
-                    (swite-end ,%wl-signal-struct)
+                    (swipe-end ,%wl-signal-struct)
 
                     (pinch-begin ,%wl-signal-struct)
                     (pinch-update ,%wl-signal-struct)

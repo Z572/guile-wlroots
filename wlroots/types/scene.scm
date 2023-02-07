@@ -1,5 +1,7 @@
 (define-module (wlroots types scene)
+  #:use-module (util572 color)
   #:use-module ((rnrs base) #:select (assert))
+  #:use-module (srfi srfi-1)
   #:use-module (srfi srfi-71)
   #:use-module (wayland display)
   #:use-module (wayland list)
@@ -86,6 +88,8 @@
             wlr-scene-xdg-surface-create
             wlr-scene-layer-surface-v1-create
             wlr-scene-layer-surface-v1-configure
+            .buffer
+            .color
             .data
             .enabled
             .node
@@ -145,9 +149,25 @@
   #:descriptor %wlr-scene-buffer-struct)
 
 (define-wlr-types-class wlr-scene-rect ()
-  (node #:accessor .node
-        #:allocation
-        #:bytestructure)
+  (node #:accessor .node)
+  (width #:accessor .width)
+  (height #:accessor .height)
+  (color #:accessor .color
+         #:allocation #:virtual
+         #:slot-ref (lambda (o)
+                      (let* ((bs (get-bytestructure o))
+                             (ns (map (lambda (n)
+                                        (inexact->exact
+                                         (* 255 (bytestructure-ref
+                                                 bs 'color n))))
+                                      (iota 4))))
+                        (make <rgba-color>
+                          #:r (first ns)
+                          #:g (second ns)
+                          #:b (third ns)
+                          #:a (fourth ns))))
+         #:slot-set! (lambda (o color)
+                       (bytestructure-set! (get-bytestructure o) 'color (color->pointer color))))
   #:descriptor %wlr-scene-rect-struct)
 
 (define-wlr-types-class wlr-scene-output ()

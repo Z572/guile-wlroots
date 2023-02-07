@@ -1,4 +1,5 @@
 (define-module (wlroots types output-management)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (oop goops)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wayland display)
@@ -29,14 +30,27 @@
             .mode
             .x
             .y
+            .heads
+            .manager
             .scale
+            .serial
+            .finalized
             .resource))
 
 (define-wlr-types-class wlr-output-manager-v1 ()
   #:descriptor %wlr-output-manager-v1-struct)
 
 (define-wlr-types-class wlr-output-configuration-v1 ()
+  (heads #:accessor .heads)
+  (manager #:accessor .manager)
+  (serial #:accessor .serial)
+  (finalized #:accessor .finalized)
+  (resource #:accessor .resource)
   #:descriptor %wlr-output-configuration-v1-struct)
+
+(define-public (wlr-output-configuration-v1-heads config)
+  (assert (wlr-output-configuration-v1? config))
+  (wl-list->list (.heads config) <wlr-output-configuration-head-v1> 'link))
 
 (define-wlr-types-class wlr-output-head-v1-state ()
   (output #:accessor .output)

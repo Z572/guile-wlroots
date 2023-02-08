@@ -540,6 +540,29 @@
                     (frame ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-touch-down-event-struct
+  (bs:struct `((touch ,(bs:pointer (delay %wlr-touch-struct)))
+               (time-msec ,uint32)
+               (touch-id ,int32)
+               (x ,double)
+               (y ,double))))
+(define-public %wlr-touch-up-event-struct
+  (bs:struct `((touch ,(bs:pointer (delay %wlr-touch-struct)))
+               (time-msec ,uint32)
+               (touch-id ,int32))))
+
+(define-public %wlr-touch-motion-event-struct
+  (bs:struct `((touch ,(bs:pointer (delay %wlr-touch-struct)))
+               (time-msec ,uint32)
+               (touch-id ,int32)
+               (x ,double)
+               (y ,double))))
+
+(define-public %wlr-touch-cancel-event-struct
+  (bs:struct `((touch ,(bs:pointer (delay %wlr-touch-struct)))
+               (time-msec ,uint32)
+               (touch-id ,int32))))
+
 (define-public %wlr-tablet-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (events

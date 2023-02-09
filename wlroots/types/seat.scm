@@ -395,7 +395,7 @@
 
 (define-wlr-procedure (wlr-seat-set-keyboard seat dev)
   (ffi:void "wlr_seat_set_keyboard" `(* *))
-  (% (unwrap-wlr-seat seat) (unwrap-wlr-input-device dev)))
+  (% (unwrap-wlr-seat seat) (unwrap-wlr-keyboard dev)))
 
 (define-wlr-procedure (wlr-seat-get-keyboard seat)
   ('* "wlr_seat_get_keyboard" '(*))

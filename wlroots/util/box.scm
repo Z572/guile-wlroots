@@ -20,10 +20,6 @@
   (height #:init-keyword #:height #:accessor box-height))
 
 (define-wlr-types-class wlr-fbox (<wlr-box>)
-  (x #:init-keyword #:x #:accessor box-x)
-  (y #:init-keyword #:y #:accessor box-y)
-  (width #:init-keyword #:width #:accessor box-width)
-  (height #:init-keyword #:height #:accessor box-height)
   #:descriptor %wlr-fbox-struct)
 
 (define (make-wlr-box x y width height)
@@ -34,7 +30,11 @@
     #:height height))
 
 (define-method (shallow-clone (box <wlr-box>))
-  (make-wlr-box (box-x box) (box-y box) (box-width box) (box-height box)))
+  (make (class-of box)
+    #:x (box-x box)
+    #:y (box-y box)
+    #:width (box-width box)
+    #:height (box-height box)))
 
 (define (list->wlr-box l)
   (apply make-wlr-box l))

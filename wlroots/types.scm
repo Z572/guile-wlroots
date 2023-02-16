@@ -964,6 +964,7 @@
                                      (output-present ,%wl-signal-struct)
                                      (frame-done ,%wl-signal-struct))))
                (point-accepts-input ,(bs:pointer '*))
+               (primary-output ,(bs:pointer (delay %wlr-scene-output-struct)))
                (active-outputs ,uint64)
                (texture  ,(bs:pointer %wlr-texture-struct))
                (src-box ,%wlr-fbox-struct)

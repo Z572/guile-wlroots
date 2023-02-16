@@ -2,6 +2,7 @@
   #:use-module (util572 color)
   #:use-module ((rnrs base) #:select (assert))
   #:use-module (srfi srfi-1)
+  #:use-module (srfi srfi-2)
   #:use-module (srfi srfi-71)
   #:use-module (wayland display)
   #:use-module (wayland list)
@@ -97,6 +98,7 @@
             .outputs
             .parent
             .peeding-buffers
+            .point-accepts-input
             .presentation
             .presentation-destroy
             .prev-height
@@ -138,9 +140,44 @@
   #:descriptor  %wlr-scene-surface-struct)
 
 (define-wlr-types-class wlr-scene-buffer ()
+  (%point-accepts-input
+   #:allocation #:instance
+   #:init-value #f)
   (node #:accessor .node)
   (buffer #:accessor .buffer)
   (active-outputs #:accessor .active-outputs)
+  (point-accepts-input
+   #:allocation #:virtual
+   #:slot-ref
+   (lambda (o)
+     (let ((%f (slot-ref o '%point-accepts-input)))
+       (or (and %f (car %f))
+           (and-let* ((f-address (bytestructure-ref
+                                  (get-bytestructure o)
+                                  'point-accepts-input))
+                      ((not (zero? f-address)))
+                      (f (ffi:pointer->procedure ffi:int8 (ffi:make-pointer f-address)
+                                                 (list '* ffi:int ffi:int))))
+             (lambda (buffer x y)
+               (f (unwrap-wlr-scene-buffer buffer) x y))))))
+   #:slot-set! (lambda (o v)
+                 (or (and-let* ((v)
+                                (f (lambda (buffer x y)
+                                     (if (v (wrap-wlr-scene-buffer buffer) x y)
+                                         1
+                                         0)))
+                                (fp (ffi:procedure->pointer
+                                     ffi:int8
+                                     f
+                                     (list '* ffi:int ffi:int) )))
+                       (and (bytestructure-set! (get-bytestructure o)
+                                                'point-accepts-input
+                                                (ffi:pointer-address
+                                                 fp))
+                            (slot-set! o '%point-accepts-input (list f fp))))
+                     (begin (bytestructure-set! (get-bytestructure o) 'point-accepts-input 0)
+                            (slot-set! o '%point-accepts-input #f))))
+   #:accessor .point-accepts-input)
   (texture #:accessor .texture)
   (src-box #:accessor .src-box)
   (dst-width #:accessor .dst-width)

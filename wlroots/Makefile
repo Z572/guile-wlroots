@@ -42,7 +42,8 @@ SOURCES = %D%/config.scm     \
  %D%/types/subcompositor.scm    \
  %D%/types/pointer-gestures.scm    \
  %D%/types/xdg-shell.scm     \
- %D%/types/xdg-activation.scm\
+ %D%/types/xdg-activation.scm \
+ %D%/types/session-lock.scm \
  %D%/types/xdg-output.scm\
  %D%/types/primary-selection.scm       \
  %D%/types/server-decoration.scm       \

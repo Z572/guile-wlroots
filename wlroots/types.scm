@@ -573,6 +573,50 @@
                (time-msec ,uint32)
                (touch-id ,int32))))
 
+(define-public %wlr-session-lock-manager-v1-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (events ,(bs:struct
+                         `((new-lock ,%wl-signal-struct)
+                           (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void))
+               (display-destroy ,%wl-listener-struct))))
+
+(define-public %wlr-session-lock-v1-struct
+  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
+               (surfaces ,%wl-list-struct)
+               (events ,(bs:struct
+                         `((new-surface ,%wl-signal-struct)
+                           (unlock ,%wl-signal-struct)
+                           (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-session-lock-surface-v1-state-struct
+  (bs:struct `((width ,uint32)
+               (height ,uint32)
+               (configure-serial ,uint32))))
+
+(define-public %wlr-session-lock-surface-v1-configure-struct
+  (bs:struct `((link ,%wl-list-struct)
+               (serial ,uint32)
+               (width ,uint32)
+               (height ,uint32))))
+
+(define-public %wlr-session-lock-surface-v1-struct
+  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
+               (link ,%wl-list-struct)
+               (output ,(bs:pointer %wlr-output-struct))
+               (surface ,(bs:pointer %wlr-surface-struct))
+               (configured ,stdbool)
+               (mapped ,stdbool)
+               (configure-list ,%wl-list-struct)
+               (current ,%wlr-session-lock-surface-v1-state-struct)
+               (pending ,%wlr-session-lock-surface-v1-state-struct)
+               (events ,(bs:struct
+                         `((map ,%wl-signal-struct)
+                           (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void))
+               (output-destroy ,%wl-listener-struct))))
+
 (define-public %wlr-tablet-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (events

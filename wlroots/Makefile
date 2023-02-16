@@ -40,6 +40,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/gamma-control.scm   \
  %D%/types/compositor.scm    \
  %D%/types/subcompositor.scm    \
+ %D%/types/pointer-gestures.scm    \
  %D%/types/xdg-shell.scm     \
  %D%/types/xdg-activation.scm\
  %D%/types/xdg-output.scm\

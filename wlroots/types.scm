@@ -522,6 +522,16 @@
                     (hold-end ,%wl-signal-struct))))
                (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-pointer-gestures-v1-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (swipes ,%wl-list-struct)
+               (pinches ,%wl-list-struct)
+               (holds ,%wl-list-struct)
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct
+                         `((destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-switch-struct
   (bs:struct `((impl ,(bs:pointer '*))
                (events

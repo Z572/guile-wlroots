@@ -754,7 +754,7 @@
    `((pointer ,(bs:pointer %wlr-pointer-struct))
      (time-msec ,uint32)
      (button ,uint32)
-     (state ,int32))))
+     (state ,%wlr-button-state-enum))))
 
 (define-public %wlr-pointer-motion-event-struct
   (bs:struct

@@ -98,8 +98,11 @@
             wrap-wlr-seat-pointer-request-set-cursor-event
             wrap-wlr-seat-request-set-selection-event
             wrap-wlr-seat
-            .buttons
+            .accumulated-capabilities
+            .button-count
+            .cached-axis-source
             .capabilities
+            .client
             .count
             .data-devices
             .default-grab
@@ -107,10 +110,15 @@
             .drag
             .drag-serial
             .end
+            .focus-client
+            .focus-surface
             .focused-client
             .focused-surface
             .grab
+            .grab-button
             .grab-serial
+            .grab-serial
+            .grab-time
             .hostpot-x
             .hostpot-y
             .keyboard-state
@@ -127,18 +135,16 @@
             .seat-client
             .selection-offers
             .selection-serial
+            .sent-axis-source
             .serial
             .source
+            .surface
             .surface
             .sx
             .sy
             .touch-id
             .touch-state
-            .focus-client
-            .focus-surface
-            .client
-            .surface
-            .accumulated-capabilities))
+            .buttons))
 
 
 (define-wlr-types-class wlr-seat-touch-state ()
@@ -203,13 +209,22 @@
   (serial #:accessor .serial)
   #:descriptor %wlr-seat-request-start-drag-event-struct)
 
-(define-wlr-types-class-public wlr-seat-pointer-state ()
-  (seat #:allocation #:bytestructure #:accessor .seat)
-  (focused-client #:allocation #:bytestructure #:accessor .focused-client)
-  (focused-surface #:allocation #:bytestructure #:accessor .focused-surface)
-  (sx #:allocation #:bytestructure #:getter .sx)
-  (sy #:allocation #:bytestructure #:getter .sy)
-  (buttons #:allocation #:bytestructure #:accessor .buttons)
+(define-wlr-types-class wlr-seat-pointer-state ()
+  (seat #:accessor .seat)
+  (focused-client #:accessor .focused-client)
+  (focused-surface #:accessor .focused-surface)
+  (sx #:getter .sx)
+  (sy #:getter .sy)
+  (grab #:accessor .grab)
+  (default-grab #:accessor .default-grab)
+  (sent-axis-source #:accessor .sent-axis-source)
+  (cached-axis-source #:accessor .cached-axis-source)
+  (buttons #:accessor .buttons)
+  (button-count #:accessor .button-count)
+  (grab-button #:accessor .grab-button)
+  (grab-serial #:accessor .grab-serial)
+  (grab-time #:accessor .grab-time)
+  (surface-destroy #:accessor .surface-destroy)
   #:descriptor %wlr-seat-pointer-state-struct)
 
 (define-wlr-types-class wlr-seat-keyboard-state ()

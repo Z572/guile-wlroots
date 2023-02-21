@@ -69,6 +69,7 @@
             wlr-scene-node-raise-to-top
             wlr-scene-node-lower-to-bottom
             wlr-scene-node-reparent
+            wlr-scene-node-for-each-buffer
             wlr-scene-surface-create
             wlr-scene-surface-from-buffer
             wlr-scene-rect-create
@@ -281,6 +282,17 @@
 (define-wlr-procedure (wlr-scene-tree-create parent)
   ('* "wlr_scene_tree_create" '(*))
   (wrap-wlr-scene-tree (% (unwrap-wlr-scene-tree parent))))
+
+(define-wlr-procedure (wlr-scene-node-for-each-buffer node iterator)
+  (ffi:void "wlr_scene_node_for_each_buffer" '(* * * ))
+  (% (unwrap-wlr-scene-node node)
+     (ffi:procedure->pointer
+      ffi:void
+      (lambda (buf x y user-data)
+        (iterator (wrap-wlr-scene-buffer buf) x y))
+      (list '* ffi:int ffi:int '*))
+     ffi:%null-pointer))
+
 (define-wlr-procedure (wlr-scene-node-at node lx ly)
   ('* "wlr_scene_node_at" (list '* ffi:double ffi:double '* '*))
   (define (ref-double-pointer p)

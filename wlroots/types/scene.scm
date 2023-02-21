@@ -295,19 +295,17 @@
 
 (define-wlr-procedure (wlr-scene-node-at node lx ly)
   ('* "wlr_scene_node_at" (list '* ffi:double ffi:double '* '*))
-  (define (ref-double-pointer p)
-    (bytevector-ieee-double-native-ref
-     (ffi:pointer->bytevector
-      p (ffi:sizeof ffi:double)) 0))
-  (let* ((nx (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
-         (ny (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
-         (value (% (get-pointer node) lx ly nx ny)))
+  (let* ((nx (bytestructure double))
+         (ny (bytestructure double))
+         (value (% (unwrap-wlr-scene-node node)
+                   lx ly
+                   (bytestructure->pointer nx) (bytestructure->pointer ny))))
     (values
      (if (ffi:null-pointer? value)
          #f
          (wrap-wlr-scene-node value))
-     `(,(ref-double-pointer nx) .
-       ,(ref-double-pointer ny)))))
+     (cons (bytestructure-ref nx)
+           (bytestructure-ref ny)))))
 
 (define-wlr-procedure
   (wlr-scene-node-place-above node sibling)

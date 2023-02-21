@@ -51,6 +51,19 @@
      x
      y))
 
+(define-wlr-procedure (wlr-cursor-absolute-to-layout-coords cur dev x y)
+  (ffi:void "wlr_cursor_absolute_to_layout_coords" `(* * ,ffi:double ,ffi:double * *))
+  (let ((sx  (bytestructure double))
+        (sy (bytestructure double)))
+    (% (unwrap-wlr-cursor cur)
+       (unwrap-wlr-input-device dev)
+       x
+       y
+       (bytestructure->pointer sx)
+       (bytestructure->pointer sy))
+    (cons (bytestructure-ref sx)
+          (bytestructure-ref sy))))
+
 (define-wlr-procedure (wlr-cursor-warp-absolute cur dev x y)
   (ffi:void "wlr_cursor_warp_absolute" `(* * ,ffi:double ,ffi:double))
   (% (unwrap-wlr-cursor cur)

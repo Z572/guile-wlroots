@@ -249,7 +249,7 @@
     ((WLR_SCENE_NODE_TREE) (wl-container-of node <wlr-scene-tree> 'node))
     ((WLR_SCENE_NODE_RECT) (wl-container-of node <wlr-scene-rect> 'node))
     ((WLR_SCENE_NODE_BUFFER)
-     (let ((buffer (wl-container-of node <wlr-scene-buffer> 'node)))
+     (let ((buffer (wlr-scene-buffer-from-node node)))
        (or (wlr-scene-surface-from-buffer buffer) buffer)))))
 
 ;;

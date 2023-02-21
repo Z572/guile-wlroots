@@ -290,11 +290,12 @@
   (let* ((nx (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
          (ny (ffi:bytevector->pointer (make-bytevector (ffi:sizeof '*))))
          (value (% (get-pointer node) lx ly nx ny)))
-    (and (not (ffi:null-pointer? value))
-         (values
-          (wrap-wlr-scene-node value)
-          `(,(ref-double-pointer nx) .
-            ,(ref-double-pointer ny))))))
+    (values
+     (if (ffi:null-pointer? value)
+         #f
+         (wrap-wlr-scene-node value))
+     `(,(ref-double-pointer nx) .
+       ,(ref-double-pointer ny)))))
 
 (define-wlr-procedure
   (wlr-scene-node-place-above node sibling)

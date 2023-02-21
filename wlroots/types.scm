@@ -540,7 +540,11 @@
                (data ,(bs:pointer 'void)))))
 
 (define-public %wlr-touch-struct
-  (bs:struct `((impl ,(bs:pointer '*))
+  (bs:struct `((base ,%wlr-input-device-struct)
+               (impl ,(bs:pointer '*))
+               (output-name ,cstring-pointer*)
+               (width-mm ,double)
+               (height-mm ,double)
                (events
                 ,(bs:struct
                   `((down ,%wl-signal-struct)

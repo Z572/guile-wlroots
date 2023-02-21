@@ -6,12 +6,20 @@
   #:use-module (wlroots utils)
   #:export (.data
             .time-msec
+            .base
+            .output-name
+            .width-mm
+            .height-mm
             .touch-id
             .x
             .y
             .touch))
 
 (define-wlr-types-class wlr-touch ()
+  (base #:accessor .base)
+  (output-name #:accessor .output-name)
+  (width-mm #:accessor .width-mm)
+  (height-mm #:accessor .height-mm)
   (data #:accessor .data)
   #:descriptor %wlr-touch-struct)
 

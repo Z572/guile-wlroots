@@ -85,13 +85,13 @@
 
 (define-wlr-procedure (wlr-output-layout-output-coords layout reference)
   (ffi:void "wlr_output_layout_output_coords" (list '* '* '* '*))
-  (let ((dlx (bytestructure (bs:pointer double)))
-        (dly (bytestructure (bs:pointer double))))
+  (let ((dlx (bytestructure double))
+        (dly (bytestructure double)))
     (% (unwrap-wlr-output-layout layout)
        (unwrap-wlr-output reference)
        (bytestructure->pointer dlx)
        (bytestructure->pointer dly))
-    (cons dlx dly)))
+    (cons (bytestructure-ref dlx) (bytestructure-ref dly))))
 
 (define-wlr-procedure (wlr-output-layout-contains-point layout reference lx ly)
   (ffi:int8 "wlr_output_layout_contains_point" (list '* '* ffi:int ffi:int))

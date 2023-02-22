@@ -945,7 +945,7 @@
 
 (define-public %wlr-scene-surface-struct
   (bs:struct `((buffer ,(bs:pointer (delay %wlr-scene-buffer-struct)))
-               (surface ,%wlr-surface-struct)
+               (surface ,(bs:pointer %wlr-surface-struct))
                (addon ,%wlr-addon-struct)
                (output-enter ,%wl-listener-struct)
                (output-leave ,%wl-listener-struct)

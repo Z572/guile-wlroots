@@ -97,7 +97,8 @@
                (link ,%wl-list-struct))))
 
 (define-public %wlr-buffer-struct
-  (bs:struct `((width ,int)
+  (bs:struct `((impl ,(bs:pointer '*))
+               (width ,int)
                (height ,int)
                (dropped ,stdbool)
                (n-locks ,size_t)

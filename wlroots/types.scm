@@ -112,7 +112,7 @@
                (texture ,(bs:pointer %wlr-texture-struct))
                (source ,(bs:pointer %wlr-buffer-struct))
                (source-destroy ,%wl-listener-struct)
-               (shm-source-format ,uint32))))
+               (n-ignore-locks ,size_t))))
 
 (define-public %wlr-output-mode-struct
   (bs:struct `((width ,int32)

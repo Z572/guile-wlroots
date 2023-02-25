@@ -10,19 +10,31 @@
             wlr-buffer-drop
             wlr-buffer-lock
             wlr-buffer-unlock
+            .accessing-data-ptr
+            .addons
             .base
-            .texture
+            .dropped
+            .height
+            .n-ignore-locks
+            .n-locks
             .source
-            .shm-source-format))
+            .texture
+            .width))
 
 (define-wlr-types-class wlr-buffer ()
+  (width #:accessor .width)
+  (height #:accessor .height)
+  (dropped #:accessor .dropped)
+  (n-locks #:accessor .n-locks)
+  (accessing-data-ptr #:accessor .accessing-data-ptr)
+  (addons #:accessor .addons)
   #:descriptor %wlr-buffer-struct)
 
 (define-wlr-types-class wlr-client-buffer ()
   (base #:accessor .base)
   (texture #:accessor .texture)
   (source #:accessor .source)
-  (shm-source-format #:accessor .shm-source-format)
+  (n-ignore-locks #:accessor .n-ignore-locks)
   #:descriptor %wlr-client-buffer-struct)
 
 (define-wlr-procedure (wlr-buffer-drop buffer)

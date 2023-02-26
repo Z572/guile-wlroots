@@ -1,4 +1,5 @@
 (define-module (wlroots types compositor)
+  #:use-module (srfi srfi-1)
   #:use-module (wayland display)
   #:use-module (wayland resource)
   #:use-module (wlroots render renderer)
@@ -44,7 +45,9 @@
             .bind
             .global
             .destroy
-            .resource))
+            .resource
+            super-surface-from-wlr-surface)
+  #:export-syntax (define-super-surface-from-surface))
 
 (define-wlr-types-class wlr-surface-state ()
   (committed #:accessor .committed)
@@ -153,3 +156,10 @@
   ('* "wlr_compositor_create" (list '* '*))
   (wrap-wlr-compositor
    (% (unwrap-wl-display display) (unwrap-wlr-renderer renderer))))
+
+(define-once %wlr-surface->super-surface (make-hash-table))
+(define (super-surface-from-wlr-surface surface)
+  (any (lambda (o) (and ((car o) surface) ((cdr o) surface)))
+       (hash-map->list cons %wlr-surface->super-surface)))
+(define-syntax-rule (define-super-surface-from-surface is? from)
+  (hashq-set! %wlr-surface->super-surface is? from))

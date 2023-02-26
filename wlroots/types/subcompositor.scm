@@ -68,6 +68,12 @@
 (define-wlr-procedure (wlr-subsurface-from-wlr-surface surface)
   ('* "wlr_subsurface_from_wlr_surface" (list '*))
   (wrap-wlr-subsurface (% (unwrap-wlr-surface surface))))
+
+(define-super-surface-from-surface
+  wlr-surface-is-subsurface
+  wlr-subsurface-from-wlr-surface)
+
+
 (define-wlr-procedure (wlr-subcompositor-create display)
   ('* "wlr_subcompositor_create" (list '*))
   (wrap-wlr-subcompositor (% (unwrap-wl-display display))))

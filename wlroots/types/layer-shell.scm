@@ -99,6 +99,10 @@
   ('* "wlr_layer_surface_v1_from_wlr_surface" '(*))
   (wrap-wlr-layer-surface-v1 (% (unwrap-wlr-surface surface))))
 
+(define-super-surface-from-surface
+  wlr-surface-is-layer-surface
+  wlr-layer-surface-v1-from-wlr-surface)
+
 (define-wlr-procedure (wlr-layer-surface-v1-from-resource resource)
   ('* "wlr_layer_surface_v1_from_resource" (list '*))
   (wrap-wlr-layer-surface-v1 (% (unwrap-wl-resource resource))))

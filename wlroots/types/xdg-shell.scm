@@ -367,6 +367,10 @@
   (wrap-wlr-xdg-surface
    (% (unwrap-wlr-surface surface))))
 
+(define-super-surface-from-surface
+  wlr-surface-is-xdg-surface
+  wlr-xdg-surface-from-wlr-surface)
+
 (define-wlr-procedure (wlr-xdg-surface-get-geometry surface)
   (ffi:void "wlr_xdg_surface_get_geometry" (list '* '*))
   "return a box"

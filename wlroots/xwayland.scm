@@ -221,6 +221,10 @@
   ('* "wlr_xwayland_surface_from_wlr_surface" '(*))
   (wrap-wlr-xwayland-surface (% (unwrap-wlr-surface surface))))
 
+(define-super-surface-from-surface
+  wlr-surface-is-xwayland-surface
+  wlr-xwayland-surface-from-wlr-surface)
+
 (define-wlr-procedure (wlr-xwayland-surface-restack surface sibling mode)
   (ffi:void "wlr_xwayland_surface_restack" (list '* '* ffi:int32))
   (% (unwrap-wlr-xwayland-surface surface)

@@ -107,18 +107,19 @@
            (unwrap-wlr-box target_lbox)))))
 
 (define-wlr-procedure (wlr-output-layout-closest-point
-                       layout reference lx ly dest_lx dest_ly)
+                       layout reference lx ly )
   (ffi:void
    "wlr_output_layout_closest_point"
    (list '* '* ffi:double ffi:double '* '*))
-  (let ((dlx (bytestructure (bs:pointer double)))
-        (dly (bytestructure (bs:pointer double))))
+  (let ((dlx (bytestructure double))
+        (dly (bytestructure double)))
     (% (unwrap-wlr-output-layout layout)
        (unwrap-wlr-output reference)
        lx ly
        (bytestructure->pointer dlx)
        (bytestructure->pointer dly))
-    (cons dlx dly)))
+    (cons (bytestructure-ref dlx)
+          (bytestructure-ref dly))))
 
 (define-wlr-procedure (wlr-output-layout-get-box
                        layout #:optional

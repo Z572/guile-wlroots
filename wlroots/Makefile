@@ -12,6 +12,7 @@ SOURCES = %D%/config.scm     \
  %D%/backend/x11.scm         \
  %D%/time.scm                \
  %D%/xwayland.scm            \
+ %D%/xwayland/xwayland.scm   \
  %D%/render/texture.scm      \
  %D%/render/drm-format-set.scm    \
  %D%/render/allocator.scm    \

@@ -1690,6 +1690,57 @@
      (events ,(bs:struct `((destroy ,%wl-signal-struct))))
      (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-text-input-v3-features-enum
+  (bs:enum
+   '((WLR_TEXT_INPUT_V3_FEATURE_SURROUNDING_TEXT 1)
+     (WLR_TEXT_INPUT_V3_FEATURE_CONTENT_TYPE 2)
+     (WLR_TEXT_INPUT_V3_FEATURE_CURSOR_RECTANGLE 4))))
+
+(define-public %wlr-text-input-v3-state-struct
+  (bs:struct
+   `((surrounding
+      ,(bs:struct
+        `((text ,cstring-pointer*)
+          (cursor ,uint32)
+          (anchor ,uint32))))
+     (text-change-cause ,uint32)
+     (content-type
+      ,(bs:struct
+        `((hint ,uint32)
+          (purpose ,uint32))))
+     (cursor-rectangle ,%wlr-box-struct)
+     (features ,uint32))))
+
+(define-public %wlr-text-input-v3-struct
+  (bs:struct
+   `((seat ,(bs:pointer %wlr-seat-struct))
+     (resource ,(bs:pointer %wl-resource-struct))
+     (focused-surface ,(bs:pointer %wlr-surface-struct))
+     (pending ,%wlr-text-input-v3-state-struct)
+     (current ,%wlr-text-input-v3-state-struct)
+     (current-serial ,uint32)
+     (pending-enabled ,stdbool)
+     (current-enabled ,stdbool)
+     (active-features ,uint32)
+     (link ,%wl-list-struct)
+     (surface-destroy ,%wl-listener-struct)
+     (seat-destroy ,%wl-listener-struct)
+     (events
+      ,(bs:struct
+        `((enable ,%wl-signal-struct)
+          (commit ,%wl-signal-struct)
+          (disable ,%wl-signal-struct)
+          (destroy ,%wl-signal-struct)))))))
+
+(define-public %wlr-text-input-manager-v3-struct
+  (bs:struct
+   `((global ,(bs:pointer %wl-global-struct))
+     (text-inputs ,%wl-list-struct)
+     (display-destroy ,%wl-listener-struct)
+     (events ,(bs:struct
+               `((text-input ,%wl-signal-struct)
+                 (destroy ,%wl-signal-struct)))))))
+
 (define-public %wlr-screencopy-v1-client-struct
   (bs:struct
    `((ref ,int)

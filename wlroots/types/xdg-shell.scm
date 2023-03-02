@@ -1,5 +1,5 @@
-
 (define-module (wlroots types xdg-shell)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (wlroots types)
   #:use-module (wlroots types compositor)
   #:use-module (wlroots types seat)
@@ -256,6 +256,10 @@
   (x #:accessor .x)
   (y #:accessor .y)
   #:descriptor %wlr-xdg-toplevel-show-window-menu-event-struct)
+
+(define-public (wlr-xdg-surface-popups xdg-surface)
+  (assert (wlr-xdg-surface? xdg-surface))
+  (wl-list->list (.popups xdg-surface) <wlr-xdg-popup> 'link))
 
 (define-wlr-procedure (wlr-xdg-shell-create display version)
   ('* "wlr_xdg_shell_create" (list '* ffi:uint32))

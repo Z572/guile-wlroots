@@ -100,6 +100,7 @@
             wrap-wlr-seat
             .accumulated-capabilities
             .button-count
+            .buttons
             .cached-axis-source
             .capabilities
             .client
@@ -107,6 +108,7 @@
             .data-devices
             .default-grab
             .display
+            .display-destroy
             .drag
             .drag-serial
             .end
@@ -135,6 +137,7 @@
             .seat-client
             .selection-offers
             .selection-serial
+            .selection-source-destroy
             .sent-axis-source
             .serial
             .source
@@ -143,8 +146,7 @@
             .sx
             .sy
             .touch-id
-            .touch-state
-            .buttons))
+            .touch-state))
 
 
 (define-wlr-types-class wlr-seat-touch-state ()
@@ -236,26 +238,33 @@
   #:descriptor %wlr-seat-keyboard-state-struct)
 
 (define-wlr-types-class wlr-seat ()
-  (display #:allocation #:bytestructure #:getter .display)
-  (name #:allocation #:bytestructure #:getter .name)
-  (capabilities #:allocation #:bytestructure #:getter .capabilities)
-  (accumulated-capabilities #:allocation #:bytestructure #:getter .accumulated-capabilities)
+  (global #:accessor .global)
+  (display #:accessor .display)
+  (clients #:accessor .clients)
+  (name  #:accessor .name)
+  (capabilities  #:accessor .capabilities)
+  (accumulated-capabilities #:accessor .accumulated-capabilities)
   (last-event #:allocation #:bytestructure #:getter .last-event)
 
-  (selection-source #:allocation #:bytestructure #:getter .selection-source)
-  (selection-serial #:allocation #:bytestructure #:getter .selection-serial)
-  (selection-offers #:allocation #:bytestructure #:getter .selection-offers)
+  (selection-source #:accessor .selection-source)
+  (selection-serial #:accessor .selection-serial)
+  (selection-offers #:accessor .selection-offers)
 
-  (primary-selection-source #:allocation #:bytestructure #:getter .primary-selection-source)
-  (primary-selection-serial #:allocation #:bytestructure #:getter .primary-selection-serial)
+  (primary-selection-source #:accessor .primary-selection-source)
+  (primary-selection-serial #:accessor .primary-selection-serial)
 
-  (drag #:allocation #:bytestructure #:getter .drag)
-  (drag-serial #:allocation #:bytestructure #:getter .drag-serial)
+  (drag #:accessor .drag)
+  (drag-source #:accessor .drag-source)
+  (drag-serial #:accessor .drag-serial)
+  (drag-offers #:accessor .drag-offers)
 
   (pointer-state #:allocation #:bytestructure #:getter .pointer-state)
   (keyboard-state #:allocation #:bytestructure #:getter .keyboard-state)
   (touch-state #:allocation #:bytestructure #:getter .touch-state)
 
+  (display-destroy #:accessor .display-destroy)
+  (selection-source-destroy #:accessor .selection-source-destroy)
+  (data #:accessor .data)
   #:descriptor %wlr-seat-struct)
 
 (define-wlr-types-class wlr-seat-pointer-focus-change-event ()

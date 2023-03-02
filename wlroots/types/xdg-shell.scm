@@ -334,11 +334,12 @@
 
 (define-wlr-procedure (wlr-xdg-popup-get-position popup)
   (ffi:void "wlr_xdg_popup_get_position" (list '* '* '*))
-  (let* ((bs (bs:pointer int))
-         (x (bytestructure bs))
-         (y (bytestructure bs)))
-    (% (unwrap-wlr-xdg-popup popup) (bytestructure->pointer x) (bytestructure->pointer y))
-    (cons x y)))
+  (let* ((x (bytestructure double))
+         (y (bytestructure double)))
+    (% (unwrap-wlr-xdg-popup popup)
+       (bytestructure->pointer x)
+       (bytestructure->pointer y))
+    (cons (bytestructure-ref x) (bytestructure-ref y))))
 
 (define-wlr-procedure (wlr-xdg-positioner-rules-get-geometry rules #:optional (box (make <wlr-box>)))
   (ffi:void "wlr_xdg_positioner_rules_get_geometry" (list '* '*))

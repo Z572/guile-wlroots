@@ -354,17 +354,17 @@
 
 (define-wlr-procedure (wlr-xdg-popup-get-toplevel-coords
                        popup
-                       popup_sx
-                       popup_sy)
+                       popup-sx
+                       popup-sy)
   (ffi:void "wlr_xdg_popup_get_toplevel_coords"
             (list '* ffi:int ffi:int '* '*))
-  (let* ((bs (bs:pointer int))
-         (toplevel_sx (bytestructure bs))
-         (toplevel_sy (bytestructure bs)))
-    (% (unwrap-wlr-xdg-popup popup) popup_sx popup_sy
-       (bytestructure->pointer toplevel_sx)
-       (bytestructure->pointer toplevel_sy))
-    (cons toplevel_sx toplevel_sy)))
+  (let* ((toplevel-sx (bytestructure int))
+         (toplevel-sy (bytestructure int)))
+    (% (unwrap-wlr-xdg-popup popup) popup-sx popup-sy
+       (bytestructure->pointer toplevel-sx)
+       (bytestructure->pointer toplevel-sy))
+    (cons (bytestructure-ref toplevel-sx)
+          (bytestructure-ref toplevel-sy))))
 
 (define-wlr-procedure (wlr-xdg-popup-unconstrain-from-box
                        popup #:optional (box (make <wlr-box>)))

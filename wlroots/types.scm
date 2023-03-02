@@ -1203,6 +1203,11 @@
      (stride ,(bs:vector 4 uint32))
      (fd ,(bs:vector 4 int)))))
 
+(define-public %wlr-xdg-popup-configure-struct
+  (bs:struct `((fields ,uint32)
+               (geometry ,%wlr-box-struct)
+               (rules ,%wlr-xdg-positioner-rules-struct)
+               (reposition-token ,uint32))))
 (define-public %wlr-xdg-popup-struct
   (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
                (link ,%wl-list-struct)
@@ -1210,8 +1215,10 @@
                (committed ,stdbool)
                (parent ,(bs:pointer %wlr-surface-struct))
                (seat ,(bs:pointer (delay %wlr-seat-struct)))
-               (geometry ,%wlr-box-struct)
-               (positioner ,%wlr-xdg-positioner-struct)
+               (scheduled ,%wlr-xdg-popup-configure-struct)
+               (current ,%wlr-xdg-popup-state-struct)
+               (pending ,%wlr-xdg-popup-state-struct)
+               (events ,(bs:struct `((reposition ,%wl-signal-struct))))
                (grab-link ,%wl-list-struct))))
 
 (define-public %wlr-xdg-toplevel-state-struct

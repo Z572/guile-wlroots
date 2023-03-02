@@ -53,7 +53,6 @@
             wlr-xdg-surface-for-each-surface
             wlr-xdg-surface-schedule-configure
 
-            .activated
             .app-id
             .base
             .client
@@ -61,6 +60,8 @@
             .configure-serial
             .current
             .data
+            .edges
+            .fields
             .fullscreen
             .fullscreen-output
             .fullscreen-output-destroy
@@ -82,10 +83,12 @@
             .ping-timer
             .popups
             .positioner
+            .reposition-token
             .requested
             .resizing
             .resource
             .role
+            .rules
             .scheduled
             .scheduled-serial
             .seat
@@ -95,7 +98,7 @@
             .tiled
             .title
             .width
-            .edges))
+            .activated))
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
@@ -112,16 +115,23 @@
   (geometry #:allocation #:bytestructure #:accessor .geometry)
   #:descriptor %wlr-xdg-surface-state-struct)
 
+(define-wlr-types-class wlr-xdg-popup-configure ()
+  (fields #:accessor .fields)
+  (geometry #:accessor .geometry)
+  (rules #:accessor .rules)
+  (reposition-token #:accessor .reposition-token)
+  #:descriptor %wlr-xdg-popup-configure-struct)
 (define-wlr-types-class wlr-xdg-popup ()
-  (base #:getter .base)
-  (link #:getter .link)
-  (resource #:getter .resource)
-  (committed #:getter .committed)
-  (parent #:getter .parent)
-  (seat #:getter .seat)
-  (geometry #:getter .geometry)
-  (positioner #:getter .positioner)
-  (grab-link #:getter .grab-link)
+  (base #:accessor .base)
+  (link #:accessor .link)
+  (resource #:accessor .resource)
+  (committed #:accessor .committed)
+  (parent #:accessor .parent)
+  (seat #:accessor .seat)
+  (scheduled #:accessor .scheduled)
+  (current #:accessor .current)
+  (pending #:accessor .pending)
+  (grab-link #:accessor .grab-link)
   #:descriptor %wlr-xdg-popup-struct)
 
 (define-wlr-types-class wlr-xdg-popup-state ()

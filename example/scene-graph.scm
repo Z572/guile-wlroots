@@ -62,7 +62,7 @@
          (allocator (wlr-allocator-autocreate backend renderer))
          (compositor (wlr-compositor-create display renderer))
          (scene (wlr-scene-create))
-         (xdg-shell (wlr-xdg-shell-create display)))
+         (xdg-shell (wlr-xdg-shell-create display 5)))
     (wlr-renderer-init-wl-display renderer display)
     (slot-set! object 'display display)
     (slot-set! object 'backend backend)
@@ -94,7 +94,7 @@
 
 (define ((new-surface server) listener data)
   (let* ((wlr-surface (wrap-wlr-surface data))
-         (scene-surface (wlr-scene-surface-create (.node (server-scene server))
+         (scene-surface (wlr-scene-surface-create (.tree (server-scene server))
                                                   wlr-surface))
          (surface (make <surface>
                     #:server server
@@ -106,7 +106,7 @@
 (define ((surface-destroy-notify surface) listener data)
   (pk 'destroy-surface surface
       (.scene-surface surface)
-      (.node (.scene-surface surface))))
+      (.node (.buffer (.scene-surface surface)))))
 
 (define-method (run! (obj <server>))
   (wlr-backend-start (server-backend obj))

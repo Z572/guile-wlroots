@@ -217,11 +217,6 @@
 (define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event ()
   #:descriptor %wlr-xdg-toplevel-set-fullscreen-event)
 
-(define-method (.edges (o <wlr-xdg-toplevel-resize-event>))
-  (bytestructure-ref
-   (pointer->bytestructure (unwrap-wlr-xdg-toplevel-resize-event o) %wlr-xdg-toplevel-resize-event-struct)
-   'edges))
-
 (define-wlr-types-class wlr-xdg-client ()
   (shell #:accessor .shell)
   (resource #:accessor .resource)

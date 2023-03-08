@@ -1,4 +1,4 @@
-(define-module (wlroots types text-inputs)
+(define-module (wlroots types text-input)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots types)
   #:use-module (wlroots types compositor)

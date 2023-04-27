@@ -28,7 +28,7 @@
 
 (define-wlr-procedure (wlr-wl-backend-get-remote-display backend)
   ('* "wlr_wl_backend_get_remote_display" (list '*))
-  (wrap-wl-display (% (unwrap-wlr-backend backend))))
+  (wrap-wl-client-display (% (unwrap-wlr-backend backend))))
 
 (define-wlr-procedure (wlr-wl-output-create backend)
   ('* "wlr_wl_output_create" (list '*))

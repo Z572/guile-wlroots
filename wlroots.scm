@@ -1,6 +1,5 @@
 (define-module (wlroots)
-  #:use-module (oop goops)
-  #:duplicates (merge-accessors merge-generics replace warn-override-core warn last))
+  #:use-module (oop goops))
 
 (eval-when (eval load compile)
   (begin
@@ -62,4 +61,9 @@
          (let ((submodule-interface (resolve-interface submodule)))
            (module-use! current-module submodule-interface)
            (module-use! current-module-interface submodule-interface)))
-       %public-modules))))
+       %public-modules)
+      (set-module-duplicates-handlers!
+       current-module-interface
+       (append (lookup-duplicates-handlers 'merge-accessors)
+               (lookup-duplicates-handlers 'merge-generics)
+               (module-duplicates-handlers current-module-interface)) ))))

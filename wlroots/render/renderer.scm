@@ -22,6 +22,19 @@
 (define-wlr-procedure (wlr-renderer-autocreate backend)
   ('* "wlr_renderer_autocreate" (list '*))
   (wrap-wlr-renderer (% (unwrap-wlr-backend backend))))
+
+(define-wlr-procedure (wlr-renderer-begin renderer width height)
+  (ffi:int "wlr_renderer_begin" `(* ,ffi:uint32 ,ffi:uint32))
+  (% (unwrap-wlr-renderer renderer) width height))
+
+(define-wlr-procedure (wlr-renderer-end renderer)
+  (ffi:int "wlr_renderer_end" `(*))
+  (% (unwrap-wlr-renderer renderer)))
+
+(define-wlr-procedure (wlr-renderer-clear renderer color)
+  (ffi:int "wlr_renderer_clear" `(* *))
+  (% (unwrap-wlr-renderer renderer) (color->pointer color)))
+
 (define-wlr-procedure (wlr-renderer-init-wl-display renderer display)
   (ffi:int "wlr_renderer_init_wl_display" '(* *))
   (% (unwrap-wlr-renderer renderer) (unwrap-wl-display display)))

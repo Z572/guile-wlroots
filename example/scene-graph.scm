@@ -120,7 +120,7 @@
 (define (main . args)
   (define server (make <server>))
   (unless (getenv "XDG_RUNTIME_DIR")
-    (send-log EMERGENCY (G_ "XDG_RUNTIME_DIR must be set."))
+    (display "XDG_RUNTIME_DIR must be set.\n")
     (exit 1))
   (add-listen* (server-backend server)
                'new-output (new-output-notify server))

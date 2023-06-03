@@ -40,6 +40,10 @@
   ('* "wlr_renderer_get_dmabuf_texture_formats" (list '*))
   (wrap-wlr-drm-format-set (% (unwrap-wlr-renderer renderer))))
 
+(define-wlr-procedure (wlr-renderer-init-wl-shm renderer display)
+  (ffi:int "wlr_renderer_init_wl_shm" '(* *))
+  (% (unwrap-wlr-renderer renderer) (unwrap-wl-display display)))
+
 (define-wlr-procedure (wlr-renderer-init-wl-display renderer display)
   (ffi:int "wlr_renderer_init_wl_display" '(* *))
   (% (unwrap-wlr-renderer renderer) (unwrap-wl-display display)))

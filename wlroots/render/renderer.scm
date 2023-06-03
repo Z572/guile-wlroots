@@ -3,6 +3,7 @@
   #:use-module (wayland signal)
   #:use-module (wlroots utils)
   #:use-module (wlroots backend)
+  #:use-module (wlroots render drm-format-set)
   #:use-module (wlroots types)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (bytestructures guile)
@@ -34,6 +35,10 @@
 (define-wlr-procedure (wlr-renderer-clear renderer color)
   (ffi:int "wlr_renderer_clear" `(* *))
   (% (unwrap-wlr-renderer renderer) (color->pointer color)))
+
+(define-wlr-procedure (wlr-renderer-get-dmabuf-texture-formats renderer)
+  ('* "wlr_renderer_get_dmabuf_texture_formats" (list '*))
+  (wrap-wlr-drm-format-set (% (unwrap-wlr-renderer renderer))))
 
 (define-wlr-procedure (wlr-renderer-init-wl-display renderer display)
   (ffi:int "wlr_renderer_init_wl_display" '(* *))

@@ -7,7 +7,11 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wlroots util box)
-  #:export (wlr-drm-format-set-finish
+  #:export (wrap-wlr-drm-format
+            unwrap-wlr-drm-format
+            wrap-wlr-drm-format-set
+            unwrap-wlr-drm-format-set
+            wlr-drm-format-set-finish
             wlr-drm-format-set-get
             wlr-drm-format-set-has
             wlr-drm-format-set-add

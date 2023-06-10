@@ -1774,6 +1774,14 @@
      (output-enable ,%wl-listener-struct)
      (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-drm-struct
+  (bs:struct
+   `((global ,(bs:pointer %wl-global-struct))
+     (events ,(bs:struct `((destroy ,%wl-signal-struct))))
+     (node-name ,cstring-pointer*)
+     (formats ,%wlr-drm-format-struct)
+     (display-destroy ,%wl-listener-struct))))
+
 (define-public %wlr-gamma-control-manager-v1-struct
   (bs:struct
    `((global ,(bs:pointer %wl-global-struct))

@@ -19,6 +19,7 @@
              (types damage-ring)
              (types data-control)
              (types data-device)
+             (types drm)
              (types input-device)
              (types gamma-control)
              (types idle)

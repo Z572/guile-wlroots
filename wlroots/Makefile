@@ -56,4 +56,5 @@ SOURCES = %D%/config.scm     \
  %D%/types/damage-ring.scm   \
  %D%/types/scene.scm         \
  %D%/types/surface.scm       \
+ %D%/types/drm.scm       \
  %D%/../wlroots.scm

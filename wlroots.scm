@@ -19,6 +19,7 @@
              (types damage-ring)
              (types data-control)
              (types data-device)
+             (types drm)
              (types fullscreen-shell-v1)
              (types input-device)
              (types gamma-control)

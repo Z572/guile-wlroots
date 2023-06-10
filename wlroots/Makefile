@@ -27,6 +27,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/presentation-time.scm \
  %D%/types/buffer.scm        \
  %D%/types/layer-shell.scm   \
+ %D%/types/matrix.scm        \
  %D%/types/touch.scm         \
  %D%/types/switch.scm        \
  %D%/types/tablet-tool.scm   \

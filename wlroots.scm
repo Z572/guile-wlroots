@@ -29,6 +29,7 @@
              (types input-method)
              (types keyboard)
              (types layer-shell)
+             (types matrix)
              (types output)
              (types output-layout)
              (types output-management)

@@ -20,6 +20,7 @@
              (types data-control)
              (types data-device)
              (types drm)
+             (types fullscreen-shell)
              (types input-device)
              (types gamma-control)
              (types idle)

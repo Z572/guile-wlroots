@@ -57,4 +57,5 @@ SOURCES = %D%/config.scm     \
  %D%/types/scene.scm         \
  %D%/types/surface.scm       \
  %D%/types/drm.scm       \
+ %D%/types/fullscreen-shell.scm       \
  %D%/../wlroots.scm

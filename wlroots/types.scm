@@ -1774,6 +1774,29 @@
      (output-enable ,%wl-listener-struct)
      (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-fullscreen-shell-v1-struct
+  (bs:struct
+   `((global ,(bs:pointer %wl-global-struct))
+     (events ,(bs:struct `((destroy ,%wl-signal-struct)
+                           (present-surface ,%wl-signal-struct))))
+     (display-destroy ,%wl-listener-struct)
+     (data ,(bs:pointer 'void)))))
+
+(define-public %zwp-fullscreen-shell-v1-present-method-enum
+  (bs:enum
+   `((ZWP_FULLSCREEN_SHELL_V1_PRESENT_METHOD_DEFAULT 0)
+     (ZWP_FULLSCREEN_SHELL_V1_PRESENT_METHOD_CENTER 1)
+     (ZWP_FULLSCREEN_SHELL_V1_PRESENT_METHOD_ZOOM 2)
+     (ZWP_FULLSCREEN_SHELL_V1_PRESENT_METHOD_ZOOM_CROP 3)
+     (ZWP_FULLSCREEN_SHELL_V1_PRESENT_METHOD_STRETCH 4))))
+
+(define-public %wlr-fullscreen-shell-v1-present-surface-event-struct
+  (bs:struct
+   `((client ,(bs:pointer %wl-client-struct))
+     (surface ,(bs:pointer %wlr-surface-struct))
+     (method ,%zwp-fullscreen-shell-v1-present-method-enum)
+     (output ,(bs:pointer %wlr-output-struct)))))
+
 (define-public %wlr-gamma-control-manager-v1-struct
   (bs:struct
    `((global ,(bs:pointer %wl-global-struct))

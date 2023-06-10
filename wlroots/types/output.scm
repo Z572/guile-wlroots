@@ -197,6 +197,16 @@
   (ffi:void "wlr_output_destroy" (list '*))
   (% (unwrap-wlr-output output) ))
 
+(define-wlr-procedure (wlr-output-effective-resolution output)
+  (ffi:void "wlr_output_effective_resolution" '(* * *))
+  (let ((width (bytestructure int))
+        (height (bytestructure int)))
+    (% (unwrap-wlr-output output)
+       (bytestructure->pointer width)
+       (bytestructure->pointer height))
+
+    (cons (bytestructure-ref width) (bytestructure-ref height))))
+
 (define-wlr-procedure (wlr-output-attach-render output #:optional (buffer_age #f))
   (ffi:int8 "wlr_output_attach_render" (list '* '*))
   (not (zero? (% (unwrap-wlr-output output)  (or buffer_age ffi:%null-pointer)))))

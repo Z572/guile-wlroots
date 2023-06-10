@@ -4,8 +4,10 @@
   #:use-module (wlroots utils)
   #:use-module (wlroots backend)
   #:use-module (wlroots render drm-format-set)
+  #:use-module (wlroots render texture)
   #:use-module (wlroots types)
   #:use-module ((system foreign) #:prefix ffi:)
+  #:use-module (bytestructure-class)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
@@ -35,6 +37,17 @@
 (define-wlr-procedure (wlr-renderer-clear renderer color)
   (ffi:int "wlr_renderer_clear" `(* *))
   (% (unwrap-wlr-renderer renderer) (color->pointer color)))
+
+(define-wlr-procedure (wlr-render-texture-with-matrix r texture matrix alpha)
+  (ffi:int8 "wlr_render_texture_with_matrix" (list '* '* '* ffi:float))
+  (not (zero? (% (unwrap-wlr-renderer r)
+                 (unwrap-wlr-texture texture)
+                 (if (>= (length matrix) 9)
+                     (bytestructure->pointer
+                       (bytestructure (bs:vector (length matrix) float)
+                                      (list->vector matrix)))
+                   (error "warning: list argument is too small; matrix requires, at least, 9"))
+                 alpha))))
 
 (define-wlr-procedure (wlr-renderer-get-dmabuf-texture-formats renderer)
   ('* "wlr_renderer_get_dmabuf_texture_formats" (list '*))

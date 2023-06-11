@@ -7,7 +7,7 @@
             .display-destroy
             .global
 
-            wlr-fullscreen-shell-v1-present-surface-event
+            <wlr-fullscreen-shell-v1-present-surface-event>
             wrap-wlr-fullscreen-shell-v1-present-surface-event
             unwrap-wlr-fullscreen-shell-v1-present-surface-event
             .client

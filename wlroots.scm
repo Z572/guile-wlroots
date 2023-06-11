@@ -47,7 +47,6 @@
              (types tablet-tool)
              (types text-input)
              (types touch )
-             (types transform)
              (types viewporter)
              (types xcursor)
              (types xdg-activation)

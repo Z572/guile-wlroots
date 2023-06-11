@@ -65,12 +65,11 @@
              ;; wlr-output-preferred-mode
              ;; wlr-output-set-mode
              ;; wlr-output-commit
+             ;; wlr-output-transform-invert
              (wlroots        types               output)
              ;; wlr-output-layout-create
              ;; wlr-output-layout-add-auto
              (wlroots        types               output-layout)
-             ;; wlr-output-transform-invert
-             (wlroots        types               transform)
              ;; make-wlr-box
              (wlroots        util                box)
              ;; wlr-log-init

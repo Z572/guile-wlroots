@@ -9,11 +9,6 @@
             .global
             .node-name))
 
-;;;
-;; A stub implementation of Mesa's wl_drm protocol.
-;;
-;; It only implements the minimum necessary for modern clients to behave
-;; properly. In particular, flink handles are left unimplemented.
 (define-wlr-types-class wlr-drm ()
   (global #:accessor .global)
 

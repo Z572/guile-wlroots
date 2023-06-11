@@ -177,15 +177,15 @@
 (define ((output-handle-frame fullscreen-output) listener data)
   ;;; Line 85
   ;; struct wlr_renderer *renderer = output->server->renderer;
-  (let-values ([(renderer)     (get-server-renderer (get-output-server fullscreen-output))]
-               ;;; Line 87
-               ;; struct timespec now;
-               [(now)          (make <timespec>)]
-               ;;; Line 89
-               ;; int width, height;
-               ;;; Line 90
-               ;; wlr_output_effective_resolution(output->wlr_output, &width, &height);
-               [(width height) (wlr-output-effective-resolution (get-output-output fullscreen-output))])
+  (let ([renderer         (get-server-renderer (get-output-server fullscreen-output))]
+        ;;; Line 87
+        ;; struct timespec now;
+        [now              (make <timespec>)]
+        ;;; Line 89
+        ;; int width, height;
+        ;;; Line 90
+        ;; wlr_output_effective_resolution(output->wlr_output, &width, &height);
+        [width-and-height (wlr-output-effective-resolution (get-output-output fullscreen-output))])
     ;;; Line 88
     ;; clock_gettime(CLOCK_MONOTONIC, &now);
     (clock-gettime 'CLOCK_MONOTONIC now)
@@ -195,7 +195,7 @@
     (when (wlr-output-attach-render (get-output-output fullscreen-output))
       ;;; Line 96
       ;; wlr_renderer_begin(renderer, width, height);
-      (wlr-renderer-begin renderer width height)
+      (wlr-renderer-begin renderer (car width-and-height) (cdr width-and-height))
 
       ;;; Line 98
       ;; float color[4] = {0.3, 0.3, 0.3, 1.0};

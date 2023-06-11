@@ -205,7 +205,7 @@
        (bytestructure->pointer width)
        (bytestructure->pointer height))
 
-    (values (bytestructure-ref width) (bytestructure-ref height))))
+    (cons (bytestructure-ref width) (bytestructure-ref height))))
 
 (define-wlr-procedure (wlr-output-attach-render output #:optional (buffer_age #f))
   (ffi:int8 "wlr_output_attach_render" (list '* '*))

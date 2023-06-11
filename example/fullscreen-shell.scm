@@ -56,7 +56,7 @@
              ;; wlr-surface-send-frame-done
              (wlroots        types               compositor)
              ;; wlr-fullscreen-shell-v1-create
-             (wlroots        types               fullscreen-shell-v1)
+             (wlroots        types               fullscreen-shell)
              ;; wlr-matrix-project-box
              (wlroots        types               matrix)
              ;; wrap-wlr-output

@@ -1,4 +1,4 @@
-(define-module (wlroots types fullscreen-shell-v1)
+(define-module (wlroots types fullscreen-shell)
   #:use-module (wayland display)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)

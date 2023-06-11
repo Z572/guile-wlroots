@@ -6,6 +6,7 @@
   #:use-module (wlroots render drm-format-set)
   #:use-module (wlroots render texture)
   #:use-module (wlroots types)
+  #:use-module (wlroots types matrix)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (bytestructure-class)
   #:use-module (bytestructures guile)
@@ -37,6 +38,15 @@
 (define-wlr-procedure (wlr-renderer-clear renderer color)
   (ffi:int "wlr_renderer_clear" `(* *))
   (% (unwrap-wlr-renderer renderer) (color->pointer color)))
+
+(define-wlr-procedure (wlr-render-texture r texture projection x y alpha)
+  (ffi:int8 "wlr_render_texture" (list '* '* '* ffi:int ffi:int ffi:float))
+  (not (zero? (% (unwrap-wlr-renderer r)
+                 (unwrap-wlr-texture texture)
+                 (9-vecotr-or-list->pointer projection)
+                 x
+                 y
+                 alpha))))
 
 (define-wlr-procedure (wlr-render-texture-with-matrix r texture matrix alpha)
   (ffi:int8 "wlr_render_texture_with_matrix" (list '* '* '* ffi:float))

@@ -349,3 +349,12 @@
   (ffi:void "wlr_output_state_set_subpixel" (list '* ffi:int32))
   (% (unwrap-wlr-output-state state)
      (bs:enum->integer %wl-output-subpixel-enum subpixel)))
+
+(define-wlr-procedure (wlr-output-transform-invert tr)
+  (ffi:int32 "wlr_output_transform_invert" (list ffi:int32))
+  (% (bs:enum->integer %wl-output-transform-enum tr)))
+
+(define-wlr-procedure (wlr-output-transform-compose tr-a tr-b)
+  (ffi:int32 "wlr_output_transform_compose" (list ffi:int32 ffi:int32))
+  (% (bs:enum->integer %wl-output-transform-enum tr-a)
+     (bs:enum->integer %wl-output-transform-enum tr-b)))

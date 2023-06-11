@@ -15,7 +15,7 @@
        (unwrap-wlr-box box)
        (bs:enum->integer %wl-output-transform-enum transform)
        rotation
-       (if (>= (length projection) max-vector-length)
+       (if (> (length projection) max-vector-length)
            (bytestructure->pointer (bytestructure (bs:vector (length projection)
                                                              float)
                                                   (list->vector projection)))

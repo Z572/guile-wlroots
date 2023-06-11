@@ -42,7 +42,7 @@
   (ffi:int8 "wlr_render_texture" (list '* '* '* ffi:int ffi:int ffi:float))
   (not (zero? (% (unwrap-wlr-renderer r)
                  (unwrap-wlr-texture texture)
-                 (if (>= (length projection) 9)
+                 (if (> (length projection) 9)
                      (bytestructure->pointer
                        (bytestructure (bs:vector (length projection) float)
                                       (list->vector projection)))
@@ -55,7 +55,7 @@
   (ffi:int8 "wlr_render_texture_with_matrix" (list '* '* '* ffi:float))
   (not (zero? (% (unwrap-wlr-renderer r)
                  (unwrap-wlr-texture texture)
-                 (if (>= (length matrix) 9)
+                 (if (> (length matrix) 9)
                      (bytestructure->pointer
                        (bytestructure (bs:vector (length matrix) float)
                                       (list->vector matrix)))

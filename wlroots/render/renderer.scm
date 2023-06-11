@@ -46,7 +46,8 @@
                      (bytestructure->pointer
                        (bytestructure (bs:vector (length projection) float)
                                       (list->vector projection)))
-                   (error "warning: list argument is too small; projection requires, at least, 9"))
+                   (raise (condition
+                            (&message (message  "Not a 9 length vector or list")))))
                  x
                  y
                  alpha))))
@@ -59,7 +60,8 @@
                      (bytestructure->pointer
                        (bytestructure (bs:vector (length matrix) float)
                                       (list->vector matrix)))
-                   (error "warning: list argument is too small; matrix requires, at least, 9"))
+                   (raise (condition
+                            (&message (message  "Not a 9 length vector or list")))))
                  alpha))))
 
 (define-wlr-procedure (wlr-renderer-get-dmabuf-texture-formats renderer)

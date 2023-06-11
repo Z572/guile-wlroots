@@ -19,6 +19,6 @@
            (bytestructure->pointer (bytestructure (bs:vector (length projection)
                                                              float)
                                                   (list->vector projection)))
-         (error "warning: list argument is too small; projection requires, at least, 9")))
+         (raise (condition (&message (message  "Not a 9 length vector or list"))))))
 
     (map (lambda (n) (bytestructure-ref mat n)) (iota max-vector-length))))

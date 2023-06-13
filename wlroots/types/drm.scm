@@ -3,19 +3,20 @@
   #:use-module (wlroots render renderer)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
-  #:export (wlr-drm-create
+  #:export (wrap-wlr-drm
+            unwrap-wlr-drm
+            wlr-drm-create
             .display-destroy
-            .formats
+            .renderer-destroy
             .global
             .node-name))
 
 (define-wlr-types-class wlr-drm ()
   (global #:accessor .global)
-
-  ;; private state
+  (renderer #:accessor .renderer)
   (node-name #:accessor .node-name)
-  (formats #:accessor .formats)
   (display-destroy #:accessor .display-destroy)
+  (renderer-destroy #:accessor .renderer-destroy)
   #:descriptor %wlr-drm-struct)
 
 (define-wlr-procedure (wlr-drm-create display renderer)

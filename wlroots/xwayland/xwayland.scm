@@ -199,6 +199,10 @@
                         (unwrap-wlr-compositor compositor)
                         (if lazy? 1 0))))
 
+(define-wlr-procedure (wlr-xwayland-destroy xwayland)
+  (ffi:void "wlr_xwayland_destroy" '(*))
+  (% (unwrap-wlr-xwayland xwayland)))
+
 (define-wlr-procedure (wlr-xwayland-surface-activate surface activated)
   (ffi:void "wlr_xwayland_surface_activate" `(* ,ffi:int8))
   (% (unwrap-wlr-xwayland-surface surface) (if activated 1 0)))

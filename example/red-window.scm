@@ -1,3 +1,5 @@
+#!/usr/bin/env -S guile --no-auto-compile -e main
+!#
 (use-modules
  (wayland)
  (util572 color)
@@ -34,16 +36,17 @@
        (wl-signal-add (get-event-signal output 'frame) output-frame-listener)
        (wlr-output-commit output)))))
 
-(wlr-renderer-init-wl-display w-renderer w-display)
+(define (main . _)
+  (wlr-renderer-init-wl-display w-renderer w-display)
 
-(wl-signal-add (get-event-signal w-backend 'new-output)
-               w-backend-new-output-listener)
+  (wl-signal-add (get-event-signal w-backend 'new-output)
+                 w-backend-new-output-listener)
 
-(wlr-backend-start w-backend)
+  (wlr-backend-start w-backend)
 
-(setenv "WAYLAND_DISPLAY" (wl-display-add-socket-auto w-display))
+  (setenv "WAYLAND_DISPLAY" (wl-display-add-socket-auto w-display))
 
-(wl-display-run w-display)
+  (wl-display-run w-display)
 
-(wl-display-destroy-clients w-display)
-(wl-display-destroy w-display)
+  (wl-display-destroy-clients w-display)
+  (wl-display-destroy w-display))

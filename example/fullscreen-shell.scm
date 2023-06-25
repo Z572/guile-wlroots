@@ -24,10 +24,9 @@
              ((wlroots render renderer)
               #:select (wlr-renderer-autocreate
                         wlr-renderer-init-wl-display
-                        wlr-renderer-begin
                         wlr-renderer-clear
-                        wlr-renderer-end
-                        wlr-render-texture-with-matrix))
+                        wlr-render-texture-with-matrix
+                        call-with-renderer))
              ((wlroots time) #:select (<timespec> clock-gettime))
              ((wlroots types) #:select (get-event-signal
                                         define-bytestructure-class
@@ -174,41 +173,40 @@
     (when (wlr-output-attach-render (get-output-output fullscreen-output))
       ;;; Line 96
       ;; wlr_renderer_begin(renderer, width, height);
-      (wlr-renderer-begin renderer (car width+height) (cdr width+height))
+      (call-with-renderer
+       renderer width+height
 
-      ;;; Line 98
-      ;; float color[4] = {0.3, 0.3, 0.3, 1.0};
-      (let* ((->16as10 (lambda (n) (inexact->exact (round (* 255 n)))))
-             (color (make-rgba-color (->16as10 0.3)
-                                     (->16as10 0.3)
-                                     (->16as10 0.3)
-                                     (->16as10 1.0))))
-        ;;; Line 99
-        ;; wlr_renderer_clear(renderer, color);
-        (wlr-renderer-clear renderer color))
+       (lambda (renderer width height)
+         ;;; Line 98
+         ;; float color[4] = {0.3, 0.3, 0.3, 1.0};
+         (let* ((->16as10 (lambda (n) (inexact->exact (round (* 255 n)))))
+                (color (make-rgba-color (->16as10 0.3)
+                                        (->16as10 0.3)
+                                        (->16as10 0.3)
+                                        (->16as10 1.0))))
+           ;;; Line 99
+           ;; wlr_renderer_clear(renderer, color);
+           (wlr-renderer-clear renderer color))
 
-      ;;; Line 101
-      ;; if (output->surface != NULL) {
-      (when (get-output-surface fullscreen-output)
-        ;;; Lines 102–106
-        ;; struct render_data rdata = {
-        ;; 	.output = output->wlr_output,
-        ;; 	.renderer = renderer,
-        ;; 	.when = &now,
-        ;; };
-        (let ((rdata (make <render-data>
-                       #:output   (get-output-output fullscreen-output)
-                       #:renderer renderer
-                       #:when     now)))
-          ;;; Line 107
-          ;; wlr_surface_for_each_surface(output->surface, render_surface, &rdata);
-          (wlr-surface-for-each-surface (get-output-surface fullscreen-output)
-                                        render-surface rdata)))
-      ;;; Line 110
-      ;; wlr_renderer_end(renderer);
-      (wlr-renderer-end renderer)
+         ;;; Line 101
+         ;; if (output->surface != NULL) {
+         (when (get-output-surface fullscreen-output)
+           ;;; Lines 102–106
+           ;; struct render_data rdata = {
+           ;; 	.output = output->wlr_output,
+           ;; 	.renderer = renderer,
+           ;; 	.when = &now,
+           ;; };
+           (let ((rdata (make <render-data>
+                          #:output   (get-output-output fullscreen-output)
+                          #:renderer renderer
+                          #:when     now)))
+             ;;; Line 107
+             ;; wlr_surface_for_each_surface(output->surface, render_surface, &rdata);
+             (wlr-surface-for-each-surface (get-output-surface fullscreen-output)
+                                           render-surface rdata)))))
 
-        ;;; Line 111
+      ;;; Line 111
       ;; wlr_output_commit(output->wlr_output);
       (wlr-output-commit (get-output-output fullscreen-output)))))
 

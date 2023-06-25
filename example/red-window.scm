@@ -17,9 +17,11 @@
    (lambda (listener data)
      (let ((output (wrap-wlr-output data)))
        (wlr-output-attach-render output #f)
-       (wlr-renderer-begin w-renderer (.width output) (.height output))
-       (wlr-renderer-clear w-renderer (make-rgba-color "#f000"))
-       (wlr-renderer-end w-renderer)
+       (call-with-renderer
+        w-renderer
+        (.width output) (.height output)
+        (lambda (renderer . _)
+          (wlr-renderer-clear renderer (make-rgba-color "#f000"))))
        (wlr-output-commit output)))))
 
 (define w-backend-new-output-listener

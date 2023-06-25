@@ -12,10 +12,12 @@
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
-  #:export (wrap-wlr-renderer unwrap-wlr-renderer wlr-renderer-autocreate
-                              wlr-renderer-init-wl-display
-                              .rendering
-                              .rendering-with-buffer))
+  #:export (wrap-wlr-renderer
+            unwrap-wlr-renderer wlr-renderer-autocreate
+            wlr-renderer-init-wl-display
+            .rendering
+            .rendering-with-buffer
+            call-with-renderer))
 
 
 (define-wlr-types-class wlr-renderer ()
@@ -34,6 +36,16 @@
 (define-wlr-procedure (wlr-renderer-end renderer)
   (ffi:int "wlr_renderer_end" `(*))
   (% (unwrap-wlr-renderer renderer)))
+
+(define call-with-renderer
+  (case-lambda
+    ((renderer width height proc)
+     (dynamic-wind
+       (lambda () (wlr-renderer-begin renderer width height))
+       (lambda () (proc renderer width height))
+       (lambda () (wlr-renderer-end renderer))))
+    ((renderer width+height proc)
+     (call-with-renderer renderer (car width+height) (cdr width+height) proc ))))
 
 (define-wlr-procedure (wlr-renderer-clear renderer color)
   (ffi:int "wlr_renderer_clear" `(* *))

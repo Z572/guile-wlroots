@@ -46,6 +46,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/text-input.scm    \
  %D%/types/xdg-shell.scm     \
  %D%/types/xdg-activation.scm \
+ %D%/types/xdg-decoration.scm \
  %D%/types/session-lock.scm \
  %D%/types/xdg-output.scm\
  %D%/types/primary-selection.scm       \

@@ -335,6 +335,46 @@
   (bs:struct `((configure-serial ,uint32)
                (geometry ,%wlr-box-struct))))
 
+(define-public %wlr-xdg-toplevel-decoration-v1-mode-enum
+  (bs:enum '((WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_NONE 0)
+             (WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_CLIENT_SIDE 1)
+             (WLR_XDG_TOPLEVEL_DECORATION_V1_MODE_SERVER_SIDE 2))))
+
+(define-public %wlr-xdg-decoration-manager-v1-struct
+  (bs:struct `((global ,(bs:pointer (delay %wl-global-struct)))
+               (decorations ,%wl-list-struct)
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((new-toplevel-decoration ,%wl-signal-struct)
+                                     (destroy ,%wl-signal-struct))))
+               (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-xdg-toplevel-decoration-v1-configure-struct
+  (bs:struct `((link ,%wl-list-struct)
+               (surface-configure ,(bs:pointer (delay %wlr-xdg-surface-configure-struct)))
+               (mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum))))
+
+(define-public %wlr-xdg-toplevel-decoration-v1-state-struct
+  (bs:struct `((mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum))))
+
+(define-public %wlr-xdg-toplevel-decoration-v1-struct
+  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
+               (surface ,(bs:pointer (delay %wlr-xdg-surface-struct)))
+               (manager ,(bs:pointer %wlr-xdg-decoration-manager-v1-struct))
+               (link ,%wl-list-struct)
+               (current ,%wlr-xdg-toplevel-decoration-v1-state-struct)
+               (pending ,%wlr-xdg-toplevel-decoration-v1-state-struct)
+               (scheduled-mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum)
+               (requested-mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum)
+               (added ,stdbool)
+               (configure-list ,%wl-list-struct)
+               (events ,(bs:struct `((destroy ,%wl-signal-struct)
+                                     (request-mode ,%wl-signal-struct))))
+               (surface-destroy ,%wl-listener-struct)
+               (surface-configure ,%wl-listener-struct)
+               (surface-ack-configure ,%wl-listener-struct)
+               (surface-commit ,%wl-listener-struct)
+               (data ,(bs:pointer 'void)))))
+
 (define-public %wlr-output-manager-v1-struct
   (bs:struct `((display ,(bs:pointer (delay %wl-display-struct)))
                (global ,(bs:pointer (delay %wl-global-struct)))

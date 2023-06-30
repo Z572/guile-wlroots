@@ -50,6 +50,7 @@
              (types viewporter)
              (types xcursor)
              (types xdg-activation)
+             (types xdg-decoration)
              (types xdg-output)
              (types xdg-shell)
              (util addon)

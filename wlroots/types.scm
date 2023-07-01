@@ -160,7 +160,6 @@
                (surface-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
 
-
 (define-public %wlr-edges-enum
   (bs:enum '((WLR_EDGE_NONE 0)
              (WLR_EDGE_TOP 1)
@@ -512,6 +511,20 @@
   (bs:struct `((activation ,(bs:pointer %wlr-xdg-activation-v1-struct))
                (token ,(bs:pointer %wlr-xdg-activation-token-v1-struct))
                (surface ,(bs:pointer %wlr-surface-struct)))))
+
+(define-public %wlr-export-dmabuf-manager-v1-struct
+  (bs:struct `((global ,(bs:pointer %wl-global-struct))
+               (frames ,%wl-list-struct)
+               (display-destroy ,%wl-listener-struct)
+               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+
+(define-public %wlr-export-dmabuf-frame-v1-struct
+  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
+               (manager ,(bs:pointer %wlr-export-dmabuf-manager-v1-struct))
+               (link ,%wl-list-struct)
+               (output ,(bs:pointer %wlr-output-struct))
+               (cursor-locked ,stdbool)
+               (output-commit ,%wl-listener-struct))))
 
 (define-public WLR_LED_COUNT 3)
 (define-public WLR_MODIFIER_COUNT 8)

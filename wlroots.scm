@@ -52,6 +52,7 @@
              (types xdg-activation)
              (types xdg-decoration)
              (types xdg-output)
+             (types export-dmabuf)
              (types xdg-shell)
              (util addon)
              (util box)

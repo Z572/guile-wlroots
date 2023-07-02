@@ -27,6 +27,10 @@
   ('* "wlr_xcursor_manager_create" (list '* ffi:uint32))
   (wrap-wlr-xcursor-manager (% (if name (string->pointer name ) %null-pointer) size)))
 
+(define-wlr-procedure (wlr-xcursor-manager-destroy m)
+  (ffi:void "wlr_xcursor_manager_destroy" '(*))
+  (% (unwrap-wlr-xcursor-manager m)))
+
 (define-wlr-procedure (wlr-xcursor-manager-load xmgr scale)
   (ffi:int "wlr_xcursor_manager_load" (list '* ffi:float))
   (wrap-wlr-xcursor-manager (% (unwrap-wlr-xcursor-manager xmgr) scale)))

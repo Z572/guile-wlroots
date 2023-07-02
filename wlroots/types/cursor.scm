@@ -26,6 +26,10 @@
   ('* "wlr_cursor_create" '())
   (wrap-wlr-cursor (%)))
 
+(define-wlr-procedure (wlr-cursor-destroy cursor)
+  (ffi:void "wlr_cursor_destroy" '(*))
+  (% (unwrap-wlr-cursor cursor)))
+
 (define-wlr-procedure (wlr-cursor-attach-output-layout cursor output-layout)
   (ffi:int "wlr_cursor_attach_output_layout" '(* *))
   (% (unwrap-wlr-cursor cursor)

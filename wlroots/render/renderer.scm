@@ -78,3 +78,7 @@
 (define-wlr-procedure (wlr-renderer-init-wl-display renderer display)
   (ffi:int "wlr_renderer_init_wl_display" '(* *))
   (% (unwrap-wlr-renderer renderer) (unwrap-wl-display display)))
+
+(define-wlr-procedure (wlr-renderer-destroy renderer)
+  (ffi:void "wlr_renderer_destroy" '(*))
+  (% (unwrap-wlr-renderer renderer)))

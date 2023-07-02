@@ -48,7 +48,7 @@
              (types text-input)
              (types touch )
              (types viewporter)
-             (types xcursor)
+             (types xcursor-manager)
              (types xdg-activation)
              (types xdg-decoration)
              (types xdg-output)

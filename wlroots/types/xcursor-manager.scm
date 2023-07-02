@@ -1,4 +1,4 @@
-(define-module (wlroots types xcursor)
+(define-module (wlroots types xcursor-manager)
   #:use-module (wayland list)
   ;; #:use-module (wlroots render renderer)
   ;; #:use-module (wlroots types output-layout)

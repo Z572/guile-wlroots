@@ -55,7 +55,7 @@ SOURCES = %D%/config.scm     \
  %D%/types/viewporter.scm       \
  %D%/types/pointer.scm       \
  %D%/types/cursor.scm        \
- %D%/types/xcursor.scm       \
+ %D%/types/xcursor-manager.scm       \
  %D%/types/damage-ring.scm   \
  %D%/types/scene.scm         \
  %D%/types/surface.scm       \

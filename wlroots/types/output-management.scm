@@ -20,6 +20,7 @@
             wrap-wlr-output-configuration-v1
             unwrap-wlr-output-configuration-v1
 
+            <wlr-output-configuration-head-v1>
             wlr-output-manager-v1-create
             wlr-output-configuration-head-v1-create
             wlr-output-configuration-v1-create

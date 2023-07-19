@@ -16,7 +16,7 @@
              ((wayland list) #:select (make-wl-list
                                        wl-list-remove
                                        wl-list-insert))
-             ((wayland listener) #:select (make-wl-listener))
+             ((wayland listener) #:select (make-wl-listener .link))
              ((wayland signal) #:select (wl-signal-add))
              ((wlroots backend) #:select (wlr-backend-autocreate
                                           wlr-backend-start))

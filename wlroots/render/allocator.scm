@@ -1,7 +1,7 @@
 (define-module (wlroots render allocator)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wlroots backend)

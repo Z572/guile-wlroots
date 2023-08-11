@@ -1,5 +1,5 @@
 (define-module (wlroots types export-dmabuf)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots utils)
   #:use-module (wlroots types)

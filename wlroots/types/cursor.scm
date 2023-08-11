@@ -1,5 +1,5 @@
 (define-module (wlroots types cursor)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wayland signal)
   #:use-module (wlroots types input-device)
   #:use-module (srfi srfi-26)

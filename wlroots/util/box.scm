@@ -1,7 +1,7 @@
 (define-module (wlroots util box)
   #:use-module (util572 box)
   #:use-module (wlroots types)
-  #:use-module (wayland protocol)
+  #:use-module (wayland server protocol wayland)
   #:use-module (wayland util)
   #:use-module (oop goops)
   #:use-module (wlroots utils)

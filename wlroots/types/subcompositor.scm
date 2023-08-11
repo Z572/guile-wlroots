@@ -1,6 +1,6 @@
 (define-module (wlroots types subcompositor)
-  #:use-module (wayland display)
-  #:use-module (wayland resource)
+  #:use-module (wayland server display)
+  #:use-module (wayland server resource)
   #:use-module (wlroots render renderer)
   #:use-module (wlroots render texture)
   #:use-module (wlroots types)

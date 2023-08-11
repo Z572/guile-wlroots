@@ -1,7 +1,9 @@
 (use-modules
  (wlroots types keyboard)
- (wayland protocol)
- (wayland)
+ (wayland server protocol wayland)
+ (wayland server display)
+ (wayland server listener)
+ (wayland signal)
  (xkbcommon xkbcommon)
  (util572 color)
  (oop goops)
@@ -83,10 +85,10 @@
                                     (.time-msec event)
                                     (.keycode event)
                                     (if (eq? (.state event)
-                                             'WL_KEYBOARD_KEY_STATE_PRESSED)
+                                             WL_KEYBOARD_KEY_STATE_PRESSED)
                                         1 0))
                                    (when (eq? (.state event)
-                                              'WL_KEYBOARD_KEY_STATE_PRESSED)
+                                              WL_KEYBOARD_KEY_STATE_PRESSED)
                                      (black? (not (black?))))
                                    (pk 'new-key (.keycode event))))))))))
 
@@ -100,7 +102,7 @@
           (create-keyboard device)
           (add-seat-capabilitie
            w-seat
-           'WL_SEAT_CAPABILITY_KEYBOARD)))       ))))
+           WL_SEAT_CAPABILITY_KEYBOARD)))       ))))
 
 (wlr-renderer-init-wl-display w-renderer w-display)
 

@@ -1,6 +1,6 @@
 (define-module (wlroots types idle-inhibit)
   #:use-module (wlroots utils)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots types)
   #:use-module (oop goops)

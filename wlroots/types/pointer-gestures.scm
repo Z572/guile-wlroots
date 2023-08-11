@@ -2,7 +2,7 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots types)
   #:use-module (wlroots types seat)
   #:use-module (wlroots utils)

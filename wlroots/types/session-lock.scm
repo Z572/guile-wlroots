@@ -2,7 +2,7 @@
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots types)
   #:use-module (wlroots types compositor)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots utils)
   #:use-module (oop goops)
   #:duplicates

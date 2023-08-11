@@ -1,5 +1,5 @@
 (define-module (wlroots types data-control)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module ((system foreign) #:prefix ffi:)

@@ -1,6 +1,6 @@
 (define-module (wlroots types gamma-control)
   #:use-module ((system foreign) #:prefix ffi:)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (oop goops)

@@ -1,7 +1,7 @@
 (define-module (wlroots types input-inhibitor)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wlr-input-inhibit-manager-create

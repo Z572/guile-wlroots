@@ -1,5 +1,5 @@
 (define-module (wlroots types drm)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots render renderer)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)

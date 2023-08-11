@@ -1,5 +1,5 @@
 (define-module (wlroots render renderer)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wayland signal)
   #:use-module (wlroots utils)
   #:use-module (wlroots backend)

@@ -1,5 +1,6 @@
 (define-module (wlroots backend wayland)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
+  #:use-module ((wayland client protocol wayland) #:prefix cp:)
   #:use-module (wlroots backend)
   #:use-module (wlroots utils)
   #:use-module (wlroots types input-device)
@@ -28,7 +29,7 @@
 
 (define-wlr-procedure (wlr-wl-backend-get-remote-display backend)
   ('* "wlr_wl_backend_get_remote_display" (list '*))
-  (wrap-wl-client-display (% (unwrap-wlr-backend backend))))
+  (cp:wrap-wl-display (% (unwrap-wlr-backend backend))))
 
 (define-wlr-procedure (wlr-wl-output-create backend)
   ('* "wlr_wl_output_create" (list '*))

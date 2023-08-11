@@ -1,5 +1,5 @@
 (define-module (wlroots types matrix)
-  #:use-module (wayland protocol)
+  #:use-module (wayland server protocol wayland)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:use-module (wlroots util box)

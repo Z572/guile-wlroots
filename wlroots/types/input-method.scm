@@ -1,5 +1,5 @@
 (define-module (wlroots types input-method)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots utils)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (wlroots util box)

@@ -1,5 +1,5 @@
 (define-module (wlroots types fullscreen-shell)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots types)
   #:use-module (wlroots utils)
   #:export (<wlr-fullscreen-shell-v1-present-surface-event>

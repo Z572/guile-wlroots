@@ -5,7 +5,7 @@
  (oop goops)
  (wayland display)
  (wayland list)
- (wayland listener)
+ (wayland server listener)
  (wayland signal)
  (wayland signal)
  (wlroots backend)

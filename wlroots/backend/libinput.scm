@@ -3,7 +3,7 @@
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
 
   #:use-module (libinput)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots backend)
   #:use-module (wlroots backend session)
   #:use-module (wlroots utils)

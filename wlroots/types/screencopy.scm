@@ -1,5 +1,5 @@
 (define-module (wlroots types screencopy)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (bytestructure-class)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (bytestructures guile)

@@ -1,5 +1,5 @@
 (define-module (wlroots types output-layout)
-  #:use-module (wayland display)
+  #:use-module (wayland server display)
   #:use-module (wlroots types output)
   #:use-module (wlroots utils)
   #:use-module (wlroots util box)

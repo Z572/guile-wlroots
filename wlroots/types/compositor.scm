@@ -35,8 +35,6 @@
             .renderer
             .scale
             .seq
-            .sx
-            .sy
             .transform
             .output
             .surface
@@ -45,6 +43,7 @@
             .bind
             .global
             .destroy
+            .mapped
             .resource
             super-surface-from-wlr-surface)
   #:export-syntax (define-super-surface-from-surface))
@@ -66,10 +65,9 @@
   (resource #:accessor .resource)
   (renderer #:accessor .renderer)
   (buffer #:accessor .buffer)
-  (sx #:accessor .sx)
-  (sy #:accessor .sy)
   (current #:accessor .current)
   (pending #:accessor .pending)
+  (mapped #:getter .mapped)
   (data #:accessor .data)
   (current-outputs #:accessor .current-outputs)
   #:descriptor %wlr-surface-struct)

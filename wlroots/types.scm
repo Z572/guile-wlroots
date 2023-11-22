@@ -246,38 +246,48 @@
                (cached-state-locks ,size_t)
                (cached-state-link ,%wl-list-struct))))
 
-(define-public %wlr-surface-struct
-  (bs:struct
-   `((resource ,(bs:pointer %wl-resource-struct))
-     (renderer ,(bs:pointer (delay %wlr-renderer-struct)))
-     (buffer ,(bs:pointer %wlr-client-buffer-struct))
-     (sx ,int)
-     (sy ,int)
-     (buffer-damage ,%pixman-region32-t-struct)
-     (external-damage ,%pixman-region32-t-struct)
-     (opaque-region ,%pixman-region32-t-struct)
-     (input-region ,%pixman-region32-t-struct)
-     (current ,%wlr-surface-state-struct)
-     (pending ,%wlr-surface-state-struct)
-     (cached ,%wl-list-struct)
-     (role ,(bs:pointer '*))
-     (role-data ,(bs:pointer 'void))
-     (events ,(bs:struct `((client-commit ,%wl-signal-struct)
-                           (commit ,%wl-signal-struct)
-                           (new-subsurface ,%wl-signal-struct)
-                           (destroy ,%wl-signal-struct))))
-     (current-outputs ,%wl-list-struct)
-     (addons ,%wlr-addon-set-struct)
-     (data ,(bs:pointer 'void))
-     (renderer-destroy ,%wl-listener-struct)
-     (previous
-      ,(bs:struct `((scale ,int32)
-                    (transform ,%wl-output-transform-enum)
-                    (width ,int)
-                    (height ,int)
-                    (buffer-width ,int)
-                    (buffer-height ,int))))
-     (opaque ,stdbool))))
+
+
+(define-bs-struct %wlr-surface-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (renderer (bs:pointer (delay %wlr-renderer-struct)))
+  (buffer (bs:pointer %wlr-client-buffer-struct))
+  (buffer-damage %pixman-region32-t-struct)
+  (external-damage %pixman-region32-t-struct)
+  (opaque-region %pixman-region32-t-struct)
+  (input-region %pixman-region32-t-struct)
+  (current %wlr-surface-state-struct)
+  (pending %wlr-surface-state-struct)
+  (cached %wl-list-struct)
+  (mapped stdbool)
+  (role (bs:pointer '*))
+  (role-resource (bs:pointer %wl-resource-struct))
+  (events (make-events
+           client-commit
+           precommit
+           commit
+           map
+           unmap
+           new-subsurface
+           destroy))
+  (current-outputs %wl-list-struct)
+  (addons %wlr-addon-set-struct)
+  (data (bs:pointer 'void))
+  (renderer-destroy %wl-listener-struct)
+  (role-resource-destroy %wl-listener-struct)
+  (previous
+   (bs:struct* (scale int32)
+               (transform %wl-output-transform-enum)
+               (width int)
+               (height int)
+               (buffer-width int)
+               (buffer-height int)))
+  (unmap-commit stdbool)
+  (opaque stdbool)
+  (has-buffer stdbool)
+  (preferred-buffer-scale int32)
+  (preferred-buffer-transform-sent stdbool)
+  (preferred-buffer-transform %wl-output-transform-enum))
 
 
 (define-public %wlr-output-adaptive-sync-status-enum

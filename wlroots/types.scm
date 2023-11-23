@@ -377,24 +377,25 @@
 (define-public %wlr-xdg-toplevel-decoration-v1-state-struct
   (bs:struct `((mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum))))
 
-(define-public %wlr-xdg-toplevel-decoration-v1-struct
-  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
-               (surface ,(bs:pointer (delay %wlr-xdg-surface-struct)))
-               (manager ,(bs:pointer %wlr-xdg-decoration-manager-v1-struct))
-               (link ,%wl-list-struct)
-               (current ,%wlr-xdg-toplevel-decoration-v1-state-struct)
-               (pending ,%wlr-xdg-toplevel-decoration-v1-state-struct)
-               (scheduled-mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum)
-               (requested-mode ,%wlr-xdg-toplevel-decoration-v1-mode-enum)
-               (added ,stdbool)
-               (configure-list ,%wl-list-struct)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)
-                                     (request-mode ,%wl-signal-struct))))
-               (surface-destroy ,%wl-listener-struct)
-               (surface-configure ,%wl-listener-struct)
-               (surface-ack-configure ,%wl-listener-struct)
-               (surface-commit ,%wl-listener-struct)
-               (data ,(bs:pointer 'void)))))
+(define-bs-struct %wlr-xdg-toplevel-decoration-v1-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (surface (bs:pointer (delay %wlr-xdg-toplevel-struct)))
+  (manager (bs:pointer %wlr-xdg-decoration-manager-v1-struct))
+  (link %wl-list-struct)
+  (current %wlr-xdg-toplevel-decoration-v1-state-struct)
+  (pending %wlr-xdg-toplevel-decoration-v1-state-struct)
+  (scheduled-mode %wlr-xdg-toplevel-decoration-v1-mode-enum)
+  (requested-mode %wlr-xdg-toplevel-decoration-v1-mode-enum)
+  (added stdbool)
+  (configure-list %wl-list-struct)
+  (events (make-events
+           destroy
+           request-mode))
+  (surface-destroy %wl-listener-struct)
+  (surface-configure %wl-listener-struct)
+  (surface-ack-configure %wl-listener-struct)
+  (surface-commit %wl-listener-struct)
+  (data (bs:pointer 'void)))
 
 (define-public %wlr-output-manager-v1-struct
   (bs:struct `((display ,(bs:pointer (delay %wl-display-struct)))

@@ -1009,14 +1009,16 @@
      (WLR_SCENE_DEBUG_DAMAGE_RERENDER 1)
      (WLR_SCENE_DEBUG_DAMAGE_HIGHLIGHT 2))))
 
-(define-public %wlr-scene-struct
-  (bs:struct `((tree ,%wlr-scene-tree-struct)
-               (outputs ,%wl-list-struct)
-               (presentation ,(bs:pointer (delay %wlr-presentation-struct)))
-               (presentation-destroy ,%wl-listener-struct)
-               (debug-damage-option ,%wlr-scene-debug-damage-option-enum)
-               (direct-scanout ,stdbool)
-               (calculate-visibility ,stdbool))))
+(define-bs-struct %wlr-scene-struct
+  (tree %wlr-scene-tree-struct)
+  (outputs %wl-list-struct)
+  (presentation (bs:pointer (delay %wlr-presentation-struct)))
+  (linux-dmabuf-v1 (bs:pointer '*)) ;; wlr_linux_dmabuf_v1
+  (presentation-destroy %wl-listener-struct)
+  (linux-dmabuf-v1-destroy %wl-listener-struct)
+  (debug-damage-option %wlr-scene-debug-damage-option-enum)
+  (direct-scanout stdbool)
+  (calculate-visibility stdbool))
 
 (define-public %wlr-scene-surface-struct
   (bs:struct `((buffer ,(bs:pointer (delay %wlr-scene-buffer-struct)))

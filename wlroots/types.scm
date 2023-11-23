@@ -94,10 +94,11 @@
   (bs:struct `((extents ,%pixman-box32-struct)
                (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-texture-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (width ,uint32)
-               (height ,uint32))))
+(define-bs-struct %wlr-texture-struct
+  (impl (bs:pointer '*))
+  (width uint32)
+  (height uint32)
+  (renderer (bs:pointer (delay %wlr-renderer-struct))))
 
 (define-public %wlr-addon-set-struct
   (bs:struct `((addons ,%wl-list-struct))))

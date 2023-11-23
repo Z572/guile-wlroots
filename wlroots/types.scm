@@ -1020,16 +1020,18 @@
   (direct-scanout stdbool)
   (calculate-visibility stdbool))
 
-(define-public %wlr-scene-surface-struct
-  (bs:struct `((buffer ,(bs:pointer (delay %wlr-scene-buffer-struct)))
-               (surface ,(bs:pointer %wlr-surface-struct))
-               (addon ,%wlr-addon-struct)
-               (output-enter ,%wl-listener-struct)
-               (output-leave ,%wl-listener-struct)
-               (output-present ,%wl-listener-struct)
-               (frame-done ,%wl-listener-struct)
-               (surface-destroy ,%wl-listener-struct)
-               (surface-commit ,%wl-listener-struct))))
+(define-bs-struct %wlr-scene-surface-struct
+  (buffer (bs:pointer (delay %wlr-scene-buffer-struct)))
+  (surface (bs:pointer %wlr-surface-struct))
+  (clip %wlr-box-struct)
+  (addon %wlr-addon-struct)
+  (outputs-update %wl-listener-struct)
+  (output-enter %wl-listener-struct)
+  (output-leave %wl-listener-struct)
+  (output-sample %wl-listener-struct)
+  (frame-done %wl-listener-struct)
+  (surface-destroy %wl-listener-struct)
+  (surface-commit %wl-listener-struct))
 
 (define-public %wlr-scene-rect-struct
   (bs:struct `((node ,%wlr-scene-node-struct)

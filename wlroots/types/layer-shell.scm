@@ -78,9 +78,9 @@
   (actual-height #:accessor .actual-height)
   #:descriptor %wlr-layer-surface-v1-state-struct)
 
-(define-wlr-procedure (wlr-layer-shell-v1-create display)
-  ('* "wlr_layer_shell_v1_create" '(*))
-  (wrap-wlr-layer-shell (% (unwrap-wl-display display))))
+(define-wlr-procedure (wlr-layer-shell-v1-create display version)
+  ('* "wlr_layer_shell_v1_create" (list '* ffi:uint32))
+  (wrap-wlr-layer-shell (% (unwrap-wl-display display) version)))
 
 (define-wlr-procedure (wlr-layer-surface-v1-configure surface width height)
   (ffi:uint32 "wlr_layer_surface_v1_configure" (list '* ffi:uint32 ffi:uint32))

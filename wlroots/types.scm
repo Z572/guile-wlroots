@@ -31,6 +31,17 @@
                bs:enum->integer)
   #:export (get-event-signal))
 
+(define-syntax-rule (bs:struct* (name value) ...)
+  (bs:struct `((name ,value) ...)))
+
+(define-syntax-rule (define-bs-struct name (kname value) ...)
+  (define-public name
+    (bs:struct* (kname value) ...)))
+
+(define-syntax-rule (make-events symbol ...)
+  (bs:struct `((symbol ,%wl-signal-struct)
+               ...)))
+
 (define-generic get-event-signal)
 
 (define-syntax define-wlr-types-class

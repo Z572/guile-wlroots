@@ -26,7 +26,6 @@
             wlr-xwayland-surface-instance
             wlr-xwayland-surface-surface
             wlr-xwayland-surface-set-fullscreen
-            wlr-xwayland-surface-mapped?
             wlr-surface-is-xwayland-surface
             wlr-xwayland-surface-from-wlr-surface
             wlr-xwayland-surface-restack
@@ -44,7 +43,6 @@
             .has-utf8-title
             .height
             .height-inc
-            .hints-urgency
             .instance
             .link
             .mapped
@@ -126,7 +124,6 @@
   (width #:accessor .width)
   (height #:accessor .height)
   (override-redirect #:accessor .override-redirect)
-  (mapped #:accessor .mapped)
   (title #:accessor .title)
   (class #:accessor .class)
   (instance #:accessor .instance)
@@ -137,7 +134,6 @@
   (children #:accessor .children)
   (parent #:accessor .parent)
   (parent-link #:accessor .parent-link)
-  (hints-urgency #:accessor .hints-urgency)
   (size-hints #:accessor .size-hints)
   (pinging #:accessor .pinging)
   (ping-timer #:accessor .ping-timer)
@@ -147,7 +143,6 @@
   (maximized-horz #:accessor .maximized-horz)
   (minimized #:accessor .minimized)
   (has-alpha #:accessor .has-alpha)
-  (surface-destroy #:accessor .surface-destroy)
   (data #:accessor .data)
   #:descriptor %wlr-xwayland-surface-struct)
 
@@ -179,9 +174,6 @@
   (.width s))
 (define (wlr-xwayland-surface-height s)
   (.height s))
-
-(define (wlr-xwayland-surface-mapped? x)
-  (.mapped x))
 
 (define (wlr-xwayland-surface-title x)
   (.title x))

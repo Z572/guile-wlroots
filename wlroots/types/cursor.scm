@@ -13,6 +13,7 @@
   ;; #:use-module (system foreign)
   #:use-module (bytestructures guile)
   #:use-module (oop goops)
+  #:autoload (wlroots types xcursor-manager) (unwrap-wlr-xcursor-manager)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (.x
             .y))
@@ -34,6 +35,13 @@
   (ffi:int "wlr_cursor_attach_output_layout" '(* *))
   (% (unwrap-wlr-cursor cursor)
      (unwrap-wlr-output-layout output-layout)))
+
+(define-wlr-procedure (wlr-cursor-set-xcursor cur manager name)
+  (ffi:void "wlr_cursor_set_xcursor" `(* * *))
+  (% (unwrap-wlr-cursor cur)
+     (unwrap-wlr-xcursor-manager manager)
+     (ffi:string->pointer name)))
+
 (define-wlr-procedure (wlr-cursor-set-surface cur surface hostpot-x hostpot-y)
   (ffi:void "wlr_cursor_set_surface" `(* * ,ffi:int32 ,ffi:int32))
   (% (unwrap-wlr-cursor cur)

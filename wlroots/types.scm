@@ -987,6 +987,9 @@
   (scanout-primary-output (bs:pointer %wlr-output-struct))
   (output-layer-feedback-event (bs:pointer '*)))
 
+(define-public %wlr-scene-output-layout-struct
+  (bs:struct `((ignore_it ,(bs:pointer '*)))))
+
 (define-public %wlr-scene-node-type-enum
   (bs:enum '(WLR_SCENE_NODE_TREE
              WLR_SCENE_NODE_RECT

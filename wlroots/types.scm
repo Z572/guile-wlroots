@@ -984,6 +984,11 @@
      (update-state ,stdbool)
      (state ,%wl-keyboard-key-state-enum))))
 
+(define-bs-struct %wlr-linux-dmabuf-feedback-v1-init-options-struct
+  (main-renderer (bs:pointer %wlr-renderer-struct))
+  (scanout-primary-output (bs:pointer %wlr-output-struct))
+  (output-layer-feedback-event (bs:pointer '*)))
+
 (define-public %wlr-scene-node-type-enum
   (bs:enum '(WLR_SCENE_NODE_TREE
              WLR_SCENE_NODE_RECT

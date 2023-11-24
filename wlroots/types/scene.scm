@@ -266,8 +266,10 @@
   (wrap-wlr-scene (%)))
 
 (define-wlr-procedure (wlr-scene-attach-output-layout scene output-layout)
-  (ffi:int "wlr_scene_attach_output_layout" '(* *))
-  (% (unwrap-wlr-scene scene) (unwrap-wlr-output-layout output-layout)))
+  ('* "wlr_scene_attach_output_layout" '(* *))
+  (wrap-wlr-scene-output-layout
+   (% (unwrap-wlr-scene scene) (unwrap-wlr-output-layout output-layout))))
+
 
 (define-wlr-procedure (wlr-scene-node-destroy node)
   (ffi:void "wlr_scene_node_destroy" '(*))

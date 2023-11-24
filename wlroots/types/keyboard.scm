@@ -105,6 +105,10 @@
   (ffi:void "wlr_keyboard_set_repeat_info" `(* ,ffi:int32 ,ffi:int32))
   (% (unwrap-wlr-keyboard kb) rate delay))
 
+(define-wlr-procedure (wlr-keyboard-keymaps-match km1 km2)
+  (ffi:int8 "wlr_keyboard_keymaps_match" `(* *))
+  (not (zero? (% (unwrap-xkb-keymap km1) (unwrap-xkb-keymap km2)))))
+
 (define-wlr-procedure (wlr-keyboard-led-update keyboard leds)
   (ffi:void "wlr_keyboard_led_update" (list '* ffi:uint32))
   (% (unwrap-wlr-keyboard keyboard) leds))

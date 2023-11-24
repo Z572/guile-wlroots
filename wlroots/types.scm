@@ -1670,16 +1670,6 @@
                (old-surface ,(bs:pointer %wlr-surface-struct))
                (new-surface ,(bs:pointer %wlr-surface-struct)))))
 
-(define-public %wlr-idle-struct
-  (bs:struct `((global ,(bs:pointer %wl-global-struct))
-               (idle-timers ,%wl-list-struct)
-               (event-loop ,(bs:pointer %wl-event-loop-struct))
-               (enabled ,stdbool)
-               (display-destroy ,%wl-listener-struct)
-               (events ,(bs:struct `((activity-notify ,%wl-signal-struct)
-                                     (destroy ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
-
 (define-public %wlr-idle-inhibit-manager-v1-struct
   (bs:struct
    `((inhibitors ,%wl-list-struct)

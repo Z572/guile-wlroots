@@ -20,7 +20,6 @@ SOURCES = %D%/config.scm     \
  %D%/render/dmabuf.scm       \
  %D%/types/output.scm        \
  %D%/types/keyboard.scm      \
- %D%/types/idle.scm          \
  %D%/types/idle-inhibit.scm  \
  %D%/types/output-layout.scm \
  %D%/types/output-management.scm \

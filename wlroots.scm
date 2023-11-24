@@ -23,7 +23,6 @@
              (types fullscreen-shell)
              (types input-device)
              (types gamma-control)
-             (types idle)
              (types idle-inhibit)
              (types input-inhibitor)
              (types input-method)

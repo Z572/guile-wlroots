@@ -509,14 +509,16 @@
   (addon %wlr-addon-struct)
   (commit %wl-listener-struct))
 
-(define-public %wlr-xdg-activation-v1-struct
-  (bs:struct `((token-timeout-msec ,uint32)
-               (tokens ,%wl-list-struct)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)
-                                     (request-activate ,%wl-signal-struct))))
-               (display ,(bs:pointer (delay %wl-display-struct)))
-               (global ,(bs:pointer %wl-global-struct))
-               (display-destroy ,%wl-listener-struct))))
+(define-bs-struct %wlr-xdg-activation-v1-struct
+  (token-timeout-msec uint32)
+  (tokens %wl-list-struct)
+  (events (make-events
+           destroy
+           request-activate
+           new-token))
+  (display (bs:pointer (delay %wl-display-struct)))
+  (global (bs:pointer %wl-global-struct))
+  (display-destroy %wl-listener-struct))
 
 (define-public %wlr-xdg-activation-token-v1-struct
   (bs:struct `((activation ,(bs:pointer %wlr-xdg-activation-v1-struct))

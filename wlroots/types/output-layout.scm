@@ -70,8 +70,9 @@
         (wrap-wlr-output o))))
 
 (define-wlr-procedure (wlr-output-layout-add layout output lx ly)
-  (ffi:void "wlr_output_layout_add" (list '* '* ffi:int ffi:int))
-  (% (unwrap-wlr-output-layout layout) output lx ly))
+  ('* "wlr_output_layout_add" (list '* '* ffi:int ffi:int))
+  (wrap-wlr-output-layout-output
+   (% (unwrap-wlr-output-layout layout) output lx ly)))
 
 (define-wlr-procedure (wlr-output-layout-remove layout output)
   (ffi:void "wlr_output_layout_remove" '(* *))
@@ -127,8 +128,9 @@
   dest_box)
 
 (define-wlr-procedure (wlr-output-layout-add-auto layout output)
-  (ffi:void "wlr_output_layout_add_auto" '(* *))
-  (% (unwrap-wlr-output-layout layout) (unwrap-wlr-output output)))
+  ('* "wlr_output_layout_add_auto" '(* *))
+  (wrap-wlr-output-layout-output
+   (% (unwrap-wlr-output-layout layout) (unwrap-wlr-output output))))
 
 (define-wlr-procedure (wlr-output-layout-get-center-output layout)
   ('* "wlr_output_layout_get_center_output" (list '*))

@@ -24,7 +24,7 @@
             wlr-layer-surface-v1-configure
             wlr-layer-surface-v1-destroy
             wlr-surface-is-layer-surface
-            wlr-layer-surface-v1-from-wlr-surface
+            wlr-layer-surface-v1-try-from-wlr-surface
             wlr-layer-surface-v1-from-resource
 
             .surface
@@ -90,18 +90,14 @@
   (ffi:void "wlr_layer_surface_v1_destroy" (list '*))
   (% (unwrap-wlr-layer-surface-v1 surface)))
 
-(define-wlr-procedure (wlr-surface-is-layer-surface surface)
-  (ffi:int8 "wlr_surface_is_layer_surface" '(*))
-  (and (wlr-surface? surface)
-       (not (zero? (% (unwrap-wlr-surface surface))))))
+(define-wlr-procedure (wlr-layer-surface-v1-try-from-wlr-surface surface)
+  ('* "wlr_layer_surface_v1_try_from_wlr_surface" '(*))
+  (let ((o (% (unwrap-wlr-surface surface))))
+    (if (ffi:null-pointer? o)
+        #f
+        (wrap-wlr-layer-surface-v1 o))))
 
-(define-wlr-procedure (wlr-layer-surface-v1-from-wlr-surface surface)
-  ('* "wlr_layer_surface_v1_from_wlr_surface" '(*))
-  (wrap-wlr-layer-surface-v1 (% (unwrap-wlr-surface surface))))
-
-(define-super-surface-from-surface
-  wlr-surface-is-layer-surface
-  wlr-layer-surface-v1-from-wlr-surface)
+(define-super-surface-from-surface wlr-layer-surface-v1-try-from-wlr-surface)
 
 (define-wlr-procedure (wlr-layer-surface-v1-from-resource resource)
   ('* "wlr_layer_surface_v1_from_resource" (list '*))

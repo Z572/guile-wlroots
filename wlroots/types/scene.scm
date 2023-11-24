@@ -251,7 +251,7 @@
     ((WLR_SCENE_NODE_RECT) (wl-container-of node <wlr-scene-rect> 'node))
     ((WLR_SCENE_NODE_BUFFER)
      (let ((buffer (wlr-scene-buffer-from-node node)))
-       (or (wlr-scene-surface-from-buffer buffer) buffer)))))
+       (or (wlr-scene-surface-try-from-buffer buffer) buffer)))))
 
 ;;
 
@@ -339,9 +339,12 @@
   ('* "wlr_scene_buffer_from_node" '(*))
   (wrap-wlr-scene-buffer (% (unwrap-wlr-scene-node node))))
 
-(define-wlr-procedure (wlr-scene-surface-from-buffer scene-buffer)
-  ('* "wlr_scene_surface_from_buffer" (list '*))
-  (wrap-wlr-scene-surface (% (unwrap-wlr-scene-buffer scene-buffer))))
+(define-wlr-procedure (wlr-scene-surface-try-from-buffer scene-buffer)
+  ('* "wlr_scene_surface_try_from_buffer" (list '*))
+  (let ((out  (% (unwrap-wlr-scene-buffer scene-buffer))))
+    (if (ffi:null-pointer? out)
+        #f
+        (wrap-wlr-scene-surface out))))
 
 (define-wlr-procedure (wlr-scene-rect-create parent width height color)
   ('* "wlr_scene_rect_create" (list '* ffi:int ffi:int '*))

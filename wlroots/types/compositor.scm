@@ -11,6 +11,7 @@
   #:use-module (wlroots util box)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (rnrs bytevectors)
+  #:use-module (ice-9 q)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wrap-wlr-compositor
@@ -45,7 +46,7 @@
             .destroy
             .mapped
             .resource
-            super-surface-from-wlr-surface)
+            super-surface-try-from-wlr-surface)
   #:export-syntax (define-super-surface-from-surface))
 
 (define-wlr-types-class wlr-surface-state ()
@@ -152,9 +153,10 @@
   (wrap-wlr-compositor
    (% (unwrap-wl-display display) version (unwrap-wlr-renderer renderer))))
 
-(define-once %wlr-surface->super-surface (make-hash-table))
-(define (super-surface-from-wlr-surface surface)
-  (any (lambda (o) (and ((car o) surface) ((cdr o) surface)))
-       (hash-map->list cons %wlr-surface->super-surface)))
-(define-syntax-rule (define-super-surface-from-surface is? from)
-  (hashq-set! %wlr-surface->super-surface is? from))
+(define-once %wlr-surface->super-surface (make-q))
+(define (super-surface-try-from-wlr-surface surface)
+  (any (lambda (o) (o surface))
+       (car %wlr-surface->super-surface)))
+(eval-when (compile eval load)
+  (define-syntax-rule (define-super-surface-from-surface func)
+    (q-push! %wlr-surface->super-surface func)))

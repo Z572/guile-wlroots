@@ -369,19 +369,14 @@
   (% (unwrap-wlr-xdg-popup popup) (unwrap-wlr-box box))
   box)
 
-(define-wlr-procedure (wlr-surface-is-xdg-surface surface)
-  (ffi:int8 "wlr_surface_is_xdg_surface" '(*))
-  (and (wlr-surface? surface)
-       (not (zero? (% (unwrap-wlr-surface surface))))))
+(define-wlr-procedure (wlr-xdg-surface-try-from-wlr-surface surface)
+  ('* "wlr_xdg_surface_try_from_wlr_surface" '(*))
+  (let ((o (% (unwrap-wlr-surface surface))))
+    (if (ffi:null-pointer? o)
+        #f
+        (wrap-wlr-xdg-surface o))))
 
-(define-wlr-procedure (wlr-xdg-surface-from-wlr-surface surface)
-  ('* "wlr_xdg_surface_from_wlr_surface" '(*))
-  (wrap-wlr-xdg-surface
-   (% (unwrap-wlr-surface surface))))
-
-(define-super-surface-from-surface
-  wlr-surface-is-xdg-surface
-  wlr-xdg-surface-from-wlr-surface)
+(define-super-surface-from-surface wlr-xdg-surface-try-from-wlr-surface)
 
 (define-wlr-procedure (wlr-xdg-surface-get-geometry surface)
   (ffi:void "wlr_xdg_surface_get_geometry" (list '* '*))

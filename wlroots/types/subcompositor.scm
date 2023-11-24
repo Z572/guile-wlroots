@@ -60,16 +60,15 @@
   (data #:accessor .data)
   #:descriptor %wlr-subsurface-struct)
 
-(define-wlr-procedure (wlr-surface-is-subsurface surface)
-  (ffi:int8 "wlr_surface_is_subsurface" (list '*))
-  (not (zero? (% (unwrap-wlr-surface surface)))))
-(define-wlr-procedure (wlr-subsurface-from-wlr-surface surface)
-  ('* "wlr_subsurface_from_wlr_surface" (list '*))
-  (wrap-wlr-subsurface (% (unwrap-wlr-surface surface))))
+(define-wlr-procedure (wlr-subsurface-try-from-wlr-surface surface)
+  ('* "wlr_subsurface_try_from_wlr_surface" (list '*))
+  (let ((o (% (unwrap-wlr-surface surface))))
+    (if (ffi:null-pointer? o)
+        #f
+        (wrap-wlr-subsurface o))))
 
 (define-super-surface-from-surface
-  wlr-surface-is-subsurface
-  wlr-subsurface-from-wlr-surface)
+  wlr-subsurface-try-from-wlr-surface)
 
 
 (define-wlr-procedure (wlr-subcompositor-create display)

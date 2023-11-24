@@ -215,18 +215,15 @@
   (ffi:void "wlr_xwayland_surface_set_fullscreen" (list '* ffi:int))
   (% (unwrap-wlr-xwayland-surface surface) (if fullscreen 1 0)))
 
-(define-wlr-procedure (wlr-surface-is-xwayland-surface surface)
-  (ffi:int8 "wlr_surface_is_xwayland_surface" '(*))
-  (and (wlr-surface? surface)
-       (not (zero? (% (unwrap-wlr-surface surface))))))
-
-(define-wlr-procedure (wlr-xwayland-surface-from-wlr-surface surface)
-  ('* "wlr_xwayland_surface_from_wlr_surface" '(*))
-  (wrap-wlr-xwayland-surface (% (unwrap-wlr-surface surface))))
+(define-wlr-procedure (wlr-xwayland-surface-try-from-wlr-surface surface)
+  ('* "wlr_xwayland_surface_try_from_wlr_surface" '(*))
+  (let ((o (% (unwrap-wlr-surface surface))))
+    (if (ffi:null-pointer? o)
+        #f
+        (wrap-wlr-xwayland-surface o))))
 
 (define-super-surface-from-surface
-  wlr-surface-is-xwayland-surface
-  wlr-xwayland-surface-from-wlr-surface)
+  wlr-xwayland-surface-try-from-wlr-surface)
 
 (define-wlr-procedure (wlr-xwayland-surface-restack surface sibling mode)
   (ffi:void "wlr_xwayland_surface_restack" (list '* '* ffi:int32))

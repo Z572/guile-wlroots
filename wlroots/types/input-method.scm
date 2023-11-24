@@ -108,14 +108,14 @@
 (define-wlr-procedure (wlr-input-method-v2-send-unavailable input-method)
   (ffi:void "wlr_input_method_v2_send_unavailable" (list '*))
   (% (unwrap-wlr-input-method-v2 input-method)))
-(define-wlr-procedure
-  (wlr-surface-is-input-popup-surface-v2 surface)
-  (ffi:int8 "wlr_surface_is_input_popup_surface_v2" (list '*))
-  (not (zero? (% (unwrap-wlr-surface surface)))))
-(define-wlr-procedure
-  (wlr-input-popup-surface-v2-from-wlr-surface surface)
-  ('* "wlr_input_popup_surface_v2_from_wlr_surface" (list '*))
-  (wrap-wlr-input-popup-surface-v2 (% surface)))
+
+(define-wlr-procedure (wlr-input-popup-surface-v2-try-from-wlr-surface surface)
+  ('* "wlr_input_popup_surface_v2_try_from_wlr_surface" (list '*))
+  (let ((out (% surface)))
+    (if (ffi:null-pointer? out)
+        #f
+        (wrap-wlr-input-popup-surface-v2 out))))
+
 (define-wlr-procedure
   (wlr-input-popup-surface-v2-send-text-input-rectangle popup_surface sbox)
   (ffi:void

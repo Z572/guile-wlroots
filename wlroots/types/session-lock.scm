@@ -78,10 +78,6 @@
               (list '* ffi:uint32 ffi:uint32))
   (% (unwrap-wlr-session-lock-surface-v1 lock-surface) width height))
 
-(define-wlr-procedure (wlr-surface-is-session-lock-surface-v1 surface)
-  (ffi:int8 "wlr_surface_is_session_lock_surface_v1" (list '*))
-  (not (zero? (% (unwrap-wlr-surface surface)))))
-
-(define-wlr-procedure (wlr-session-lock-surface-v1-from-wlr-surface surface)
-  ('* "wlr_session_lock_surface_v1_from_wlr_surface" (list '*))
+(define-wlr-procedure (wlr-session-lock-surface-v1-try-from-wlr-surface surface)
+  ('* "wlr_session_lock_surface_v1_try_from_wlr_surface" (list '*))
   (wrap-wlr-session-lock-surface-v1 (% surface)))

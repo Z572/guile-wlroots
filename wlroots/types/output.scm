@@ -281,13 +281,6 @@
   (wrap-wlr-output-cursor (% (unwrap-wlr-output output) )))
 
 (define-wlr-procedure
-  (wlr-output-cursor-set-surface cursor surface hotspot-x hotspot-y)
-  (ffi:void "wlr_output_cursor_set_surface" (list '* '* ffi:int32 ffi:int32))
-  (% (unwrap-wlr-output-cursor cursor)
-     (unwrap-wlr-surface surface)
-     hotspot-x
-     hotspot-y))
-(define-wlr-procedure
   (wlr-output-cursor-set-buffer cursor buffer hotspot-x hotspot-y)
   (ffi:int8 "wlr_output_cursor_set_buffer" (list '* '* ffi:int32 ffi:int32))
   (not (zero?

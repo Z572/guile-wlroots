@@ -270,6 +270,11 @@
   (wrap-wlr-scene-output-layout
    (% (unwrap-wlr-scene scene) (unwrap-wlr-output-layout output-layout))))
 
+(define-wlr-procedure (wlr-scene-output-layout-add-output sol lo so)
+  (ffi:void "wlr_scene_output_layout_add_output" '(* * *))
+  (% (unwrap-wlr-scene-output-layout sol)
+     (unwrap-wlr-output-layout-output lo)
+     (unwrap-wlr-scene-output so)))
 
 (define-wlr-procedure (wlr-scene-node-destroy node)
   (ffi:void "wlr_scene_node_destroy" '(*))

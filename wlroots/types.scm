@@ -1212,37 +1212,38 @@
   (bs:enum '(WLR_XDG_SURFACE_ROLE_NONE
              WLR_XDG_SURFACE_ROLE_TOPLEVEL
              WLR_XDG_SURFACE_ROLE_POPUP)))
-(define-public %wlr-xdg-surface-struct
-  (bs:struct `((client ,(bs:pointer %wlr-xdg-client-struct))
-               (resource ,(bs:pointer %wl-resource-struct))
-               (surface ,(bs:pointer %wlr-surface-struct))
-               (link ,%wl-list-struct)
-               (role ,%wlr-xdg-surface-role-enum)
-               (union ,(bs:union
-                        `((toplevel
-                           ,(bs:pointer
-                             (delay %wlr-xdg-toplevel-struct)))
-                          (popup
-                           ,(bs:pointer
-                             (delay %wlr-xdg-popup-struct))))))
-               (popups ,%wl-list-struct)
-               (added ,stdbool)
-               (configured ,stdbool)
-               (mapped ,stdbool)
-               (configure-idle ,(bs:pointer (delay %wl-event-source-struct)))
-               (scheduled-serial ,uint32)
-               (configure-list ,%wl-list-struct)
-               (current ,%wlr-xdg-surface-state-struct)
-               (pending ,%wlr-xdg-surface-state-struct)
-               (surface-commit ,%wl-listener-struct)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)
-                                     (ping-timeout ,%wl-signal-struct)
-                                     (new-popup ,%wl-signal-struct)
-                                     (map ,%wl-signal-struct)
-                                     (unmap ,%wl-signal-struct)
-                                     (configure ,%wl-signal-struct)
-                                     (ack-configure ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
+
+(define-bs-struct %wlr-xdg-surface-struct
+  (client (bs:pointer %wlr-xdg-client-struct))
+  (resource (bs:pointer %wl-resource-struct))
+  (surface (bs:pointer %wlr-surface-struct))
+  (link %wl-list-struct)
+  (role %wlr-xdg-surface-role-enum)
+  (role-resource (bs:pointer %wl-resource-struct))
+  (union (bs:union
+          `((toplevel
+             ,(bs:pointer
+               (delay %wlr-xdg-toplevel-struct)))
+            (popup
+             ,(bs:pointer
+               (delay %wlr-xdg-popup-struct))))))
+  (popups %wl-list-struct)
+  (added stdbool)
+  (configured stdbool)
+  (configure-idle (bs:pointer (delay %wl-event-source-struct)))
+  (scheduled-serial uint32)
+  (configure-list %wl-list-struct)
+  (current %wlr-xdg-surface-state-struct)
+  (pending %wlr-xdg-surface-state-struct)
+  (initialized stdbool)
+  (initial-commit stdbool)
+  (events (make-events destroy
+                       ping-timeout
+                       new-popup
+                       configure
+                       ack-configure))
+  (data (bs:pointer 'void))
+  (role-resource-destroy %wl-listener-struct))
 
 (define-public %wlr-xdg-toplevel-wm-capabilities-enum
   (bs:enum

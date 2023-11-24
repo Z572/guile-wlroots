@@ -71,8 +71,9 @@
             .grab-link
             .height
             .height
+            .initialized
+            .initial-commit
             .link
-            .mapped
             .max-height
             .max-width
             .maximized
@@ -232,12 +233,12 @@
   (client #:accessor .client)
   (resource #:accessor .resource)
   (surface #:accessor .surface)
-  (role #:accessor .role )
+  (role #:accessor .role)
   (popups #:accessor .popups)
   (added  #:accessor .added)
   (configured #:accessor .configured)
-  (mapped #:accessor .mapped)
-
+  (initialized #:accessor .initialized)
+  (initial-commit #:accessor .initial-commit)
   (scheduled-serial #:accessor .scheduled-serial)
 
   (current #:accessor .current)

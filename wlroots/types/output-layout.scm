@@ -73,10 +73,6 @@
   (ffi:void "wlr_output_layout_add" (list '* '* ffi:int ffi:int))
   (% (unwrap-wlr-output-layout layout) output lx ly))
 
-(define-wlr-procedure (wlr-output-layout-move layout output lx ly)
-  (ffi:void "wlr_output_layout_move" (list '* '* ffi:int ffi:int))
-  (% (unwrap-wlr-output-layout layout) (unwrap-wlr-output output) lx ly))
-
 (define-wlr-procedure (wlr-output-layout-remove layout output)
   (ffi:void "wlr_output_layout_remove" '(* *))
   (% (unwrap-wlr-output-layout layout) (unwrap-wlr-output output)))

@@ -21,7 +21,6 @@
             .global
             .has-cache
             .link
-            .mapped
             .parent
             .parent-destroy
             .pending
@@ -55,7 +54,6 @@
   (has-cache #:accessor .has-cache)
   (synchronized #:accessor .synchronized)
   (reordered #:accessor .reordered)
-  (mapped #:accessor .mapped)
   (added #:accessor .added)
   (surface-client-commit #:accessor .surface-client-commit)
   (parent-destroy #:accessor .parent-destroy)

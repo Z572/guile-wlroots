@@ -938,27 +938,21 @@
 (define-public %wlr-subsurface-parent-state-struct
   (bs:struct `((x ,int32) (y ,int32) (link ,%wl-list-struct))))
 
-(define-public %wlr-subsurface-struct
-  (bs:struct
-   `((resource ,(bs:pointer %wl-resource-struct))
-     (surface ,(bs:pointer %wlr-surface-struct))
-     (parent ,(bs:pointer %wlr-surface-struct))
-     (current ,%wlr-subsurface-parent-state-struct)
-     (pending ,%wlr-subsurface-parent-state-struct)
-     (cached-seq ,uint32)
-     (has-cache ,stdbool)
-     (synchronized ,stdbool)
-     (reordered ,stdbool)
-     (mapped ,stdbool)
-     (added ,stdbool)
-     (surface-client-commit ,(bs:pointer %wl-listener-struct))
-     (parent-destroy ,(bs:pointer %wl-listener-struct))
-     (events
-      ,(bs:struct
-        `((destroy ,(bs:pointer %wl-signal-struct))
-          (map ,(bs:pointer %wl-signal-struct))
-          (unmap ,(bs:pointer %wl-signal-struct)))))
-     (data ,(bs:pointer 'void)))))
+(define-bs-struct %wlr-subsurface-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (surface (bs:pointer %wlr-surface-struct))
+  (parent (bs:pointer %wlr-surface-struct))
+  (current %wlr-subsurface-parent-state-struct)
+  (pending %wlr-subsurface-parent-state-struct)
+  (cached-seq uint32)
+  (has-cache stdbool)
+  (synchronized stdbool)
+  (reordered stdbool)
+  (added stdbool)
+  (surface-client-commit %wl-listener-struct)
+  (parent-destroy %wl-listener-struct)
+  (events (make-events destroy))
+  (data (bs:pointer 'void)))
 
 (define-public %wlr-surface-output-struct
   (bs:struct

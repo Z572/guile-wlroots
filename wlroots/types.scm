@@ -498,15 +498,16 @@
                  (destroy ,%wl-signal-struct))))
      (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-output-layout-output-struct
-  (bs:struct
-   `((output ,(bs:pointer %wlr-output-struct))
-     (x ,int)
-     (y ,int)
-     (link ,%wl-list-struct)
-     (state ,(bs:pointer '*))
-     (addon ,%wlr-addon-struct)
-     (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+(define-bs-struct %wlr-output-layout-output-struct
+  (layout (bs:pointer %wlr-output-layout-struct))
+  (output (bs:pointer %wlr-output-struct))
+  (x int)
+  (y int)
+  (link %wl-list-struct)
+  (auto-configured stdbool)
+  (events (make-events destroy))
+  (addon %wlr-addon-struct)
+  (commit %wl-listener-struct))
 
 (define-public %wlr-xdg-activation-v1-struct
   (bs:struct `((token-timeout-msec ,uint32)

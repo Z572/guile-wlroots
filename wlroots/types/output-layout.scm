@@ -18,7 +18,6 @@
             .x
             .y
             .link
-            .state
             .addon
             wrap-wlr-output-layout
             unwrap-wlr-output-layout
@@ -41,7 +40,6 @@
   (x #:accessor .x)
   (y #:accessor .y)
   (link #:accessor .link)
-  (state #:accessor .state)
   (addon #:accessor .addon)
   #:descriptor %wlr-output-layout-output-struct)
 

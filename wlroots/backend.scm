@@ -1,4 +1,5 @@
 (define-module (wlroots backend)
+  #:use-module (rnrs bytevectors)
   #:autoload (wlroots backend session) (wrap-wlr-session)
   #:use-module (wlroots types)
   #:use-module (wlroots config)
@@ -21,8 +22,14 @@
   #:descriptor %wlr-backend-struct)
 
 (define-wlr-procedure (wlr-backend-autocreate display)
-  ('* "wlr_backend_autocreate" (list '*))
-  (wrap-wlr-backend (% (unwrap-wl-display display))))
+  ('* "wlr_backend_autocreate" (list '* '*))
+  (let* ((session-ptr (ffi:bytevector->pointer
+                       (make-bytevector (ffi:sizeof '*))))
+         (out (% (unwrap-wl-display display) session-ptr)))
+    (if (ffi:null-pointer? out)
+        (values #f #f)
+        (values (wrap-wlr-backend out)
+                (wrap-wlr-session (ffi:dereference-pointer session-ptr))))))
 
 (define-wlr-procedure (wlr-backend-start backend)
   (ffi:int8 "wlr_backend_start" (list '*))

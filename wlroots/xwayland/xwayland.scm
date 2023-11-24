@@ -47,16 +47,8 @@
             .link
             .mapped
             .mask
-            .max-aspect-den
-            .max-aspect-num
-            .max-height
-            .max-width
             .maximized-horz
             .maximized-vert
-            .min-aspect-den
-            .min-aspect-num
-            .min-height
-            .min-width
             .minimized
             .modal
             .override-redirect
@@ -76,8 +68,6 @@
             .title
             .unpaired-link
             .width
-            .width-inc
-            .win-gravity
             .window-id
             .wl-display
             .x
@@ -90,27 +80,6 @@
   (seat #:accessor .seat)
   (data #:accessor .data)
   #:descriptor %wlr-xwayland-struct)
-
-(define-wlr-types-class wlr-xwayland-surface-size-hints ()
-  (flags #:accessor .flags)
-  (x #:accessor .x)
-  (y #:accessor .y)
-  (width #:accessor .width)
-  (height #:accessor .height)
-  (min-width #:accessor .min-width)
-  (min-height #:accessor .min-height)
-  (max-width #:accessor .max-width)
-  (max-height #:accessor .max-height)
-  (width-inc #:accessor .width-inc)
-  (height-inc #:accessor .height-inc)
-  (base-width #:accessor .base-width)
-  (base-height #:accessor .base-height)
-  (min-aspect-num #:accessor .min-aspect-num)
-  (min-aspect-den #:accessor .min-aspect-den)
-  (max-aspect-num #:accessor .max-aspect-num)
-  (max-aspect-den #:accessor .max-aspect-den)
-  (win-gravity #:accessor .win-gravity)
-  #:descriptor %wlr-xwayland-surface-size-hints-struct)
 
 (define-wlr-types-class wlr-xwayland-surface ()
   (window-id #:accessor .window-id)

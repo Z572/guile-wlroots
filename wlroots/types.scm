@@ -1940,19 +1940,6 @@
                (seat-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-xwayland-surface-size-hints-struct
-  (bs:struct `((flags ,uint32)
-               ,@(map (lambda (a) (list a int32))
-                      '( x y
-                         width height
-                         min-width min-height
-                         max-width max-height
-                         width-inc height-inc
-                         base-width base-height
-                         min-aspect-num min-aspect-den
-                         max-aspect-num max-aspect-den))
-               (win-gravity ,uint32))))
-
 (define-bs-struct %wlr-xwayland-surface-struct
   (window-id uint32)
   (xwm (bs:pointer '*))

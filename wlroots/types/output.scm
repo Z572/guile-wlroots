@@ -279,26 +279,7 @@
   (wlr-output-cursor-create output)
   ('* "wlr_output_cursor_create" (list '*))
   (wrap-wlr-output-cursor (% (unwrap-wlr-output output) )))
-(define-wlr-procedure
-  (wlr-output-cursor-set-image
-   cursor
-   pixels
-   stride
-   width
-   height
-   hotspot-x
-   hotspot-y)
-  (ffi:int8
-   "wlr_output_cursor_set_image"
-   (list '* '* ffi:int32 ffi:uint32 ffi:uint32 ffi:int32 ffi:int32))
-  (not (zero?
-        (% (unwrap-wlr-output-cursor cursor)
-           pixels
-           stride
-           width
-           height
-           hotspot-x
-           hotspot-y))))
+
 (define-wlr-procedure
   (wlr-output-cursor-set-surface cursor surface hotspot-x hotspot-y)
   (ffi:void "wlr_output_cursor_set_surface" (list '* '* ffi:int32 ffi:int32))

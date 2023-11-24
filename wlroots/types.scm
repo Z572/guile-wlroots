@@ -195,12 +195,10 @@
      (capacity ,size_t)
      (modifiers ,(bs:pointer uint64)))))
 
-(define-public %wlr-drm-format-set-struct
-  (bs:struct
-   `((len ,size_t)
-     (capacity ,size_t)
-     (formats ,(bs:pointer
-                (bs:pointer %wlr-drm-format-struct))))))
+(define-bs-struct %wlr-drm-format-set-struct
+  (len size_t)
+  (capacity size_t)
+  (formats (bs:pointer %wlr-drm-format-struct)))
 
 (define-public %wlr-allocator-struct
   (bs:struct `((impl ,(bs:pointer '*))

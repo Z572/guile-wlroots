@@ -1,7 +1,9 @@
 #!/usr/bin/env -S guile --no-auto-compile -e main
 !#
 (use-modules
- (wayland)
+ (wayland server display)
+ (wayland signal)
+ (wayland server listener)
  (util572 color)
  (wlroots))
 

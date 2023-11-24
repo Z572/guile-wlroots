@@ -8,11 +8,11 @@
              (oop goops)
              ((bytestructures guile) #:select (bs:struct bs:pointer))
              ((util572 color) #:select (make-rgba-color))
-             ((wayland display) #:select (wl-display-create
-                                          wl-display-add-socket-auto
-                                          wl-display-run
-                                          wl-display-destroy-clients
-                                          wl-display-destroy))
+             ((wayland server display) #:select (wl-display-create
+                                                 wl-display-add-socket-auto
+                                                 wl-display-run
+                                                 wl-display-destroy-clients
+                                                 wl-display-destroy))
              ((wayland list) #:select (make-wl-list
                                        wl-list-remove
                                        wl-list-insert))

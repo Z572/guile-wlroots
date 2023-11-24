@@ -3,10 +3,9 @@
 (use-modules
  (ice-9 curried-definitions)
  (oop goops)
- (wayland display)
+ (wayland server display)
  (wayland list)
  (wayland server listener)
- (wayland signal)
  (wayland signal)
  (wlroots backend)
  (wlroots render allocator)

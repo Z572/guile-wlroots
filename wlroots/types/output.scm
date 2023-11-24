@@ -13,6 +13,7 @@
   #:use-module (wayland util)
   #:use-module (wayland server listener)
   #:use-module (oop goops)
+  #:use-module (rnrs bytevectors)
   #:use-module (wayland list)
   #:use-module (srfi srfi-26)
   #:use-module (wayland signal)
@@ -23,6 +24,7 @@
             unwrap-wlr-output
             wlr-output-init-render
             .modes
+            <wlr-output-state>
             <wlr-output>
             wlr-output-create-global
             wlr-output-destroy-global
@@ -288,6 +290,21 @@
            (unwrap-wlr-buffer buffer)
            hotspot-x
            hotspot-y))))
+
+(define %wlr_output_state_init (wlr->procedure ffi:void "wlr_output_state_init" '(*)))
+
+(define-method (initialize (object <wlr-output-state>) initargs)
+  (let ((descriptor(.descriptor (class-of object))))
+    (if (get-keyword #:%pointer initargs #f)
+        (next-method)
+        (let ((p (ffi:bytevector->pointer
+                  (make-bytevector
+                   (bytestructure-descriptor-size descriptor)))))
+          (%wlr_output_state_init p)
+          (next-method
+           object (append
+                   (list #:%pointer p)
+                   initargs))))))
 
 (define-wlr-procedure
   (wlr-output-cursor-move cursor x y)

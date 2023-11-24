@@ -33,7 +33,6 @@
             .namespace
             .added
             .configured
-            .mapped
             .current
             .pending
             .data
@@ -47,7 +46,8 @@
             .configure-serial
             .actual-width
             .actual-height
-            ))
+            .initialized
+            .initial-commit))
 
 (define-wlr-types-class wlr-layer-shell ()
   #:descriptor %wlr-layer-shell-v1-struct)
@@ -59,7 +59,8 @@
   (namespace   #:allocation #:bytestructure #:accessor .namespace)
   (added       #:allocation #:bytestructure #:accessor .added)
   (configured  #:allocation #:bytestructure #:accessor .configured)
-  (mapped      #:allocation #:bytestructure #:accessor .mapped)
+  (initialized  #:allocation #:bytestructure #:getter .initialized)
+  (initial-commit #:allocation #:bytestructure #:getter .initial-commit)
   (current     #:allocation #:bytestructure #:accessor .current)
   (pending     #:allocation #:bytestructure #:accessor .pending)
   (data        #:allocation #:bytestructure #:accessor .data)

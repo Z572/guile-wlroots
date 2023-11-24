@@ -1751,8 +1751,15 @@
                                      (destroy ,%wl-signal-struct))))
                (surface-destroy ,%wl-listener-struct)
                (data ,(bs:pointer 'void)))))
+
+(define-public %wlr-drag-grab-type-enum
+  (bs:enum
+   '(WLR_DRAG_GRAB_KEYBOARD
+     WLR_DRAG_GRAB_KEYBOARD_POINTER
+     WLR_DRAG_GRAB_KEYBOARD_TOUCH)))
+
 (define-public %wlr-drag-struct
-  (bs:struct `((grab-type ,int32)
+  (bs:struct `((grab-type ,%wlr-drag-grab-type-enum)
                (keyboard-grab ,%wlr-seat-keyboard-grab-struct)
                (pointer-grab ,%wlr-seat-pointer-grab-struct)
                (touch-grab ,%wlr-seat-touch-grab-struct)

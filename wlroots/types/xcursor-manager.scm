@@ -18,8 +18,7 @@
   #:export (wrap-wlr-xcursor-manager
             unwrap-wlr-xcursor-manager
             wlr-xcursor-manager-create
-            wlr-xcursor-manager-load
-            wlr-xcursor-manager-set-cursor-image))
+            wlr-xcursor-manager-load))
 
 (define-wlr-types-class wlr-xcursor-manager ()
   #:descriptor %wlr-xcursor-manager-struct)
@@ -34,9 +33,3 @@
 (define-wlr-procedure (wlr-xcursor-manager-load xmgr scale)
   (ffi:int "wlr_xcursor_manager_load" (list '* ffi:float))
   (wrap-wlr-xcursor-manager (% (unwrap-wlr-xcursor-manager xmgr) scale)))
-
-(define-wlr-procedure (wlr-xcursor-manager-set-cursor-image manager name cursor)
-  (ffi:void "wlr_xcursor_manager_set_cursor_image" (list '* '* '*))
-  (% (unwrap-wlr-xcursor-manager manager)
-     (string->pointer name)
-     (unwrap-wlr-cursor cursor)))

@@ -135,25 +135,29 @@
 (define-public %wlr-output-state-mode-type-enum
   (bs:enum
    '((WLR_OUTPUT_STATE_MODE_FIXED 0) (WLR_OUTPUT_STATE_MODE_CUSTOM 1))))
-(define-public %wlr-output-state-struct
-  (bs:struct `((committed ,uint32)
-               (allow-artifacts ,stdbool)
-               (damage ,%pixman-region32-t-struct)
-               (enabled ,stdbool)
-               (scale ,float)
-               (transform ,%wl-output-transform-enum)
-               (adaptive-sync-enabled ,stdbool)
-               (render-format ,uint32)
-               (subpixel ,%wl-output-subpixel-enum)
-               (buffer ,(bs:pointer %wlr-buffer-struct))
-               (mode-type ,%wlr-output-state-mode-type-enum)
-               (mode ,(bs:pointer %wlr-output-mode-struct))
-               (custom-mode ,(bs:struct
-                              `((width ,int32)
-                                (height ,int32)
-                                (refresh ,int32))))
-               (gamma-lut ,(bs:pointer uint16))
-               (gamma-lut-size ,size_t))))
+
+(define-bs-struct %wlr-output-state-struct
+  (committed uint32)
+  (allow-reconfiguration stdbool)
+  (damage %pixman-region32-t-struct)
+  (enabled stdbool)
+  (scale float)
+  (transform %wl-output-transform-enum)
+  (adaptive-sync-enabled stdbool)
+  (render-format uint32)
+  (subpixel %wl-output-subpixel-enum)
+  (buffer (bs:pointer %wlr-buffer-struct))
+  (tearing-page-flip stdbool)
+  (mode-type %wlr-output-state-mode-type-enum)
+  (mode (bs:pointer %wlr-output-mode-struct))
+  (custom-mode (bs:struct*
+                (width int32)
+                (height int32)
+                (refresh int32)))
+  (gamma-lut (bs:pointer uint16))
+  (gamma-lut-size size_t)
+  (layers (bs:pointer '*))
+  (layers-len size_t))
 
 (define-public %wlr-output-cursor-struct
   (bs:struct `((output ,(bs:pointer (delay %wlr-output-struct)))

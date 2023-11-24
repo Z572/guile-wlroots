@@ -45,7 +45,7 @@
             unwrap-wlr-output-cursor
             .adaptive-sync-enabled
             .adaptive-sync-status
-            .allow-artifacts
+            .allow-reconfiguration
             .backend
             .buffer
             .committed
@@ -78,7 +78,7 @@
 
 (define-wlr-types-class wlr-output-state ()
   (committed #:accessor .committed)
-  (allow-artifacts #:accessor .allow-artifacts)
+  (allow-reconfiguration #:accessor .allow-reconfiguration)
   (damage #:accessor .damage)
   (enabled #:accessor .enabled)
   (scale #:accessor .scale)

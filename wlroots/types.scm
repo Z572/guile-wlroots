@@ -1322,7 +1322,7 @@
 
 (define-public %wlr-xdg-toplevel-state-struct
   (bs:struct `(,@(map (lambda (o) `(,o ,stdbool))
-                      '(maximized fullscreen resizing activated))
+                      '(maximized fullscreen resizing activated suspended))
                (tiled ,uint32)
                ,@(map (lambda (o) `(,o ,int32))
                       '(width height max-width max-height min-width min-height)))))

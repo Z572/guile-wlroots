@@ -1264,7 +1264,7 @@
 (define-public %wlr-xdg-toplevel-configure-struct
   (bs:struct `((fields ,uint32)
                ,@(map (lambda (a) (list a stdbool))
-                      '(maximized fullscreen resizing activated))
+                      '(maximized fullscreen resizing activated suspended))
                (tiled ,uint32)
                ,@(map (lambda (a) (list a int32))
                       '(width height))

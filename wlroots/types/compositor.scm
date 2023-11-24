@@ -86,9 +86,6 @@
   (display-destroy #:accessor .display-destroy)
   #:descriptor %wlr-compositor-struct)
 
-(define-wlr-procedure (wlr-surface-destroy-role-object surface)
-  (ffi:void "wlr_surface_destroy_role_object" (list '*))
-  (% (unwrap-wlr-surface surface)))
 (define-wlr-procedure (wlr-surface-has-buffer surface)
   (ffi:int8 "wlr_surface_has_buffer" (list '*))
   (not (zero? (% (unwrap-wlr-surface surface)))))

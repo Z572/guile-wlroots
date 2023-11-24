@@ -36,6 +36,7 @@
        (wlr-output-init-render
         output w-allocator w-renderer)
        (wl-signal-add (get-event-signal output 'frame) output-frame-listener)
+       (wlr-output-enable output #t)
        (wlr-output-commit output)))))
 
 (define (main . _)

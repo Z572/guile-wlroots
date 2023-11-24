@@ -59,7 +59,7 @@
          (backend (wlr-backend-autocreate display))
          (renderer (wlr-renderer-autocreate backend))
          (allocator (wlr-allocator-autocreate backend renderer))
-         (compositor (wlr-compositor-create display renderer))
+         (compositor (wlr-compositor-create display 5 renderer))
          (scene (wlr-scene-create))
          (xdg-shell (wlr-xdg-shell-create display 5)))
     (wlr-renderer-init-wl-display renderer display)
@@ -84,12 +84,19 @@
          (m (make <monitor>
               #:server server
               #:output output
-              #:scene-output scene-output)))
+              #:scene-output scene-output))
+         (state (make <wlr-output-state>))
+         (mode (wlr-output-preferred-mode output)))
     (wlr-output-init-render
      output (server-allocator server)
      (server-renderer server))
     (add-listen* output 'frame (output-frame-notify m))
-    (wlr-output-commit output)))
+    (wlr-output-create-global output)
+    (wlr-output-state-set-enabled state #t)
+    (when mode
+      (wlr-output-state-set-mode state mode))
+    (wlr-output-commit-state output state)
+    (wlr-output-state-finish state)))
 
 (define ((new-surface server) listener data)
   (let* ((wlr-surface (wrap-wlr-surface data))

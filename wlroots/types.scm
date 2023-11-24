@@ -1052,22 +1052,29 @@
                (height ,int)
                (color ,%color-struct))))
 
-(define-public %wlr-scene-buffer-struct
-  (bs:struct `((node ,%wlr-scene-node-struct)
-               (buffer ,(bs:pointer %wlr-buffer-struct))
-               (events ,(bs:struct `((output-enter ,%wl-signal-struct)
-                                     (output-leave ,%wl-signal-struct)
-                                     (output-present ,%wl-signal-struct)
-                                     (frame-done ,%wl-signal-struct))))
-               (point-accepts-input ,(bs:pointer '*))
-               (primary-output ,(bs:pointer (delay %wlr-scene-output-struct)))
-               (active-outputs ,uint64)
-               (texture  ,(bs:pointer %wlr-texture-struct))
-               (src-box ,%wlr-fbox-struct)
-               (dst-width ,int)
-               (dst-height ,int)
-               (transform ,%wl-output-transform-enum)
-               (opaque-region ,%pixman-region32-t-struct))))
+
+(define-bs-struct %wlr-scene-buffer-struct
+  (node %wlr-scene-node-struct)
+  (buffer (bs:pointer %wlr-buffer-struct))
+  (events (make-events output-update
+                       output-enter
+                       output-leave
+                       output-sample
+                       frame-done))
+  (point-accepts-input (bs:pointer '*))
+  (primary-output (bs:pointer (delay %wlr-scene-output-struct)))
+  (opacity float)
+  (filter-mode %wlr-scale-filter-mode-enum)
+  (src-box %wlr-fbox-struct)
+  (dst-width int)
+  (dst-height int)
+  (transform %wl-output-transform-enum)
+  (opaque-region %pixman-region32-t-struct)
+
+  (active-outputs uint64)
+  (texture (bs:pointer %wlr-texture-struct))
+  (prev-feedback-options
+   %wlr-linux-dmabuf-feedback-v1-init-options-struct))
 
 (define WLR_DAMAGE_RING_PREVIOUS_LEN 2)
 (define-public %wlr-damage-ring-struct

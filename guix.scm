@@ -101,6 +101,37 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
     (home-page "https://github.com/guile-wayland/guile-wayland")
     (license license:gpl3+)))
 
+(define pixman-0.42.0
+  (package
+    (inherit pixman)
+    (version "0.42.0")
+    (source (origin
+              (method url-fetch)
+              (uri
+               (string-append
+                "https://www.cairographics.org/releases/pixman-"
+                version ".tar.gz"))
+              (sha256
+               (base32 "04vcyi9kmhdj1cx7nna8bdn7x4xp81zv6y45n2r3x974jn6lrxq7"))))))
+
+(define wlroots-0.17.0
+  (package
+    (inherit wlroots)
+    (name "wlroots")
+    (version "0.17.0")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/wlroots/wlroots")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "11vb6xjvsjz7j2jkx00ygjp5xi63ni8ydd8wf3s0200ldr4ffjjm"))))
+    (propagated-inputs
+     (modify-inputs
+      (package-propagated-inputs wlroots)
+      (replace "pixman" pixman-0.42.0)))))
 (define guile-wlroots
   (package
     (name "guile-wlroots")
@@ -133,7 +164,7 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
            pkg-config
            texinfo
            guile-3.0-latest))
-    (inputs (list guile-3.0-latest wlroots))
+    (inputs (list guile-3.0-latest wlroots-0.17.0))
     (propagated-inputs
      (list guile-bytestructures
            guile-wayland

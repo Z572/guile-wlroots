@@ -26,7 +26,7 @@ GUILE_SITE_DIR
 
 dnl PKG_CHECK_MODULES([WAYLAND_SERVER], [wayland-server])
 PKG_CHECK_MODULES([GUILE], [guile-3.0])
-PKG_CHECK_MODULES([WLROOTS], [wlroots >= 0.16.0])
+PKG_CHECK_MODULES([WLROOTS], [wlroots >= 0.17.0])
 PKG_CHECK_VAR([WLROOTS_LIBDIR],[wlroots],[libdir])
 dnl PKG_CHECK_VAR([WAYLAND_LIBDIR],[wayland-server],[libdir])
 PKG_CHECK_VAR([WAYLAND_SCANNER],[wayland-scanner],[wayland_scanner])

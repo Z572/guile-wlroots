@@ -1700,6 +1700,9 @@
                  (destroy ,%wl-signal-struct))))
      (data ,(bs:pointer 'void)))))
 
+(define-public %wlr-idle-notifier-v1-struct
+  (bs:struct `((ignore_it ,(bs:pointer '*)))))
+
 (define-public %wlr-idle-inhibitor-v1-struct
   (bs:struct
    `((surface ,(bs:pointer %wlr-surface-struct))

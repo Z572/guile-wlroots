@@ -6,7 +6,7 @@
   #:use-module (wayland server listener)
   #:use-module (wayland server global)
   #:use-module (wayland server client)
-  #:use-module (wayland event-loop)
+  #:use-module (wayland server event-loop)
   #:use-module (wayland server protocol wayland)
   #:use-module (wayland server resource)
   #:use-module (oop goops)

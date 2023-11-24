@@ -53,53 +53,54 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
     (license license:gpl3+)))
 
 (define guile-wayland
-  (package
-    (name "guile-wayland")
-    (version "0.0.2")
-    (source (origin
-              (method git-fetch)
-              (uri (git-reference
-                    (url "https://github.com/guile-wayland/guile-wayland")
-                    (commit (string-append "v" version))))
-              (file-name (git-file-name name version))
-              (sha256
-               (base32
-                "0g20rvl540aqb6l4mi62k1mkvgipvvrlr7v40gs5kly450jinvmq"))))
-    (build-system gnu-build-system)
-    (arguments
-     (list
-      #:make-flags '(list "GUILE_AUTO_COMPILE=0")
-      #:phases
-      #~(modify-phases %standard-phases
-          (add-after 'build 'load-extension
-            (lambda* (#:key outputs #:allow-other-keys)
-              (substitute* (find-files "." ".*\\.scm")
-                (("\\(load-extension \"libguile-wayland\" *\"(.*)\"\\)" _ o)
-                 (string-append
-                  (object->string
-                   `(or (false-if-exception
-                         (load-extension "libguile-wayland" ,o))
-                        (load-extension
-                         ,(string-append
-                           #$output
-                           "/lib/libguile-wayland.so")
-                         ,o)))))))))))
-    (native-inputs
-     (list autoconf
-           automake
-           libtool
-           pkg-config
-           texinfo
-           guile-3.0-latest))
-    (inputs (list guile-3.0-latest wayland wayland-protocols))
-    (propagated-inputs
-     (list
-      guile-bytestructure-class
-      guile-bytestructures))
-    (synopsis "")
-    (description "")
-    (home-page "https://github.com/guile-wayland/guile-wayland")
-    (license license:gpl3+)))
+  (let ((commit "b56fdb95682a474025fd31e18c1a3ea254488f8d"))
+    (package
+      (name "guile-wayland")
+      (version (git-version "0.0.2" "0" commit))
+      (source (origin
+                (method git-fetch)
+                (uri (git-reference
+                      (url "https://github.com/guile-wayland/guile-wayland")
+                      (commit commit)))
+                (file-name (git-file-name name version))
+                (sha256
+                 (base32
+                  "1g8f54zxl2x5cv4zrmk4wl0p8zds6ykhzap5zkv85132a83vbwpc"))))
+      (build-system gnu-build-system)
+      (arguments
+       (list
+        #:make-flags '(list "GUILE_AUTO_COMPILE=0")
+        #:phases
+        #~(modify-phases %standard-phases
+            (add-after 'build 'load-extension
+              (lambda* (#:key outputs #:allow-other-keys)
+                (substitute* (find-files "." ".*\\.scm")
+                  (("\\(load-extension \"libguile-wayland\" *\"(.*)\"\\)" _ o)
+                   (string-append
+                    (object->string
+                     `(or (false-if-exception
+                           (load-extension "libguile-wayland" ,o))
+                          (load-extension
+                           ,(string-append
+                             #$output
+                             "/lib/libguile-wayland.so")
+                           ,o)))))))))))
+      (native-inputs
+       (list autoconf
+             automake
+             libtool
+             pkg-config
+             texinfo
+             guile-3.0-latest))
+      (inputs (list guile-3.0-latest wayland wayland-protocols))
+      (propagated-inputs
+       (list
+        guile-bytestructure-class
+        guile-bytestructures))
+      (synopsis "")
+      (description "")
+      (home-page "https://github.com/guile-wayland/guile-wayland")
+      (license license:gpl3+))))
 
 (define pixman-0.42.0
   (package

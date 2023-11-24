@@ -403,9 +403,12 @@
   (ffi:void "wlr_scene_output_set_position" (list '* ffi:int ffi:int))
   (% (unwrap-wlr-scene-output scene-output) lx ly))
 
-(define-wlr-procedure (wlr-scene-output-commit scene-output)
-  (ffi:int "wlr_scene_output_commit" '(*))
-  (not (zero? (% (unwrap-wlr-scene-output scene-output)))))
+(define-wlr-procedure (wlr-scene-output-commit
+                       scene-output #:optional (options #f))
+  (ffi:int "wlr_scene_output_commit" '(* *))
+  (not (zero? (% (unwrap-wlr-scene-output scene-output)
+                 (or (and=> options unwrap-wlr-scene-output-state-options)
+                     ffi:%null-pointer)))))
 
 (define-wlr-procedure (wlr-scene-output-send-frame-done scene-output now)
   (ffi:void "wlr_scene_output_send_frame_done" '(* *))

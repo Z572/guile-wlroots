@@ -149,11 +149,11 @@
   (wlr-surface-unlock-cached surface seq)
   (ffi:void "wlr_surface_unlock_cached" (list '* ffi:uint32))
   (% (unwrap-wlr-surface surface) seq))
-(define-wlr-procedure
-  (wlr-compositor-create display renderer)
-  ('* "wlr_compositor_create" (list '* '*))
+
+(define-wlr-procedure (wlr-compositor-create display version renderer)
+  ('* "wlr_compositor_create" (list '* ffi:uint32 '*))
   (wrap-wlr-compositor
-   (% (unwrap-wl-display display) (unwrap-wlr-renderer renderer))))
+   (% (unwrap-wl-display display) version (unwrap-wlr-renderer renderer))))
 
 (define-once %wlr-surface->super-surface (make-hash-table))
 (define (super-surface-from-wlr-surface surface)

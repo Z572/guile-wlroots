@@ -177,7 +177,6 @@
 (define-wlr-types-class wlr-xdg-toplevel ()
   (resource #:accessor .resource)
   (base  #:accessor .base)
-  (added #:accessor .added)
   (parent #:accessor .parent)
   (parent-unmap #:accessor .parent-unmap)
   (current #:accessor .current)

@@ -1325,30 +1325,26 @@
                (tiled ,uint32)
                ,@(map (lambda (o) `(,o ,int32))
                       '(width height max-width max-height min-width min-height)))))
-(define-public %wlr-xdg-toplevel-struct
-  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
-               (base ,(bs:pointer %wlr-xdg-surface-struct))
-               (added ,stdbool)
-               (parent ,(bs:pointer %wlr-xdg-surface-struct))
-               (parent-unmap ,%wl-listener-struct)
-               (current ,%wlr-xdg-toplevel-state-struct)
-               (pending ,%wlr-xdg-toplevel-state-struct)
-               (scheduled ,%wlr-xdg-toplevel-configure-struct)
-               (requested ,%wlr-xdg-toplevel-requested-struct)
-               (title ,cstring-pointer*)
-               (app-id ,cstring-pointer*)
-               (events ,(bs:struct
-                         (map (lambda (a) (list a %wl-signal-struct))
-                              '(request-maximize
-                                request-fullscreen
-                                request-minimize
-                                request-move
-                                request-resize
-                                request-show-window-menu
-                                set-parent
-                                set-title
-                                set-app-id
-                                )))))))
+(define-bs-struct %wlr-xdg-toplevel-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (base (bs:pointer %wlr-xdg-surface-struct))
+  (parent (bs:pointer %wlr-xdg-surface-struct))
+  (parent-unmap %wl-listener-struct)
+  (current %wlr-xdg-toplevel-state-struct)
+  (pending %wlr-xdg-toplevel-state-struct)
+  (scheduled %wlr-xdg-toplevel-configure-struct)
+  (requested %wlr-xdg-toplevel-requested-struct)
+  (title cstring-pointer*)
+  (app-id cstring-pointer*)
+  (events (make-events request-maximize
+                       request-fullscreen
+                       request-minimize
+                       request-move
+                       request-resize
+                       request-show-window-menu
+                       set-parent
+                       set-title
+                       set-app-id)))
 (define-public %wlr-xdg-toplevel-move-event-struct
   (bs:struct
    `((toplevel ,(bs:pointer %wlr-xdg-toplevel-struct))

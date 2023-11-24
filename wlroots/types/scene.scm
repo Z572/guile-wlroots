@@ -120,6 +120,9 @@
             .x
             .y))
 
+(define-wlr-types-class wlr-scene-output-state-options ()
+  #:descriptor %wlr-scene-output-state-options-struct)
+
 (define-wlr-types-class wlr-scene-node ()
   (type #:accessor .type)
   (parent #:accessor .parent)

@@ -1083,6 +1083,9 @@
                                      %pixman-region32-t-struct))
                (previous-idx ,size_t))))
 
+(define-bs-struct %wlr-scene-output-state-options-struct
+  (timer (bs:pointer '*)))
+
 (define-public %wlr-scene-output-struct
   (bs:struct `((output ,(bs:pointer %wlr-output-struct))
                (link ,%wl-list-struct)

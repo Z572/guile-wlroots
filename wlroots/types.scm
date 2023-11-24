@@ -1012,6 +1012,11 @@
      (WLR_SCENE_DEBUG_DAMAGE_RERENDER 1)
      (WLR_SCENE_DEBUG_DAMAGE_HIGHLIGHT 2))))
 
+(define-public %wlr-scale-filter-mode-enum
+  (bs:enum
+   '((WLR_SCALE_FILTER_BILINEAR 0)
+     (WLR_SCALE_FILTER_NEAREST 1))))
+
 (define-bs-struct %wlr-scene-struct
   (tree %wlr-scene-tree-struct)
   (outputs %wl-list-struct)

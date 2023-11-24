@@ -298,6 +298,11 @@
   (ffi:void "wlr_output_cursor_destroy" (list '*))
   (% (unwrap-wlr-output-cursor cursor)))
 
+
+(define-wlr-procedure (wlr-output-state-finish state)
+  (ffi:void "wlr_output_state_finish" (list '*))
+  (% (unwrap-wlr-output-state state)))
+
 (define-wlr-procedure (wlr-output-state-set-enabled state enabled)
   (ffi:void "wlr_output_state_set_enabled" (list '* ffi:int8))
   (% (unwrap-wlr-output-state state) (if enabled 1 0)))

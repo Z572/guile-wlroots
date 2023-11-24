@@ -90,7 +90,6 @@
             wlr-seat-touch-send-motion
             wlr-seat-touch-send-up
             wlr-seat-touch-start-grab
-            wlr-seat-validate-grab-serial
             wlr-seat-validate-pointer-grab-serial
             wlr-seat-validate-touch-grab-serial
             wlr-surface-accepts-touch
@@ -583,9 +582,6 @@
   (ffi:int8 "wlr_seat_touch_has_grab" (list '*))
   (not (zero? (% (unwrap-wlr-seat seat)))))
 
-(define-wlr-procedure (wlr-seat-validate-grab-serial seat serial)
-  (ffi:int8 "wlr_seat_validate_grab_serial" (list '* ffi:uint32))
-  (not (zero? (% (unwrap-wlr-seat seat) serial))))
 
 ;;
 (define-wlr-procedure (wlr-seat-validate-pointer-grab-serial seat origin serial)

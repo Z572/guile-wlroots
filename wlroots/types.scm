@@ -351,6 +351,10 @@
   (addons %wlr-addon-set-struct)
   (data (bs:pointer 'void)))
 
+(define-bs-struct %wlr-output-event-request-state-struct
+  (output (bs:pointer %wlr-output-struct))
+  (state (bs:pointer %wlr-output-state-struct)))
+
 (define-public %wlr-xcursor-manager-struct
   (bs:struct `((name ,(bs:pointer '*))
                (size ,uint32)

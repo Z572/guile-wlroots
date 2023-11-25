@@ -22,6 +22,8 @@
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wrap-wlr-output
             unwrap-wlr-output
+            wrap-wlr-output-event-request-state
+            unwrap-wlr-output-event-request-state
             wlr-output-init-render
             .modes
             <wlr-output-state>
@@ -66,12 +68,14 @@
             .name
             .needs-frame
             .non-desktop
+            .output
             .phys-height
             .phys-width
             .refresh
             .render-format
             .renderer
             .scale
+            .state
             .subpixel
             .transform
             .surface
@@ -124,6 +128,11 @@
   (renderer #:accessor .renderer)
   (data         #:accessor .data)
   #:descriptor %wlr-output-struct)
+
+(define-wlr-types-class wlr-output-event-request-state ()
+  (output #:accessor .output)
+  (state #:accessor .state)
+  #:descriptor %wlr-output-event-request-state-struct)
 
 (eval-when (expand load eval)
   (load-extension "libguile-wlroots" "scm_init_wlr_output"))

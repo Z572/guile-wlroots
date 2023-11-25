@@ -143,6 +143,12 @@
   (state #:accessor .state)
   #:descriptor %wlr-output-event-precommit-struct)
 
+(define-wlr-types-class wlr-output-event-commit ()
+  (output #:accessor .output)
+  (when #:accessor .when)
+  (state #:accessor .state)
+  #:descriptor %wlr-output-event-commit-struct)
+
 (define-wlr-types-class wlr-output-event-request-state ()
   (output #:accessor .output)
   (state #:accessor .state)

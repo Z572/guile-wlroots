@@ -9,7 +9,7 @@
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:use-module (wlroots types)
-  #:export (.resource .input-method .link .mapped .surface .data
+  #:export (.resource .input-method .link .surface .data
                       .resource
                       .input-method
                       .keyboard
@@ -56,7 +56,6 @@
   (resource #:accessor .resource)
   (input-method #:accessor .input-method)
   (link #:accessor .link)
-  (mapped #:accessor .mapped)
   (surface #:accessor .surface)
   (data #:accessor .data)
   #:descriptor %wlr-input-popup-surface-v2-struct)

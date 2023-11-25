@@ -765,17 +765,13 @@
           (grab_keyboard ,%wl-signal-struct)
           (destroy ,%wl-signal-struct)))))))
 
-(define-public %wlr-input-popup-surface-v2-struct
-  (bs:struct
-   `((resource ,(bs:pointer %wl-resource-struct))
-     (input-method ,(bs:pointer %wlr-input-method-v2-struct))
-     (link ,%wl-list-struct)
-     (mapped ,stdbool)
-     (surface ,(bs:pointer %wlr-surface-struct))
-     (events ,(bs:struct `((map ,%wl-signal-struct)
-                           (unmap ,%wl-signal-struct)
-                           (destroy ,%wl-signal-struct))))
-     (data ,(bs:pointer 'void)))))
+(define-bs-struct %wlr-input-popup-surface-v2-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (input-method (bs:pointer %wlr-input-method-v2-struct))
+  (link %wl-list-struct)
+  (surface (bs:pointer %wlr-surface-struct))
+  (events (make-events destroy))
+  (data (bs:pointer 'void)))
 
 (define-public %wlr-input-method-keyboard-grab-v2-struct
   (bs:struct

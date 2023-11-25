@@ -1917,24 +1917,27 @@
      (output-destroy-listener ,%wl-listener-struct)
      (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-xwayland-struct
-  (bs:struct `((server ,(bs:pointer '*))
-               (xwm ,(bs:pointer '*))
-               (cursor ,(bs:pointer '*))
-               (display-name ,cstring-pointer*)
-               (wl-display ,(bs:pointer %wl-display-struct))
-               (compositor ,(bs:pointer %wlr-compositor-struct))
-               (seat ,(bs:pointer %wlr-seat-struct))
-               (events ,(bs:struct
-                         (map (lambda (a) (list a %wl-signal-struct))
-                              '(ready
-                                new-surface
-                                remove-startup-info))))
-               (user-event-handler ,(bs:pointer '*))
-               (server-ready ,%wl-listener-struct)
-               (server-destroy ,%wl-listener-struct)
-               (seat-destroy ,%wl-listener-struct)
-               (data ,(bs:pointer 'void)))))
+(define-bs-struct %wlr-xwayland-struct
+  (server (bs:pointer '*))
+  (own-server stdbool)
+  (xwm (bs:pointer '*))
+  (shell-v1 (bs:pointer '*))
+  (cursor (bs:pointer '*))
+  (display-name cstring-pointer*)
+  (wl-display (bs:pointer %wl-display-struct))
+  (compositor (bs:pointer %wlr-compositor-struct))
+  (seat (bs:pointer %wlr-seat-struct))
+  (events (make-events
+           ready
+           new-surface
+           remove-startup-info))
+  (user-event-handler (bs:pointer '*))
+  (server-start %wl-listener-struct)
+  (server-ready %wl-listener-struct)
+  (server-destroy %wl-listener-struct)
+  (seat-destroy %wl-listener-struct)
+  (shell-destroy %wl-listener-struct)
+  (data (bs:pointer 'void)))
 
 (define-bs-struct %wlr-xwayland-surface-struct
   (window-id uint32)

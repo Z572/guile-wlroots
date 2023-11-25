@@ -214,9 +214,6 @@
   (edges #:accessor .edges)
   #:descriptor %wlr-xdg-toplevel-resize-event-struct)
 
-(define-wlr-types-class-public wlr-xdg-toplevel-set-fullscreen-event ()
-  #:descriptor %wlr-xdg-toplevel-set-fullscreen-event)
-
 (define-wlr-types-class wlr-xdg-client ()
   (shell #:accessor .shell)
   (resource #:accessor .resource)

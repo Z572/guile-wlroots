@@ -1385,10 +1385,6 @@
                (seat ,(bs:pointer (delay %wlr-seat-client-struct)))
                (serial ,uint32)
                (edges ,uint32))))
-(define-public %wlr-xdg-toplevel-set-fullscreen-event
-  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (fullscreen ,stdbool)
-               (output ,(bs:pointer %wlr-output-struct)))))
 
 (define-public %wlr-xdg-toplevel-show-window-menu-event-struct
   (bs:struct

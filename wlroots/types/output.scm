@@ -55,12 +55,14 @@
             .backend
             .buffer
             .committed
+            .commit-seq
             .current-mode
             .damage
             .data
             .description
             .display
             .enabled
+            .flags
             .gamma-lut
             .gamma-lut-size
             .global
@@ -73,10 +75,12 @@
             .output
             .phys-height
             .phys-width
+            .presented
             .refresh
             .render-format
             .renderer
             .scale
+            .seq
             .state
             .subpixel
             .transform
@@ -148,6 +152,16 @@
   (when #:accessor .when)
   (state #:accessor .state)
   #:descriptor %wlr-output-event-commit-struct)
+
+(define-wlr-types-class wlr-output-event-present ()
+  (output #:accessor .output)
+  (commit-seq #:accessor .commit-seq)
+  (presented #:accessor .presented)
+  (when #:accessor .when)
+  (seq #:accessor .seq)
+  (refresh #:accessor .refresh)
+  (flags #:accessor .flags)
+  #:descriptor %wlr-output-event-present-struct)
 
 (define-wlr-types-class wlr-output-event-request-state ()
   (output #:accessor .output)

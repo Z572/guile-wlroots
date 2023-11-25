@@ -365,6 +365,15 @@
   (when (bs:pointer %timespec-struct))
   (state (bs:pointer %wlr-output-state-struct)))
 
+(define-bs-struct %wlr-output-event-present-struct
+  (output (bs:pointer %wlr-output-struct))
+  (commit-seq uint32)
+  (presented stdbool)
+  (when (bs:pointer %timespec-struct))
+  (seq unsigned-int)
+  (refresh int)
+  (flags int32))
+
 (define-bs-struct %wlr-output-event-request-state-struct
   (output (bs:pointer %wlr-output-struct))
   (state (bs:pointer %wlr-output-state-struct)))

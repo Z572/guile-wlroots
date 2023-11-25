@@ -77,6 +77,7 @@
             .phys-width
             .presented
             .refresh
+            .resource
             .render-format
             .renderer
             .scale
@@ -163,6 +164,11 @@
   (flags #:accessor .flags)
   #:descriptor %wlr-output-event-present-struct)
 
+
+(define-wlr-types-class wlr-output-event-bind ()
+  (output #:accessor .output)
+  (resource #:accessor .resource)
+  #:descriptor %wlr-output-event-bind-struct)
 (define-wlr-types-class wlr-output-event-request-state ()
   (output #:accessor .output)
   (state #:accessor .state)

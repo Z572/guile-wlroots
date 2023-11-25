@@ -374,6 +374,10 @@
   (refresh int)
   (flags int32))
 
+(define-bs-struct %wlr-output-event-bind-struct
+  (output (bs:pointer %wlr-output-struct))
+  (resource (bs:pointer %wl-resource-struct)))
+
 (define-bs-struct %wlr-output-event-request-state-struct
   (output (bs:pointer %wlr-output-struct))
   (state (bs:pointer %wlr-output-state-struct)))

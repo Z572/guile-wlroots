@@ -82,6 +82,7 @@
             .transform
             .surface
             .width
+            .when
             .allocator))
 
 (define-wlr-types-class wlr-output-state ()
@@ -135,6 +136,12 @@
   (output #:accessor .output)
   (damage #:accessor .damage)
   #:descriptor %wlr-output-event-damage-struct)
+
+(define-wlr-types-class wlr-output-event-precommit ()
+  (output #:accessor .output)
+  (when #:accessor .when)
+  (state #:accessor .state)
+  #:descriptor %wlr-output-event-precommit-struct)
 
 (define-wlr-types-class wlr-output-event-request-state ()
   (output #:accessor .output)

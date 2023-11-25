@@ -13,7 +13,6 @@
             .data
             .height
             .link
-            .mapped
             .pending
             .resource
             .serial
@@ -53,7 +52,6 @@
   (output #:accessor .output)
   (surface #:accessor .surface)
   (configured #:accessor .configured)
-  (mapped #:accessor .mapped)
   (configure-list #:accessor .configure-list)
   (current #:accessor .current)
   (pending #:accessor .pending)

@@ -689,21 +689,18 @@
                (width ,uint32)
                (height ,uint32))))
 
-(define-public %wlr-session-lock-surface-v1-struct
-  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
-               (link ,%wl-list-struct)
-               (output ,(bs:pointer %wlr-output-struct))
-               (surface ,(bs:pointer %wlr-surface-struct))
-               (configured ,stdbool)
-               (mapped ,stdbool)
-               (configure-list ,%wl-list-struct)
-               (current ,%wlr-session-lock-surface-v1-state-struct)
-               (pending ,%wlr-session-lock-surface-v1-state-struct)
-               (events ,(bs:struct
-                         `((map ,%wl-signal-struct)
-                           (destroy ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void))
-               (output-destroy ,%wl-listener-struct))))
+(define-bs-struct %wlr-session-lock-surface-v1-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (link %wl-list-struct)
+  (output (bs:pointer %wlr-output-struct))
+  (surface (bs:pointer %wlr-surface-struct))
+  (configured stdbool)
+  (configure-list %wl-list-struct)
+  (current %wlr-session-lock-surface-v1-state-struct)
+  (pending %wlr-session-lock-surface-v1-state-struct)
+  (events (make-events destroy))
+  (data (bs:pointer 'void))
+  (output-destroy %wl-listener-struct))
 
 (define-public %wlr-tablet-struct
   (bs:struct `((impl ,(bs:pointer '*))

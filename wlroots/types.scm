@@ -351,6 +351,10 @@
   (addons %wlr-addon-set-struct)
   (data (bs:pointer 'void)))
 
+(define-bs-struct %wlr-output-event-damage-struct
+  (output (bs:pointer %wlr-output-struct))
+  (damage (bs:pointer %pixman-region32-t-struct)))
+
 (define-bs-struct %wlr-output-event-request-state-struct
   (output (bs:pointer %wlr-output-struct))
   (state (bs:pointer %wlr-output-state-struct)))

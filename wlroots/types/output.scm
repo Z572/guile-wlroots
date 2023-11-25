@@ -22,6 +22,8 @@
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:export (wrap-wlr-output
             unwrap-wlr-output
+            wrap-wlr-output-event-damage
+            unwrap-wlr-output-event-damage
             wrap-wlr-output-event-request-state
             unwrap-wlr-output-event-request-state
             wlr-output-init-render
@@ -128,6 +130,11 @@
   (renderer #:accessor .renderer)
   (data         #:accessor .data)
   #:descriptor %wlr-output-struct)
+
+(define-wlr-types-class wlr-output-event-damage ()
+  (output #:accessor .output)
+  (damage #:accessor .damage)
+  #:descriptor %wlr-output-event-damage-struct)
 
 (define-wlr-types-class wlr-output-event-request-state ()
   (output #:accessor .output)

@@ -255,6 +255,10 @@
   ('* "wlr_output_from_resource" (list '*))
   (wrap-wlr-output (% (unwrap-wl-resource resource))))
 
+(define-wlr-procedure (wlr-output-is-direct-scanout-allowed output)
+  (ffi:int8 "wlr_output_is_direct_scanout_allowed" '(*))
+  (not (zero? (% (unwrap-wlr-output output)))))
+
 (define-wlr-procedure
   (wlr-output-lock-attach-render output lock)
   (ffi:void "wlr_output_lock_attach_render" (list '* ffi:int8))

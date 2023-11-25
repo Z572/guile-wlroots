@@ -53,7 +53,7 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
     (license license:gpl3+)))
 
 (define guile-wayland
-  (let ((commit "b56fdb95682a474025fd31e18c1a3ea254488f8d"))
+  (let ((commit "1110b82295509e2deec9fdacae2a434bb1a60a6f"))
     (package
       (name "guile-wayland")
       (version (git-version "0.0.2" "0" commit))
@@ -65,7 +65,7 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
                 (file-name (git-file-name name version))
                 (sha256
                  (base32
-                  "1g8f54zxl2x5cv4zrmk4wl0p8zds6ykhzap5zkv85132a83vbwpc"))))
+                  "1k4r2cii1fv6047dpvav3w2andh7wqwa63b59ynsx0qqzk0ag8w2"))))
       (build-system gnu-build-system)
       (arguments
        (list

@@ -30,7 +30,6 @@
             wlr-seat-start-pointer-drag
             .drag
             .surface
-            .mapped
             .data
             .grab-type
             .keyboard-grab
@@ -74,7 +73,6 @@
 (define-wlr-types-class wlr-drag-icon ()
   (drag    #:allocation #:bytestructure #:accessor .drag   )
   (surface #:allocation #:bytestructure #:accessor .surface)
-  (mapped  #:allocation #:bytestructure #:accessor .mapped )
   (data    #:allocation #:bytestructure #:accessor .data   )
   #:descriptor %wlr-drag-icon-struct)
 

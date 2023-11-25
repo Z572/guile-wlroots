@@ -1741,15 +1741,13 @@
                (current-dnd-action ,int32)
                (compositor-action ,uint32)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
-(define-public %wlr-drag-icon-struct
-  (bs:struct `((drag ,(bs:pointer (delay %wlr-drag-struct)))
-               (surface ,(bs:pointer %wlr-surface-struct))
-               (mapped ,stdbool)
-               (events ,(bs:struct `((map ,%wl-signal-struct)
-                                     (unmap ,%wl-signal-struct)
-                                     (destroy ,%wl-signal-struct))))
-               (surface-destroy ,%wl-listener-struct)
-               (data ,(bs:pointer 'void)))))
+
+(define-bs-struct %wlr-drag-icon-struct
+  (drag (bs:pointer (delay %wlr-drag-struct)))
+  (surface (bs:pointer %wlr-surface-struct))
+  (events (make-events destroy))
+  (surface-destroy %wl-listener-struct)
+  (data (bs:pointer 'void)))
 
 (define-public %wlr-drag-grab-type-enum
   (bs:enum

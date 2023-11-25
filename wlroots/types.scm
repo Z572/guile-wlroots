@@ -46,9 +46,10 @@
 
 (define-syntax define-wlr-types-class
   (lambda (x)
-    (syntax-case x ()
-      ((_ name (supers ...) slots ...
-          )
+    (syntax-case x (events)
+      ((_ name (supers ...)
+          (events (signal-name wrap-func) ...)
+          slots ...)
        (let ((symbol (syntax->datum #'name))
              (identifier (cut datum->syntax #'name <>)))
          (with-syntax ((rtd (identifier (symbol-append '< symbol '>)))
@@ -56,21 +57,41 @@
                        (unwrap (identifier (symbol-append 'unwrap- symbol)))
                        (is? (identifier (symbol-append symbol '?))))
            #`(begin
-
+               (define-bytestructure-class rtd (supers ...)
+                 #f wrap unwrap is?
+                 slots ...)
+               (let ((ev `((signal-name . ,(delay wrap-func)) ...)))
+                 (define-method (get-event-signal (b rtd) (signal-name* <symbol>))
+                   (let* ((bs (get-bytestructure b))
+                          (o (bytestructure-ref bs 'events signal-name*))
+                          (signal (wrap-wl-signal o)))
+                     (and=> (assoc-ref ev signal-name*)
+                            (lambda (x) (slot-set! signal 'data-wrapper (force x))))
+                     signal)))))))
+      ((_ name (supers ...)
+          slots ...)
+       (let ((symbol (syntax->datum #'name))
+             (identifier (cut datum->syntax #'name <>)))
+         (with-syntax ((rtd (identifier (symbol-append '< symbol '>)))
+                       (wrap (identifier (symbol-append 'wrap- symbol )))
+                       (unwrap (identifier (symbol-append 'unwrap- symbol)))
+                       (is? (identifier (symbol-append symbol '?))))
+           #`(begin
                (define-bytestructure-class rtd (supers ...)
                  #f wrap unwrap is?
                  slots ...)
                (if (.descriptor rtd)
-                   (when (assq 'events (struct-metadata-field-alist
-                                        (bytestructure-descriptor-metadata
-                                         (.descriptor rtd))))
+                   (and-let* ((meta (bytestructure-descriptor-metadata
+                                     (.descriptor rtd)))
+                              ((struct-metadata? meta))
+                              ((assq 'events (struct-metadata-field-alist
+                                              meta))))
                      (define-method (get-event-signal (b rtd) (signal-name <symbol>))
                        (let* ((bs (get-bytestructure b))
                               (o (bytestructure-ref bs 'events signal-name))
-                              (p (bytestructure->pointer o)))
-                         (wrap-wl-signal p))))
-                   (pk 'rtd rtd))
-               )))))))
+                              (signal (wrap-wl-signal o)))
+                         signal)))
+                   (pk 'rtd rtd)))))))))
 
 (define-syntax define-wlr-types-class-public
   (lambda (x)

@@ -58,7 +58,6 @@
             .app-id
             .base
             .client
-            .committed
             .configure-serial
             .current
             .data
@@ -128,7 +127,6 @@
   (base #:accessor .base)
   (link #:accessor .link)
   (resource #:accessor .resource)
-  (committed #:accessor .committed)
   (parent #:accessor .parent)
   (seat #:accessor .seat)
   (scheduled #:accessor .scheduled)

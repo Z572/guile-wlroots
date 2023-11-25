@@ -1310,18 +1310,19 @@
                (geometry ,%wlr-box-struct)
                (rules ,%wlr-xdg-positioner-rules-struct)
                (reposition-token ,uint32))))
-(define-public %wlr-xdg-popup-struct
-  (bs:struct `((base ,(bs:pointer %wlr-xdg-surface-struct))
-               (link ,%wl-list-struct)
-               (resource ,(bs:pointer %wl-resource-struct))
-               (committed ,stdbool)
-               (parent ,(bs:pointer %wlr-surface-struct))
-               (seat ,(bs:pointer (delay %wlr-seat-struct)))
-               (scheduled ,%wlr-xdg-popup-configure-struct)
-               (current ,%wlr-xdg-popup-state-struct)
-               (pending ,%wlr-xdg-popup-state-struct)
-               (events ,(bs:struct `((reposition ,%wl-signal-struct))))
-               (grab-link ,%wl-list-struct))))
+
+(define-bs-struct %wlr-xdg-popup-struct
+  (base (bs:pointer %wlr-xdg-surface-struct))
+  (link %wl-list-struct)
+  (resource (bs:pointer %wl-resource-struct))
+  (sent-initial-configure stdbool)
+  (parent (bs:pointer %wlr-surface-struct))
+  (seat (bs:pointer (delay %wlr-seat-struct)))
+  (scheduled %wlr-xdg-popup-configure-struct)
+  (current %wlr-xdg-popup-state-struct)
+  (pending %wlr-xdg-popup-state-struct)
+  (events (make-events reposition))
+  (grab-link %wl-list-struct))
 
 (define-public %wlr-xdg-toplevel-state-struct
   (bs:struct `(,@(map (lambda (o) `(,o ,stdbool))

@@ -1300,10 +1300,16 @@
      (WLR_XDG_TOPLEVEL_WM_CAPABILITIES_FULLSCREEN 4)
      (WLR_XDG_TOPLEVEL_WM_CAPABILITIES_MINIMIZE 8))))
 
-(define-public %wlr-xdg-surface-configure-struct
-  (bs:struct `((surface ,(bs:pointer %wlr-xdg-surface-struct))
-               (link ,%wl-list-struct)
-               (serial ,uint32))))
+(define-bs-struct %wlr-xdg-surface-configure-struct
+  (surface (bs:pointer %wlr-xdg-surface-struct))
+  (link %wl-list-struct)
+  (serial uint32)
+  (union
+   (bs:union
+    `((toplevel-configure
+       ,(bs:pointer (delay %wlr-xdg-toplevel-configure-struct)))
+      (popup-configure
+       ,(bs:pointer (delay %wlr-xdg-popup-configure-struct)))))))
 
 (define-public %wlr-xdg-toplevel-configure-field-enum
   (bs:enum

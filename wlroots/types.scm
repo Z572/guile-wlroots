@@ -841,7 +841,7 @@
      (input-methods ,%wl-list-struct)
      (display-destroy ,%wl-listener-struct)
      (events ,(bs:struct
-               `((input_method ,%wl-signal-struct)
+               `((input-method ,%wl-signal-struct)
                  (destroy ,%wl-signal-struct)))))))
 
 

@@ -1,4 +1,5 @@
 (define-module (wlroots types layer-shell)
+  #:autoload (wlroots types xdg-shell) (wrap-wlr-xdg-popup)
   #:use-module (wayland server resource)
   #:use-module (wayland server listener)
   #:use-module (wayland signal)
@@ -50,9 +51,11 @@
             .initial-commit))
 
 (define-wlr-types-class wlr-layer-shell ()
+  (events (new-surface wrap-wlr-layer-surface-v1))
   #:descriptor %wlr-layer-shell-v1-struct)
 
 (define-wlr-types-class wlr-layer-surface-v1 ()
+  (events (new-popup wrap-wlr-xdg-popup))
   (surface     #:allocation #:bytestructure #:accessor .surface)
   (output      #:allocation #:bytestructure #:accessor .output)
   (shell       #:allocation #:bytestructure #:accessor .shell)

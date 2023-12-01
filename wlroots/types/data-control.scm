@@ -17,6 +17,7 @@
             .global))
 
 (define-wlr-types-class wlr-data-control-manager-v1 ()
+  (events (new-device wrap-wlr-data-control-device-v1))
   (global #:accessor .global)
   (devices #:accessor .devices)
   (display-destroy #:accessor .display-destroy)

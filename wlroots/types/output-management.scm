@@ -39,6 +39,9 @@
             .resource))
 
 (define-wlr-types-class wlr-output-manager-v1 ()
+  (events (apply wrap-wlr-output-configuration-v1)
+          (test wrap-wlr-output-configuration-v1)
+          (destroy wrap-wlr-output-manager-v1))
   #:descriptor %wlr-output-manager-v1-struct)
 
 (define-wlr-types-class wlr-output-configuration-v1 ()

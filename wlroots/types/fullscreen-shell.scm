@@ -15,6 +15,8 @@
             .output))
 
 (define-wlr-types-class wlr-fullscreen-shell-v1 ()
+  (events (present-surface wrap-wlr-fullscreen-shell-v1-present-surface-event)
+          (destroy wrap-wlr-fullscreen-shell-v1))
   (global #:accessor .global)
   (display-destroy #:accessor .display-destroy)
   (data #:accessor .data)

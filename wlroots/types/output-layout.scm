@@ -31,11 +31,15 @@
             wlr-output-layout-farthest-output))
 
 (define-wlr-types-class wlr-output-layout ()
+  (events (add wrap-wlr-output-layout-output)
+          (change wrap-wlr-output-layout-output)
+          (destroy wrap-wlr-output-layout))
   (outputs #:accessor .outputs)
   (data #:accessor .data)
   #:descriptor %wlr-output-layout-struct)
 
 (define-wlr-types-class wlr-output-layout-output ()
+  (events (destroy wrap-wlr-output-layout-output))
   (output #:accessor .output)
   (x #:accessor .x)
   (y #:accessor .y)

@@ -38,6 +38,10 @@
   #:descriptor %wlr-text-input-v3-state-struct)
 
 (define-wlr-types-class wlr-text-input-v3 ()
+  (events (enable wrap-wlr-text-input-v3)
+          (commit wrap-wlr-text-input-v3)
+          (disable wrap-wlr-text-input-v3)
+          (destroy wrap-wlr-text-input-v3))
   (seat #:accessor .seat)
   (resource #:accessor .resource)
   (focused-surface #:accessor .focused-surface)
@@ -53,6 +57,8 @@
   #:descriptor %wlr-text-input-v3-struct)
 
 (define-wlr-types-class wlr-text-input-manager-v3 ()
+  (events (text-input wrap-wlr-text-input-v3)
+          (destroy wrap-wlr-text-input-manager-v3))
   (global #:accessor .global)
   (text-inputs #:accessor .text-inputs)
   (display-destroy #:accessor .display-destroy)

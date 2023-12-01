@@ -47,6 +47,8 @@
   #:descriptor %wlr-keyboard-modifiers-struct)
 
 (define-wlr-types-class wlr-keyboard ()
+  (events (key wrap-wlr-keyboard-key-event)
+          (modifiers wrap-wlr-keyboard))
   (base #:accessor .base)
   (keymap-string #:accessor .keymap-string)
   (keymap-size #:accessor .keymap-size)

@@ -62,7 +62,12 @@
   (buffer-width #:accessor .buffer-width)
   (buffer-height #:accessor .buffer-height)
   #:descriptor %wlr-surface-state-struct)
+
 (define-wlr-types-class wlr-surface ()
+  (events (precommit wrap-wlr-surface-state)
+          (commit wrap-wlr-surface)
+          (new-subsurface wrap-wlr-surface)
+          (destroy wrap-wlr-surface))
   (resource #:accessor .resource)
   (renderer #:accessor .renderer)
   (buffer #:accessor .buffer)
@@ -82,6 +87,7 @@
   #:descriptor %wlr-surface-output-struct)
 
 (define-wlr-types-class wlr-compositor ()
+  (events (new-surface wrap-wlr-surface))
   (global #:accessor .global)
   (renderer #:accessor .renderer)
   (display-destroy #:accessor .display-destroy)

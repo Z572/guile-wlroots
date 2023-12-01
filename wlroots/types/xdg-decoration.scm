@@ -30,6 +30,8 @@
             .manager))
 
 (define-wlr-types-class wlr-xdg-decoration-manager-v1 ()
+  (events (new-toplevel-decoration wrap-wlr-xdg-toplevel-decoration-v1)
+          (destroy wrap-wlr-xdg-decoration-manager-v1))
   (global #:accessor .global)
   (decorations #:accessor .decorations)
   (display-destroy #:accessor .display-destroy)
@@ -47,6 +49,8 @@
   #:descriptor %wlr-xdg-toplevel-decoration-v1-state-struct)
 
 (define-wlr-types-class wlr-xdg-toplevel-decoration-v1 ()
+  (events (request-mode wrap-wlr-xdg-toplevel-decoration-v1)
+          (destroy wrap-wlr-xdg-toplevel-decoration-v1))
   (resource #:accessor .resource)
   (surface #:accessor .surface)
   (manager #:accessor .manager)

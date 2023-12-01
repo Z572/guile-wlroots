@@ -147,6 +147,9 @@
   #:descriptor  %wlr-scene-surface-struct)
 
 (define-wlr-types-class wlr-scene-buffer ()
+  (events (output-enter wrap-wlr-scene-output)
+          (output-leave wrap-wlr-scene-output)
+          (frame-done wrap-timespec))
   (%point-accepts-input
    #:allocation #:instance
    #:init-value #f)

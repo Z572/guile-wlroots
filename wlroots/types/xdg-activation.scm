@@ -21,6 +21,8 @@
             .app-id))
 
 (define-wlr-types-class wlr-xdg-activation-v1 ()
+  (events (request-activate wrap-wlr-xdg-activation-v1-request-activate-event)
+          (new-token wrap-wlr-xdg-activation-token-v1))
   (token-timeout-msec #:accessor .token-timeout-msec)
   #:descriptor %wlr-xdg-activation-v1-struct)
 

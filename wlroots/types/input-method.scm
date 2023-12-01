@@ -18,8 +18,7 @@
                       .global
                       .input-methods
                       .display-destroy
-                      .keyboard-destroy
-                      .events))
+                      .keyboard-destroy))
 
 (define-wlr-types-class wlr-input-method-v2-preedit-string ()
   (text #:accessor .text)

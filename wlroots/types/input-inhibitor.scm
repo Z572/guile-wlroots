@@ -10,6 +10,9 @@
             .active-inhibitor))
 
 (define-wlr-types-class wlr-input-inhibit-manager ()
+  (events (activate wrap-wlr-input-inhibit-manager)
+          (deactivate wrap-wlr-input-inhibit-manager)
+          (destroy wrap-wlr-input-inhibit-manager))
   (global #:accessor .global)
   (active-client #:accessor .active-client)
   (active-inhibitor #:accessor .active-inhibitor)

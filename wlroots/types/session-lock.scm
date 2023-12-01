@@ -22,12 +22,14 @@
             .global))
 
 (define-wlr-types-class wlr-session-lock-manager-v1 ()
+  (events (new-lock wrap-wlr-session-lock-v1))
   (global #:accessor .global)
   (data #:accessor .data)
   (display-destroy #:accessor .display-destroy)
   #:descriptor %wlr-session-lock-manager-v1-struct)
 
 (define-wlr-types-class wlr-session-lock-v1 ()
+  (events (new-surface wrap-wlr-session-lock-surface-v1))
   (resource #:accessor .resource)
   (surfaces #:accessor .surfaces)
   (data #:accessor .data)

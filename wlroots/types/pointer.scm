@@ -1,6 +1,7 @@
 (define-module (wlroots types pointer)
   #:use-module (oop goops)
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
+  #:autoload (wlroots types cursor) (wrap-wlr-cursor)
   #:use-module (wlroots types)
   #:use-module (wlroots types input-device)
   #:use-module (wlroots utils)
@@ -27,6 +28,22 @@
             .fingers))
 
 (define-wlr-types-class wlr-pointer ()
+  (events (motion wrap-wlr-pointer-motion-event)
+          (motion-absolute wrap-wlr-pointer-motion-absolute-event)
+          (button wrap-wlr-pointer-button-event)
+          (axis wrap-wlr-pointer-axis-event)
+          (frame wrap-wlr-cursor)
+
+          (swipe-begin wrap-wlr-pointer-swipe-begin-event)
+          (swipe-update wrap-wlr-pointer-swipe-update-event)
+          (swipe-end wrap-wlr-pointer-swipe-end-event)
+
+          (pinch-begin wrap-wlr-pointer-pinch-begin-event)
+          (pinch-update wrap-wlr-pointer-pinch-update-event)
+          (pinch-end wrap-wlr-pointer-pinch-end-event)
+
+          (hold-begin wrap-wlr-pointer-hold-begin-event)
+          (hold-end wrap-wlr-pointer-hold-end-event))
   (base #:accessor .base)
   (output-name #:accessor .output-name)
   (data #:accessor .data)

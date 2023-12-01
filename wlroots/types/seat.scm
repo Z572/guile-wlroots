@@ -211,6 +211,7 @@
   #:descriptor %wlr-seat-request-start-drag-event-struct)
 
 (define-wlr-types-class wlr-seat-pointer-state ()
+  (events (focus-change wrap-wlr-seat-pointer-focus-change-event))
   (seat #:accessor .seat)
   (focused-client #:accessor .focused-client)
   (focused-surface #:accessor .focused-surface)
@@ -229,6 +230,7 @@
   #:descriptor %wlr-seat-pointer-state-struct)
 
 (define-wlr-types-class wlr-seat-keyboard-state ()
+  (events (focus-change wrap-wlr-seat-keyboard-focus-change-event))
   (seat #:allocation #:bytestructure #:accessor .seat)
   (focused-client #:allocation #:bytestructure #:accessor .focused-client)
   (focused-surface #:allocation #:bytestructure #:accessor .focused-surface)
@@ -237,6 +239,11 @@
   #:descriptor %wlr-seat-keyboard-state-struct)
 
 (define-wlr-types-class wlr-seat ()
+  (events (request-set-cursor  wrap-wlr-seat-pointer-request-set-cursor-event)
+          (request-set-selection wrap-wlr-seat-request-set-selection-event)
+          (request-set-primary-selection  wrap-wlr-seat-request-set-primary-selection-event)
+          (request-start-drag wrap-wlr-seat-request-start-drag-event)
+          (start-drag wrap-wlr-drag))
   (global #:accessor .global)
   (display #:accessor .display)
   (clients #:accessor .clients)

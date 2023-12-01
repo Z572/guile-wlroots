@@ -106,6 +106,8 @@
   (load-extension "libguile-wlroots" "scm_init_wlr_xdg_shell"))
 
 (define-wlr-types-class wlr-xdg-shell ()
+  (events (new-surface wrap-wlr-xdg-surface)
+          (destroy wrap-wlr-xdg-shell))
   (global #:allocation #:bytestructure #:accessor .global)
   (clients #:allocation #:bytestructure #:accessor .clients)
   (ping-timeout #:allocation #:bytestructure #:accessor .ping-timeout)
@@ -174,6 +176,8 @@
   #:descriptor %wlr-xdg-toplevel-requested-struct)
 
 (define-wlr-types-class wlr-xdg-toplevel ()
+  (events (request-show-window-menu wrap-wlr-xdg-toplevel-show-window-menu-event)
+          (request-resize wrap-wlr-xdg-toplevel-resize-event))
   (resource #:accessor .resource)
   (base  #:accessor .base)
   (parent #:accessor .parent)
@@ -225,6 +229,7 @@
   #:descriptor %wlr-xdg-client-struct)
 
 (define-wlr-types-class wlr-xdg-surface ()
+  (events (new-popup wrap-wlr-xdg-popup))
   (client #:accessor .client)
   (resource #:accessor .resource)
   (surface #:accessor .surface)

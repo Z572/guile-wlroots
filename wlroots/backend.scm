@@ -1,6 +1,8 @@
 (define-module (wlroots backend)
   #:use-module (rnrs bytevectors)
   #:autoload (wlroots backend session) (wrap-wlr-session)
+  #:autoload (wlroots types input-device) (wrap-wlr-input-device)
+  #:autoload (wlroots types output) (wrap-wlr-output)
   #:use-module (wlroots types)
   #:use-module (wlroots config)
   #:use-module (wlroots utils)
@@ -19,6 +21,8 @@
             wlr-backend-destroy))
 
 (define-wlr-types-class wlr-backend ()
+  (events (new-input wrap-wlr-input-device)
+          (new-output wrap-wlr-output))
   #:descriptor %wlr-backend-struct)
 
 (define-wlr-procedure (wlr-backend-autocreate display)

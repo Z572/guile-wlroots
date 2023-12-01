@@ -813,8 +813,8 @@
      (events
       ,(bs:struct
         `((commit ,%wl-signal-struct)
-          (new_popup_surface ,%wl-signal-struct)
-          (grab_keyboard ,%wl-signal-struct)
+          (new-popup-surface ,%wl-signal-struct)
+          (grab-keyboard ,%wl-signal-struct)
           (destroy ,%wl-signal-struct)))))))
 
 (define-bs-struct %wlr-input-popup-surface-v2-struct

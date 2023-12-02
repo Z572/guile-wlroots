@@ -1,6 +1,8 @@
 (use-modules
  ((guix licenses) #:prefix license:)
+ (gnu packages gtk)
  (gnu packages autotools)
+ (gnu packages python)
  (gnu packages build-tools)
  (gnu packages file)
  (gnu packages freedesktop)
@@ -16,10 +18,12 @@
  (gnu packages xorg)
  (gnu packages)
  (guix build-system gnu)
+ (guix build-system meson)
  (guix download)
  (guix gexp)
  (guix git-download)
  (guix packages)
+ (gnu packages hardware)
  (guix utils))
 
 (define-public guile-bytestructure-class
@@ -115,6 +119,84 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
               (sha256
                (base32 "04vcyi9kmhdj1cx7nna8bdn7x4xp81zv6y45n2r3x974jn6lrxq7"))))))
 
+
+(define-public libliftoff
+  (package
+    (name "libliftoff")
+    (version "0.4.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/emersion/libliftoff")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ikjp638d655ycaqkdnzhb12d29kkbb3a46lqhbhsfc8vsqj3z1l"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config pkg-config-for-build))
+    (inputs (list libdrm))
+    (home-page "https://gitlab.freedesktop.org/emersion/libliftoff")
+    (synopsis "")
+    (description "")
+    (license #f)))
+
+(define-public hwdata
+  (package
+    (name "hwdata")
+    (version "0.365")                   ;updated monthly
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://github.com/vcrhonek/hwdata")
+                    (commit (string-append "v" version))))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "00gqx24dyy9l98ygnvx8i087xq8pl9d2393h4d2cm4d5nnvr51d4"))))
+    (build-system gnu-build-system)
+    (arguments
+     ;; Tests require pciutils, python, podman. Disable to avoid recursive dep.
+     (list
+      #:tests? #f
+      ;; Do not cross-compile, since the package only contains data.
+      #:target #f
+      #:configure-flags #~(list (string-append "--datadir=" #$output "/share"))))
+    (home-page "https://github.com/vcrhonek/hwdata")
+    (synopsis "Hardware identification and configuration data")
+    (description "@code{hwdata} contains various hardware identification and
+configuration data, such as the @file{pci.ids} and @file{usb.ids} databases.
+Each database is contained in a specific package output, such as the
+@code{pci} output for @file{pci.ids}, the @code{usb} output for
+@file{usb.ids}, etc.")
+    (license (list license:gpl2+
+                   license:expat))))
+
+(define-public libdisplay-info
+  (package
+    (name "libdisplay-info")
+    (version "0.1.1")
+    (source (origin
+              (method git-fetch)
+              (uri (git-reference
+                    (url "https://gitlab.freedesktop.org/emersion/libdisplay-info")
+                    (commit version)))
+              (file-name (git-file-name name version))
+              (sha256
+               (base32
+                "1ffq7w1ig1y44rrmkv1hvfjylzgq7f9nlnnsdgdv7pmcpfh45pgf"))))
+    (build-system meson-build-system)
+    (native-inputs (list pkg-config pkg-config-for-build hwdata
+                         python-minimal
+                         ;; for test
+                         edid-decode))
+    (arguments (list #:tests? #f))
+    (home-page "https://gitlab.freedesktop.org/emersion/libdisplay-info")
+    (synopsis "")
+    (description "")
+    (license #f)))
+
+
 (define wlroots-0.17.0
   (package
     (inherit wlroots)
@@ -132,7 +214,11 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
     (propagated-inputs
      (modify-inputs
       (package-propagated-inputs wlroots)
-      (replace "pixman" pixman-0.42.0)))))
+      (replace "pixman" pixman-0.42.0)
+      (append cairo)
+      (append hwdata)
+      (append libliftoff)
+      (append libdisplay-info)))))
 (define guile-wlroots
   (package
     (name "guile-wlroots")

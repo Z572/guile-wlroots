@@ -119,6 +119,12 @@
   (geometry #:allocation #:bytestructure #:accessor .geometry)
   #:descriptor %wlr-xdg-surface-state-struct)
 
+(define-wlr-types-class wlr-xdg-surface-configure ()
+  (surface #:getter .surface)
+  (link #:getter .link)
+  (serial #:getter .serial)
+  #:descriptor %wlr-xdg-surface-configure-struct)
+
 (define-wlr-types-class wlr-xdg-popup-configure ()
   (fields #:accessor .fields)
   (geometry #:accessor .geometry)

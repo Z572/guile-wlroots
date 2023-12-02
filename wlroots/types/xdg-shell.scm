@@ -235,7 +235,9 @@
   #:descriptor %wlr-xdg-client-struct)
 
 (define-wlr-types-class wlr-xdg-surface ()
-  (events (new-popup wrap-wlr-xdg-popup))
+  (events (new-popup wrap-wlr-xdg-popup)
+          (configure wrap-wlr-xdg-surface-configure)
+          (ack-configure wrap-wlr-xdg-surface-configure))
   (client #:accessor .client)
   (resource #:accessor .resource)
   (surface #:accessor .surface)

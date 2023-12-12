@@ -1737,7 +1737,7 @@
   (bs:struct
    `((inhibitors ,%wl-list-struct)
      (global ,(bs:pointer %wl-global-struct))
-     (display-destroy ,(bs:pointer %wl-listener-struct))
+     (display-destroy ,%wl-listener-struct)
      (events ,(bs:struct
                `((new-inhibitor ,%wl-signal-struct)
                  (destroy ,%wl-signal-struct))))

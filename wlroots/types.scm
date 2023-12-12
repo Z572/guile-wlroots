@@ -1746,14 +1746,13 @@
 (define-public %wlr-idle-notifier-v1-struct
   (bs:struct `((ignore_it ,(bs:pointer '*)))))
 
-(define-public %wlr-idle-inhibitor-v1-struct
-  (bs:struct
-   `((surface ,(bs:pointer %wlr-surface-struct))
-     (resource ,(bs:pointer %wl-resource-struct))
-     (surface-destroy ,(bs:pointer %wl-listener-struct))
-     (link ,%wl-list-struct)
-     (events ,(bs:struct `((destroy ,%wl-signal-struct))))
-     (data ,(bs:pointer 'void)))))
+(define-bs-struct %wlr-idle-inhibitor-v1-struct
+  (surface (bs:pointer %wlr-surface-struct))
+  (resource (bs:pointer %wl-resource-struct))
+  (surface-destroy %wl-listener-struct)
+  (link %wl-list-struct)
+  (events (make-events destroy))
+  (data (bs:pointer 'void)))
 
 (define-public %wlr-data-device-manager-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))

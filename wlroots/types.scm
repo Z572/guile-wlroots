@@ -1159,11 +1159,11 @@
      (layer-surface-map ,(bs:pointer %wl-listener-struct))
      (layer-surface-unmap ,(bs:pointer %wl-listener-struct)))))
 
-(define-public %wlr-presentation-struct
-  (bs:struct `((global ,(bs:pointer %wl-global-struct))
-               (clock ,int32) ;; clockid_t
-               (events ,(bs:struct `((destroy ,%wl-listener-struct))))
-               (display-destroy ,%wl-listener-struct))))
+(define-bs-struct %wlr-presentation-struct
+  (global (bs:pointer %wl-global-struct))
+  (events (make-events destroy))
+  (display-destroy %wl-listener-struct))
+
 (define-public %wlr-presentation-feedback-struct
   (bs:struct `((resources ,%wl-list-struct)
                (output ,%wlr-output-struct)

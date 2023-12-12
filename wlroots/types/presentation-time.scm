@@ -17,7 +17,6 @@
             unwrap-wlr-presentation-feedback
             wrap-wlr-presentation-event
             unwrap-wlr-presentation-event
-            .clock
             .output
             .output-committed
             .output-commit-seq
@@ -28,7 +27,6 @@
             .flags))
 
 (define-wlr-types-class wlr-presentation ()
-  (clock #:allocation #:bytestructure #:accessor .clock)
   #:descriptor %wlr-presentation-struct)
 
 (define-wlr-types-class wlr-presentation-feedback ()

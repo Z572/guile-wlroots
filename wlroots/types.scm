@@ -147,12 +147,6 @@
                (source-destroy ,%wl-listener-struct)
                (n-ignore-locks ,size_t))))
 
-(define-public %wlr-output-mode-struct
-  (bs:struct `((width ,int32)
-               (height ,int32)
-               (refresh ,int32)
-               (preferred ,int)
-               (link ,%wl-list-struct))))
 (define-public %wlr-output-mode-aspect-ratio-enum
   (bs:enum
    '(WLR_OUTPUT_MODE_ASPECT_RATIO_NONE
@@ -160,6 +154,14 @@
      WLR_OUTPUT_MODE_ASPECT_RATIO_16_9
      WLR_OUTPUT_MODE_ASPECT_RATIO_64_27
      WLR_OUTPUT_MODE_ASPECT_RATIO_256_135)))
+
+(define-bs-struct %wlr-output-mode-struct
+  (width int32)
+  (height int32)
+  (refresh int32)
+  (preferred stdbool)
+  (picture-aspent-ratio %wlr-output-mode-aspect-ratio-enum)
+  (link %wl-list-struct))
 
 (define-public %wlr-output-state-mode-type-enum
   (bs:enum

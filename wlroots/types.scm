@@ -1164,14 +1164,16 @@
   (events (make-events destroy))
   (display-destroy %wl-listener-struct))
 
-(define-public %wlr-presentation-feedback-struct
-  (bs:struct `((resources ,%wl-list-struct)
-               (output ,%wlr-output-struct)
-               (output-committed ,stdbool)
-               (output-commit-seq ,uint32)
-               (output-commit ,%wl-listener-struct)
-               (output-present ,%wl-listener-struct)
-               (output-destroy ,%wl-listener-struct))))
+(define-bs-struct %wlr-presentation-feedback-struct
+  (resources %wl-list-struct)
+  (output (bs:pointer (delay %wlr-output-struct)))
+  (output-committed stdbool)
+  (output-commit-seq uint32)
+  (zero-copy stdbool)
+  (output-commit %wl-listener-struct)
+  (output-present %wl-listener-struct)
+  (output-destroy %wl-listener-struct))
+
 (define-public %wlr-presentation-event-struct
   (bs:struct `((output ,%wlr-output-struct)
                (tv-sec ,uint64)

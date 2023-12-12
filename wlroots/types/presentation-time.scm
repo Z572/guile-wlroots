@@ -24,15 +24,17 @@
             .tv-nsec
             .refresh
             .seq
-            .flags))
+            .flags
+            .zero-copy))
 
 (define-wlr-types-class wlr-presentation ()
   #:descriptor %wlr-presentation-struct)
 
 (define-wlr-types-class wlr-presentation-feedback ()
-  (output            #:allocation #:bytestructure #:accessor .output           )
-  (output-committed  #:allocation #:bytestructure #:accessor .output-committed )
-  (output-commit-seq #:allocation #:bytestructure #:accessor .output-commit-seq)
+  (output            #:accessor .output           )
+  (output-committed  #:accessor .output-committed )
+  (output-commit-seq #:accessor .output-commit-seq)
+  (zero-copy         #:getter   .zero-copy)
   #:descriptor %wlr-presentation-feedback-struct)
 
 (define-wlr-types-class wlr-presentation-event ()

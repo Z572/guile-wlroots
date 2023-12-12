@@ -767,20 +767,21 @@
                (paths ,%wl-array-struct)
                (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-tablet-pad-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (events
-                ,(bs:struct
-                  `((button ,%wl-signal-struct)
-                    (ring ,%wl-signal-struct)
-                    (strip ,%wl-signal-struct)
-                    (attach-tablet ,%wl-signal-struct))))
-               (button-count ,size_t)
-               (ring-count ,size_t)
-               (strip-count ,size_t)
-               (groups ,%wl-list-struct)
-               (paths ,%wl-array-struct)
-               (data ,(bs:pointer 'void)))))
+(define-bs-struct %wlr-tablet-pad-struct
+  (base %wlr-input-device-struct)
+  (impl (bs:pointer '*))
+  (events
+   (make-events
+    button
+    ring
+    strip
+    attach-tablet))
+  (button-count size_t)
+  (ring-count size_t)
+  (strip-count size_t)
+  (groups %wl-list-struct)
+  (paths %wl-array-struct)
+  (data (bs:pointer 'void)))
 
 (define-public %wlr-input-method-v2-preedit-string-struct
   (bs:struct

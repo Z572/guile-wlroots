@@ -67,6 +67,8 @@
             .gamma-lut-size
             .global
             .height
+            .hostpot-x
+            .hostpot-y
             .mode
             .mode-type
             .name
@@ -82,10 +84,11 @@
             .renderer
             .scale
             .seq
+            .src-box
             .state
             .subpixel
             .transform
-            .surface
+            .visible
             .width
             .when
             .allocator))
@@ -327,15 +330,17 @@
   (% (unwrap-wlr-output output) (if lock 1 0)))
 
 (define-wlr-types-class wlr-output-cursor ()
+  (output #:getter .output)
   (x #:accessor .x)
   (y #:accessor .y)
   (enabled #:accessor .enabled)
   (visible #:accessor .visible)
   (width #:accessor .width)
   (height #:accessor .height)
+  (src-box #:getter .src-box)
+  (transform #:getter .transform)
   (hostpot-x #:accessor .hostpot-x)
   (hostpot-y #:accessor .hostpot-y)
-  (surface #:accessor .surface)
   #:descriptor %wlr-output-cursor-struct)
 
 (define-wlr-procedure

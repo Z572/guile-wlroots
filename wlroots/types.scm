@@ -180,23 +180,6 @@
   (layers (bs:pointer '*))
   (layers-len size_t))
 
-(define-public %wlr-output-cursor-struct
-  (bs:struct `((output ,(bs:pointer (delay %wlr-output-struct)))
-               (x ,double)
-               (y ,double)
-               (enabled ,stdbool)
-               (visible ,stdbool)
-               (width ,uint32)
-               (height ,uint32)
-               (hostpot-x ,int32)
-               (hostpot-y ,int32)
-               (link ,%wl-list-struct)
-               (texture ,(bs:pointer %wlr-texture-struct))
-               (surface ,(bs:pointer (delay %wlr-surface-struct)))
-               (surface-commit ,%wl-listener-struct)
-               (surface-destroy ,%wl-listener-struct)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
-
 (define-public %wlr-edges-enum
   (bs:enum '((WLR_EDGE_NONE 0)
              (WLR_EDGE_TOP 1)
@@ -212,6 +195,22 @@
                (y ,double)
                (width ,double)
                (height ,double))))
+
+(define-bs-struct %wlr-output-cursor-struct
+  (output (bs:pointer (delay %wlr-output-struct)))
+  (x double)
+  (y double)
+  (enabled stdbool)
+  (visible stdbool)
+  (width uint32)
+  (height uint32)
+  (src-box %wlr-fbox-struct)
+  (transform %wl-output-transform-enum)
+  (hostpot-x int32)
+  (hostpot-y int32)
+  (texture (bs:pointer %wlr-texture-struct))
+  (own-texture stdbool)
+  (link %wl-list-struct))
 
 (define-public %wlr-drm-format-struct
   (bs:struct

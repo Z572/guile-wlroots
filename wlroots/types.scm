@@ -599,13 +599,14 @@
                (display-destroy ,%wl-listener-struct)
                (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
 
-(define-public %wlr-export-dmabuf-frame-v1-struct
-  (bs:struct `((resource ,(bs:pointer %wl-resource-struct))
-               (manager ,(bs:pointer %wlr-export-dmabuf-manager-v1-struct))
-               (link ,%wl-list-struct)
-               (output ,(bs:pointer %wlr-output-struct))
-               (cursor-locked ,stdbool)
-               (output-commit ,%wl-listener-struct))))
+(define-bs-struct %wlr-export-dmabuf-frame-v1-struct
+  (resource (bs:pointer %wl-resource-struct))
+  (manager (bs:pointer %wlr-export-dmabuf-manager-v1-struct))
+  (link %wl-list-struct)
+  (output (bs:pointer %wlr-output-struct))
+  (cursor-locked stdbool)
+  (output-commit %wl-listener-struct)
+  (output-destroy %wl-listener-struct))
 
 (define-public WLR_LED_COUNT 3)
 (define-public WLR_MODIFIER_COUNT 8)

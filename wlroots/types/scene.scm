@@ -93,6 +93,8 @@
             .buffer
             .color
             .data
+            .dst-width
+            .dst-height
             .enabled
             .node
             .output
@@ -108,6 +110,7 @@
             .primary-output
             .tree
             .layer-surface
+            .texture
             .tree-destroy
             .layer-surface-destroy
             .layer-surface-map
@@ -115,6 +118,8 @@
             .scene
             .state
             .surface
+            .src-box
+            .transform
             .children
             .type
             .x

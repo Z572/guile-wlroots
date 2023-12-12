@@ -1134,22 +1134,22 @@
 (define-bs-struct %wlr-scene-output-state-options-struct
   (timer (bs:pointer '*)))
 
-(define-public %wlr-scene-output-struct
-  (bs:struct `((output ,(bs:pointer %wlr-output-struct))
-               (link ,%wl-list-struct)
-               (scene ,(bs:pointer %wlr-scene-struct))
-               (addon ,%wlr-addon-struct)
-               (damage ,%wlr-damage-ring-struct)
-               (x ,int)
-               (y ,int)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct))))
-               (index ,uint8)
-               (prev-scanout ,stdbool)
-               (output-commit ,%wl-listener-struct)
-               (output-mode ,%wl-listener-struct)
-               (output-damage ,%wl-listener-struct)
-               (output-needs-frame ,%wl-listener-struct)
-               (render-list ,%wl-array-struct))))
+(define-bs-struct %wlr-scene-output-struct
+  (output (bs:pointer %wlr-output-struct))
+  (link %wl-list-struct)
+  (scene (bs:pointer %wlr-scene-struct))
+  (addon %wlr-addon-struct)
+  (damage-ring %wlr-damage-ring-struct)
+  (x int)
+  (y int)
+  (events (make-events destroy))
+  (index uint8)
+  (prev-scanout stdbool)
+  (output-commit %wl-listener-struct)
+  (output-damage %wl-listener-struct)
+  (output-needs-frame %wl-listener-struct)
+  (damage-highlight-regions %wl-list-struct)
+  (render-list %wl-array-struct))
 
 (define-public %wlr-scene-layer-surface-v1-struct
   (bs:struct

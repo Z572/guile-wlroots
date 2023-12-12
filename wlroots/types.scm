@@ -1008,11 +1008,10 @@
      (bind ,%wl-listener-struct)
      (destroy ,%wl-listener-struct))))
 
-(define-public %wlr-subcompositor-struct
-  (bs:struct
-   `((global ,(bs:pointer %wl-global-struct))
-     (display-destroy ,(bs:pointer %wl-listener-struct))
-     (events ,(bs:struct `((destroy ,(bs:pointer %wl-signal-struct))))))))
+(define-bs-struct %wlr-subcompositor-struct
+  (global (bs:pointer %wl-global-struct))
+  (display-destroy %wl-listener-struct)
+  (events (make-events destroy)))
 
 (define-public %wlr-compositor-struct
   (bs:struct `((global ,(bs:pointer %wl-global-struct))

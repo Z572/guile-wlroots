@@ -10,8 +10,8 @@
             .data
             .display-destroy
             .link
+            .manager
             .output
-            .output-commit-listener
             .output-destroy-listener
             .ramp-size
             .resource
@@ -29,10 +29,10 @@
 (define-wlr-types-class wlr-gamma-control-v1 ()
   (resource #:accessor .resource)
   (output #:accessor .output)
+  (manager #:getter .manager)
   (link #:accessor .link)
   (table #:accessor .table)
   (ramp-size #:accessor .ramp-size)
-  (output-commit-listener #:accessor .output-commit-listener)
   (output-destroy-listener #:accessor .output-destroy-listener)
   (data #:accessor .data)
   #:descriptor %wlr-gamma-control-v1-struct)

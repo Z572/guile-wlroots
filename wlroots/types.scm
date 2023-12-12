@@ -1595,12 +1595,6 @@
      (link ,%wl-list-struct)
      (seat-destroy ,%wl-listener-struct))))
 
-(define-public %wlr-seat-request-set-cursor-event-struct
-  (bs:struct `((seat-client ,(bs:pointer %wlr-seat-client-struct))
-               (surface ,(bs:pointer %wlr-surface-struct))
-               (serial ,uint32)
-               (hostpot-x ,int32)
-               (hostpot-y ,int32))))
 (define-public %wlr-seat-pointer-request-set-cursor-event-struct
   (bs:struct `((seat-client ,(bs:pointer %wlr-seat-client-struct))
                (surface ,(bs:pointer %wlr-surface-struct))

@@ -153,6 +153,14 @@
                (refresh ,int32)
                (preferred ,int)
                (link ,%wl-list-struct))))
+(define-public %wlr-output-mode-aspect-ratio-enum
+  (bs:enum
+   '(WLR_OUTPUT_MODE_ASPECT_RATIO_NONE
+     WLR_OUTPUT_MODE_ASPECT_RATIO_4_3
+     WLR_OUTPUT_MODE_ASPECT_RATIO_16_9
+     WLR_OUTPUT_MODE_ASPECT_RATIO_64_27
+     WLR_OUTPUT_MODE_ASPECT_RATIO_256_135)))
+
 (define-public %wlr-output-state-mode-type-enum
   (bs:enum
    '((WLR_OUTPUT_STATE_MODE_FIXED 0) (WLR_OUTPUT_STATE_MODE_CUSTOM 1))))

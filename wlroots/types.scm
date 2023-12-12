@@ -1151,14 +1151,13 @@
   (damage-highlight-regions %wl-list-struct)
   (render-list %wl-array-struct))
 
-(define-public %wlr-scene-layer-surface-v1-struct
-  (bs:struct
-   `((tree ,(bs:pointer %wlr-scene-tree-struct))
-     (layer-surface ,(bs:pointer (delay %wlr-layer-surface-v1-struct)))
-     (tree-destroy ,(bs:pointer %wl-listener-struct))
-     (layer-surface-destroy ,(bs:pointer %wl-listener-struct))
-     (layer-surface-map ,(bs:pointer %wl-listener-struct))
-     (layer-surface-unmap ,(bs:pointer %wl-listener-struct)))))
+(define-bs-struct %wlr-scene-layer-surface-v1-struct
+  (tree (bs:pointer %wlr-scene-tree-struct))
+  (layer-surface (bs:pointer (delay %wlr-layer-surface-v1-struct)))
+  (tree-destroy %wl-listener-struct)
+  (layer-surface-destroy %wl-listener-struct)
+  (layer-surface-map %wl-listener-struct)
+  (layer-surface-unmap %wl-listener-struct))
 
 (define-bs-struct %wlr-presentation-struct
   (global (bs:pointer %wl-global-struct))

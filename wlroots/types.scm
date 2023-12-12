@@ -1176,7 +1176,7 @@
   (output-destroy %wl-listener-struct))
 
 (define-public %wlr-presentation-event-struct
-  (bs:struct `((output ,%wlr-output-struct)
+  (bs:struct `((output ,(bs:pointer (delay %wlr-output-struct)))
                (tv-sec ,uint64)
                (tv-nsec ,uint32)
                (refresh ,uint32)

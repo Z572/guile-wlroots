@@ -727,7 +727,8 @@
                          `((new-surface ,%wl-signal-struct)
                            (unlock ,%wl-signal-struct)
                            (destroy ,%wl-signal-struct))))
-               (data ,(bs:pointer 'void)))))
+               (data ,(bs:pointer 'void))
+               (locked-sent ,stdbool))))
 
 (define-public %wlr-session-lock-surface-v1-state-struct
   (bs:struct `((width ,uint32)

@@ -1919,14 +1919,12 @@
      (output-enable ,%wl-listener-struct)
      (data ,(bs:pointer 'void)))))
 
-(define-public %wlr-drm-struct
-  (bs:struct
-   `((global ,(bs:pointer %wl-global-struct))
-     (renderer ,(bs:pointer %wlr-renderer-struct))
-     (node-name ,cstring-pointer*)
-     (events ,(bs:struct `((destroy ,%wl-signal-struct))))
-     (display-destroy ,%wl-listener-struct)
-     (renderer-destroy ,%wl-listener-struct))))
+(define-bs-struct %wlr-drm-struct
+  (global (bs:pointer %wl-global-struct))
+  (events (make-events destroy))
+  (node-name cstring-pointer*)
+  (formats %wlr-drm-format-set-struct)
+  (renderer-destroy %wl-listener-struct))
 
 (define-public %wlr-fullscreen-shell-v1-struct
   (bs:struct

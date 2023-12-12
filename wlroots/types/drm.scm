@@ -6,17 +6,10 @@
   #:export (wrap-wlr-drm
             unwrap-wlr-drm
             wlr-drm-create
-            .display-destroy
-            .renderer-destroy
-            .global
-            .node-name))
+            .global))
 
 (define-wlr-types-class wlr-drm ()
   (global #:accessor .global)
-  (renderer #:accessor .renderer)
-  (node-name #:accessor .node-name)
-  (display-destroy #:accessor .display-destroy)
-  (renderer-destroy #:accessor .renderer-destroy)
   #:descriptor %wlr-drm-struct)
 
 (define-wlr-procedure (wlr-drm-create display renderer)

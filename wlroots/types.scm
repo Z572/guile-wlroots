@@ -973,11 +973,11 @@
                  (new-input ,%wl-signal-struct)
                  (new-output ,%wl-signal-struct)))))))
 
-(define-public %wlr-renderer-struct
-  (bs:struct `((impl ,(bs:pointer '*))
-               (rendering ,stdbool)
-               (rendering-with-buffer ,stdbool)
-               (events ,(bs:struct `((destroy ,%wl-signal-struct)))))))
+(define-bs-struct %wlr-renderer-struct
+  (events (make-events destroy lost))
+  (impl (bs:pointer '*))
+  (rendering stdbool)
+  (rendering-with-buffer stdbool))
 
 (define-public %wlr-subsurface-parent-state-struct
   (bs:struct `((x ,int32) (y ,int32) (link ,%wl-list-struct))))

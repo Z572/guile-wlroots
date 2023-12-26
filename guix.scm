@@ -197,11 +197,11 @@ Each database is contained in a specific package output, such as the
     (license #f)))
 
 
-(define wlroots-0.17.0
+(define wlroots-0.17
   (package
     (inherit wlroots)
     (name "wlroots")
-    (version "0.17.0")
+    (version "0.17.1")
     (source (origin
               (method git-fetch)
               (uri (git-reference
@@ -210,7 +210,7 @@ Each database is contained in a specific package output, such as the
               (file-name (git-file-name name version))
               (sha256
                (base32
-                "11vb6xjvsjz7j2jkx00ygjp5xi63ni8ydd8wf3s0200ldr4ffjjm"))))
+                "1hj4gq5vx8in65622yvjm8bwqkw2vpc556k9my997a0hn0ricj37"))))
     (propagated-inputs
      (modify-inputs
       (package-propagated-inputs wlroots)
@@ -251,7 +251,7 @@ Each database is contained in a specific package output, such as the
            pkg-config
            texinfo
            guile-3.0-latest))
-    (inputs (list guile-3.0-latest wlroots-0.17.0))
+    (inputs (list guile-3.0-latest wlroots-0.17))
     (propagated-inputs
      (list guile-bytestructures
            guile-wayland

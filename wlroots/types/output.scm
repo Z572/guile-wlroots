@@ -38,7 +38,6 @@
             wlr-output-set-transform
             wlr-output-enable
             wlr-output-commit
-            wlr-output-modes
             wlr-output-enable-adaptive-sync
             wlr-output-set-transform
             wlr-output-set-name
@@ -130,6 +129,7 @@
   (serial       #:accessor .serial)
   (phys-width   #:accessor .phys-width)
   (phys-height  #:accessor .phys-height)
+  (modes        #:getter   .modes)
   (current-mode #:accessor .current-mode)
   (width        #:accessor .width)
   (height       #:accessor .height)
@@ -185,16 +185,8 @@
   (state #:accessor .state)
   #:descriptor %wlr-output-event-request-state-struct)
 
-(eval-when (expand load eval)
-  (load-extension "libguile-wlroots" "scm_init_wlr_output"))
-
 (define-wlr-types-class wlr-output-mode ()
   #:descriptor %wlr-output-mode-struct)
-
-(define (wlr-output-modes o)
-  (wrap-wl-list (%wlr-output-modes o)))
-
-(define .modes wlr-output-modes)
 
 (define-wlr-procedure (wlr-output-enable output enable)
   (ffi:void "wlr_output_enable" (list '* ffi:int))

@@ -6,7 +6,7 @@ nobase_go_DATA = $(GOBJECTS)
 snarfcppopts =  $(INCLUDES) $(CPPFLAGS) $(libguile_wlroots_la_CFLAGS)
 libguile_wlroots_la_CFLAGS=$(WAYLAND_SERVER_CFLAGS) $(WLROOTS_CFLAGS) $(GUILE_CFLAGS) -I. -DWLR_USE_UNSTABLE
 lib_LTLIBRARIES = libguile-wlroots.la
-libguile_wlroots_la_SOURCES= wlroots/types/output.c wlroots/types/xdg-shell.c
+libguile_wlroots_la_SOURCES= wlroots/types/xdg-shell.c
 BUILT_SOURCES= $(libguile_wlroots_la_SOURCES:%.c=%.x)
 $(SOURCES):  $(lib_LTLIBRARIES)
 $(libguile_wlroots_la_SOURCES): $(protocols_h)

@@ -20,6 +20,7 @@
   #:use-module (bytestructures guile)
   #:use-module ((system foreign) #:prefix ffi:)
   #:use-module (oop goops)
+  #:use-module ((rnrs base) #:select (assert))
   #:duplicates (merge-accessors merge-generics replace warn-override-core warn last)
   #:re-export (%wlr-seat-keyboard-grab-struct
                %wlr-seat-pointer-grab-struct
@@ -469,6 +470,7 @@
 (define-wlr-procedure (wlr-seat-keyboard-notify-enter
                        seat surface keycodes num-keycodes modifiers)
   (ffi:void "wlr_seat_keyboard_notify_enter" `(* * * ,ffi:size_t *))
+  (assert (wlr-surface? surface))
   (% (unwrap-wlr-seat seat)
      (unwrap-wlr-surface surface)
      (if keycodes

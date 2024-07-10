@@ -222,6 +222,20 @@
                        (bytestructure-set! (get-bytestructure o) 'color (color->pointer color))))
   #:descriptor %wlr-scene-rect-struct)
 
+(define (display-address o file)
+  (display (number->string (object-address o) 16) file))
+
+(define-method (write (o <wlr-scene-rect>) file)
+  (let ((class (class-of o)))
+    (begin
+      (display "#<" file)
+      (display (class-name class) file)
+      (display #\space file)
+      (display (cons (.width o) (.height o)) file)
+      (display #\space file)
+      (display-address o file)
+      (display #\> file))))
+
 (define-wlr-types-class wlr-scene-output ()
   (output #:accessor .output)
   (link #:accessor .link)

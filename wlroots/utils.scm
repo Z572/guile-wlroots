@@ -62,12 +62,13 @@
 (define-syntax define-wlr-procedure
   (lambda (x)
     (syntax-case x ()
-      ((_ (name args ...) (return-type cname arg-types) body ...)
+      ((_ (pname args ...) (return-type cname arg-types) body ...)
        (with-syntax ((% (datum->syntax x '%)))
          #'(begin
-             (define-public name
+             (define-public pname
                (let ((% (wlr->procedure return-type cname arg-types)))
                  (lambda* (args ...)
+                   #((name . pname))
                    body ...)))))))))
 
 ;;; copy define from (system vm dwarf) module

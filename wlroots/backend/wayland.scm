@@ -1,4 +1,5 @@
 (define-module (wlroots backend wayland)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (wayland server display)
   #:use-module ((wayland client protocol wayland) #:prefix cp:)
   #:use-module (wlroots backend)
@@ -33,6 +34,7 @@
 
 (define-wlr-procedure (wlr-wl-output-create backend)
   ('* "wlr_wl_output_create" (list '*))
+  (assert (wlr-backend-is-wl backend))
   (wrap-wlr-output (% (unwrap-wlr-backend backend))))
 
 (define-wlr-procedure (wlr-backend-is-wl backend)

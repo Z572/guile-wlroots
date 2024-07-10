@@ -10,6 +10,7 @@ SOURCES = %D%/config.scm     \
  %D%/backend/multi.scm       \
  %D%/backend/libinput.scm    \
  %D%/backend/x11.scm         \
+ %D%/backend/headless.scm    \
  %D%/time.scm                \
  %D%/xwayland.scm            \
  %D%/xwayland/xwayland.scm   \

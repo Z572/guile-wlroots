@@ -18,26 +18,24 @@
 
 (define output-frame-listener
   (make-wl-listener
-   (lambda (listener data)
-     (let ((output (wrap-wlr-output data)))
-       (wlr-output-attach-render output #f)
-       (call-with-renderer
-        w-renderer
-        (.width output) (.height output)
-        (lambda (renderer . _)
-          (wlr-renderer-clear renderer (make-rgba-color "#f000"))))
-       (wlr-output-commit output)))))
+   (lambda (listener output)
+     (wlr-output-attach-render output #f)
+     (call-with-renderer
+      w-renderer
+      (.width output) (.height output)
+      (lambda (renderer . _)
+        (wlr-renderer-clear renderer (make-rgba-color "#f000"))))
+     (wlr-output-commit output))))
 
 (define w-backend-new-output-listener
   (make-wl-listener
-   (lambda (listener data)
-     (let* ((output (wrap-wlr-output data)))
-       (display "I get new output!\n")
-       (wlr-output-init-render
-        output w-allocator w-renderer)
-       (wl-signal-add (get-event-signal output 'frame) output-frame-listener)
-       (wlr-output-enable output #t)
-       (wlr-output-commit output)))))
+   (lambda (listener output)
+     (display "I get new output!\n")
+     (wlr-output-init-render
+      output w-allocator w-renderer)
+     (wl-signal-add (get-event-signal output 'frame) output-frame-listener)
+     (wlr-output-enable output #t)
+     (wlr-output-commit output))))
 
 (define (main . _)
   (wlr-renderer-init-wl-display w-renderer w-display)

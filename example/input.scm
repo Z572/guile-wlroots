@@ -22,25 +22,23 @@
 
 (define output-frame-listener
   (make-wl-listener
-   (lambda (listener data)
-     (let ((output (wrap-wlr-output data)))
-       (wlr-output-attach-render output #f)
-       (call-with-renderer
-        w-renderer (.width output) (.height output)
-        (lambda (renderer . _)
-          (wlr-renderer-clear
-           renderer (make-rgba-color (if (black?) "#0000" "#ffff")))))
-       (wlr-output-commit output)))))
+   (lambda (listener output)
+     (wlr-output-attach-render output #f)
+     (call-with-renderer
+      w-renderer (.width output) (.height output)
+      (lambda (renderer . _)
+        (wlr-renderer-clear
+         renderer (make-rgba-color (if (black?) "#0000" "#ffff")))))
+     (wlr-output-commit output))))
 
 (define w-backend-new-output-listener
   (make-wl-listener
-   (lambda (listener data)
-     (let* ((output (wrap-wlr-output data)))
-       (display "I get new output!\n")
-       (wlr-output-init-render
-        output w-allocator w-renderer)
-       (wl-signal-add (get-event-signal output 'frame) output-frame-listener)
-       (wlr-output-commit output)))))
+   (lambda (listener output)
+     (display "I get new output!\n")
+     (wlr-output-init-render
+      output w-allocator w-renderer)
+     (wl-signal-add (get-event-signal output 'frame) output-frame-listener)
+     (wlr-output-commit output))))
 
 (define (add-seat-capabilitie seat o)
   (wlr-seat-set-capabilities seat
@@ -54,14 +52,10 @@
   (display "new keyboard create!\n")
   (let* ((wl-kb (wlr-keyboard-from-input-device device))
          (context (xkb-context-new XKB_CONTEXT_NO_FLAGS))
-         (xkb-rule-names (make <xkb-rule-names>))
-         (keymap (xkb-keymap-new-from-names
+         (keymap (xkb-keymap-new
                   context
-                  xkb-rule-names
-                  XKB_KEYMAP_COMPILE_NO_FLAGS)))
+                  #:flags XKB_KEYMAP_COMPILE_NO_FLAGS)))
     (wlr-keyboard-set-keymap wl-kb keymap)
-    (xkb-keymap-unref keymap)
-    (xkb-context-unref context)
     (wlr-keyboard-set-repeat-info wl-kb 10 600)
     (wl-signal-add (get-event-signal wl-kb 'modifiers)
                    (make-wl-listener
@@ -94,15 +88,14 @@
 
 (define w-backend-new-input-listener
   (make-wl-listener
-   (lambda (listener data)
-     (let* ((device (wrap-wlr-input-device data)))
-       (display "I get new input device!\n")
-       (case (.type device)
-         ((WLR_INPUT_DEVICE_KEYBOARD)
-          (create-keyboard device)
-          (add-seat-capabilitie
-           w-seat
-           WL_SEAT_CAPABILITY_KEYBOARD)))       ))))
+   (lambda (listener device)
+     (display "I get new input device!\n")
+     (case (.type device)
+       ((WLR_INPUT_DEVICE_KEYBOARD)
+        (create-keyboard device)
+        (add-seat-capabilitie
+         w-seat
+         WL_SEAT_CAPABILITY_KEYBOARD))))))
 
 (wlr-renderer-init-wl-display w-renderer w-display)
 

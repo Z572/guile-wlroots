@@ -141,9 +141,8 @@
   (output-layout    #:getter get-server-output-layout)
   (outputs          #:getter get-server-outputs))
 
-(define ((server-handle-new-output server) listener data)
-  (let* ((output (wrap-wlr-output data))
-         (fullscreen-output (make <fullscreen-output>
+(define ((server-handle-new-output server) listener output)
+  (let* ((fullscreen-output (make <fullscreen-output>
                               #:link (make-wl-list)
                               #:server  server
                               #:output  output
@@ -172,18 +171,17 @@
     (wlr-output-commit-state output state)
     (wlr-output-state-finish state)))
 
-(define ((server-handle-present-surface server) listener data)
-  (let ((event (wrap-wlr-fullscreen-shell-v1-present-surface-event data)))
-    (wl-list-for-each (lambda (obj wl-lst)
-                        (let ((out-put            (.output event))
-                              (fullscreen-out-put (get-output-output obj)))
-                          (when (or (not out-put)
-                                    (equal? out-put fullscreen-out-put))
-                            (output-set-surface fullscreen-out-put
-                                                (.surface event)))))
-                      (get-server-outputs server)
-                      <fullscreen-output>
-                      'link)))
+(define ((server-handle-present-surface server) listener event)
+  (wl-list-for-each (lambda (obj wl-lst)
+                      (let ((out-put            (.output event))
+                            (fullscreen-out-put (get-output-output obj)))
+                        (when (or (not out-put)
+                                  (equal? out-put fullscreen-out-put))
+                          (output-set-surface fullscreen-out-put
+                                              (.surface event)))))
+                    (get-server-outputs server)
+                    <fullscreen-output>
+                    'link))
 
 
 (define-method (initialize (object <fullscreen-server>) args)

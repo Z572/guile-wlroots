@@ -78,9 +78,8 @@
         (clock-gettime 'CLOCK_MONOTONIC time)
         (wlr-scene-output-send-frame-done scene-output time)))))
 
-(define ((new-output-notify server) listener data)
-  (let* ((output (wrap-wlr-output data))
-         (scene-output (wlr-scene-output-create (server-scene server) output))
+(define ((new-output-notify server) listener output)
+  (let* ((scene-output (wlr-scene-output-create (server-scene server) output))
          (m (make <monitor>
               #:server server
               #:output output
@@ -98,9 +97,8 @@
     (wlr-output-commit-state output state)
     (wlr-output-state-finish state)))
 
-(define ((new-surface server) listener data)
-  (let* ((wlr-surface (wrap-wlr-surface data))
-         (scene-surface (wlr-scene-surface-create (.tree (server-scene server))
+(define ((new-surface server) listener wlr-surface)
+  (let* ((scene-surface (wlr-scene-surface-create (.tree (server-scene server))
                                                   wlr-surface))
          (surface (make <surface>
                     #:server server

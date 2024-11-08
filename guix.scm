@@ -138,7 +138,7 @@ bs:unknow, cstring-pointer*, bs:enum, stdbool.")
            pkg-config
            texinfo
            guile-3.0-latest))
-    (inputs (list guile-3.0-latest wlroots))
+    (inputs (list guile-3.0-latest wlroots-0.17))
     (propagated-inputs
      (list guile-bytestructures
            guile-wayland

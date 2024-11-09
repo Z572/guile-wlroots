@@ -90,6 +90,8 @@
             .visible
             .width
             .when
+            .x
+            .y
             .allocator))
 
 (define-wlr-types-class wlr-output-state ()

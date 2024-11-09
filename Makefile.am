@@ -40,3 +40,14 @@ moddir=$(prefix)/share/guile/site/$(GUILE_EFFECTIVE_VERSION)
 godir=$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
 
 include wlroots/Makefile
+TESTS= tests/seat.scm tests/xdg-shell.scm tests/backend.scm tests/scene.scm tests/output.scm
+AM_TESTS_ENVIRONMENT = abs_top_srcdir="$(abs_top_srcdir)"
+
+TEST_EXTENSIONS = .scm
+SCM_LOG_DRIVER =                                \
+  $(top_builddir)/pre-inst-env                  \
+  $(GUILE) --no-auto-compile -e main            \
+  $(top_srcdir)/build-aux/test-driver.scm
+AM_SCM_LOG_FLAGS = --no-auto-compile
+EXTRA_DIST+=   $(top_srcdir)/build-aux/test-driver.scm       \
+  $(TESTS)

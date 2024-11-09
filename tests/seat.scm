@@ -1,0 +1,38 @@
+(define-module (tests seat)
+  #:use-module (wayland server display)
+  #:use-module (srfi srfi-71)
+  #:use-module (wlroots time)
+  #:use-module (srfi srfi-64)
+  #:use-module (oop goops)
+  #:use-module (wlroots types seat))
+(define test-seat (make-parameter #f))
+(test-group "seat"
+  (test-assert "create"
+    (and=> (wlr-seat-create (wl-display-create) "test-seat")
+           (lambda (x)
+             (test-seat x)
+             x)))
+  (test-assert "get-slots"
+    (map
+     (lambda (slot)
+       (cons (slot-definition-name slot)
+             ((or (slot-definition-getter slot)
+                  (slot-definition-accessor slot))
+              (test-seat))))
+     (class-slots <wlr-seat>)))
+  (let-syntax ((sample-test (syntax-rules ()
+                              ((_ name args ...)
+                               (test-assert 'name
+                                 (name (test-seat) args ...))))))
+    (sample-test wlr-seat-pointer-clear-focus)
+    (sample-test wlr-seat-pointer-send-frame)
+    (sample-test wlr-seat-pointer-notify-clear-focus)
+    (sample-test wlr-seat-pointer-warp 20 30)
+    (sample-test wlr-seat-pointer-notify-motion 30000 20 30)
+    (sample-test wlr-seat-pointer-send-motion 30000 20 30)
+    (sample-test wlr-seat-set-selection #f 30)
+    (sample-test wlr-seat-pointer-notify-frame)
+    (sample-test wlr-seat-keyboard-clear-focus)
+    (sample-test wlr-seat-keyboard-notify-clear-focus)
+    (test-assert 'wlr-seat-touch-get-point
+      (not (wlr-seat-touch-get-point (test-seat) 0)))))

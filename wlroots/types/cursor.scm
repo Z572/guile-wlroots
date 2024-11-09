@@ -62,7 +62,7 @@
   (% (unwrap-wlr-cursor cursor)))
 
 (define-wlr-procedure (wlr-cursor-attach-output-layout cursor output-layout)
-  (ffi:int "wlr_cursor_attach_output_layout" '(* *))
+  (ffi:void "wlr_cursor_attach_output_layout" '(* *))
   (% (unwrap-wlr-cursor cursor)
      (unwrap-wlr-output-layout output-layout)))
 

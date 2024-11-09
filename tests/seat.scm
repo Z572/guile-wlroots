@@ -1,7 +1,10 @@
 (define-module (tests seat)
   #:use-module (wayland server display)
+  #:use-module (wayland signal)
+  #:use-module (wayland server listener)
   #:use-module (srfi srfi-71)
   #:use-module (wlroots time)
+  #:use-module (wlroots types)
   #:use-module (srfi srfi-64)
   #:use-module (oop goops)
   #:use-module (wlroots types seat))
@@ -35,4 +38,11 @@
     (sample-test wlr-seat-keyboard-clear-focus)
     (sample-test wlr-seat-keyboard-notify-clear-focus)
     (test-assert 'wlr-seat-touch-get-point
-      (not (wlr-seat-touch-get-point (test-seat) 0)))))
+      (not (wlr-seat-touch-get-point (test-seat) 0))))
+  (let ((destroy? #f))
+    (test-assert "wlr-seat-destroy"
+      (begin (wl-signal-add (get-event-signal (test-seat) 'destroy)
+                            (make-wl-listener (lambda (listener output)
+                                                (set! destroy? #t))))
+             (wlr-seat-destroy (test-seat))
+             destroy?))))

@@ -1,4 +1,5 @@
 (define-module (wlroots backend)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (rnrs bytevectors)
   #:autoload (wlroots backend session) (wrap-wlr-session)
   #:autoload (wlroots types input-device) (wrap-wlr-input-device)
@@ -37,8 +38,10 @@
 
 (define-wlr-procedure (wlr-backend-start backend)
   (ffi:int8 "wlr_backend_start" (list '*))
+  (assert (wlr-backend? backend))
   (not (zero? (% (unwrap-wlr-backend backend)))))
 
 (define-wlr-procedure (wlr-backend-destroy backend)
   (ffi:void "wlr_backend_destroy" (list '*))
+  (assert (wlr-backend? backend))
   (% (unwrap-wlr-backend backend)))

@@ -8,6 +8,7 @@
   #:use-module (srfi srfi-26)
   #:use-module (wayland util)
   #:use-module (rnrs bytevectors)
+  #:use-module ((rnrs base) #:select (assert))
   #:use-module (bytestructure-class)
   #:use-module ((bytestructures guile)
                 #:select
@@ -19,6 +20,7 @@
                  make-bytestructure-descriptor))
   #:use-module (oop goops)
   #:export (wlr->pointer wlr->procedure color->pointer %color-struct)
+  #:re-export (assert)
   #:export-syntax (define-wlr-procedure define-enumeration))
 
 (define <bytestructure> (class-of (bytestructure (bs:pointer '*))))

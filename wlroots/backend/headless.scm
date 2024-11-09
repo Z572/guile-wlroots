@@ -16,7 +16,7 @@
 
 (define not-zero? (negate zero?))
 
-(define-wlr-procedure (wlr-x11-backend-create display)
+(define-wlr-procedure (wlr-headless-backend-create display)
   ('* "wlr_headless_backend_create" (list '*))
   (wrap-wlr-backend (% (unwrap-wl-display display))))
 

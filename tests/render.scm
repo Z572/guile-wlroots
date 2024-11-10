@@ -1,0 +1,27 @@
+(define-module (tests render)
+  #:use-module (wlroots render renderer)
+  #:use-module (wlroots backend headless)
+  #:use-module (wayland server display)
+  #:use-module (wayland signal)
+  #:use-module (wayland server listener)
+  #:use-module (srfi srfi-71)
+  #:use-module (wlroots time)
+  #:use-module (wlroots types)
+  #:use-module (srfi srfi-64)
+  #:use-module (oop goops)
+  #:use-module (wlroots types seat))
+
+(define test-display (wl-display-create))
+(define test-backend (wlr-headless-backend-create test-display))
+(define test-renderer (wlr-renderer-autocreate test-backend))
+(test-group "renderer"
+  (test-assert "wlr-renderer-autocreate" test-renderer)
+  (test-assert "wlr-renderer-init-wl-display"
+    (wlr-renderer-init-wl-display test-renderer test-display))
+  (let ((destroy? #f))
+    (test-assert "destroy"
+      (begin (wl-signal-add (get-event-signal test-renderer 'destroy)
+                            (make-wl-listener (lambda (listener output)
+                                                (set! destroy? #t))))
+             (wlr-renderer-destroy test-renderer)
+             destroy?))))

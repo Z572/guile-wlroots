@@ -40,7 +40,7 @@ moddir=$(prefix)/share/guile/site/$(GUILE_EFFECTIVE_VERSION)
 godir=$(libdir)/guile/$(GUILE_EFFECTIVE_VERSION)/site-ccache
 
 include wlroots/Makefile
-TESTS= tests/seat.scm tests/xdg-shell.scm tests/backend.scm tests/scene.scm tests/output.scm tests/cursor.scm
+TESTS= tests/seat.scm tests/xdg-shell.scm tests/backend.scm tests/scene.scm tests/output.scm tests/cursor.scm tests/viewporter.scm tests/xdg-decoration.scm tests/render.scm
 AM_TESTS_ENVIRONMENT = abs_top_srcdir="$(abs_top_srcdir)"
 
 TEST_EXTENSIONS = .scm

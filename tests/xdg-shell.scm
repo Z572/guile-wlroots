@@ -1,5 +1,8 @@
 (define-module (tests xdg-shell)
   #:use-module (wayland server display)
+  #:use-module (wayland signal)
+  #:use-module (wayland server listener)
+  #:use-module (wlroots types)
   #:use-module (srfi srfi-71)
   #:use-module (wlroots time)
   #:use-module (srfi srfi-64)
@@ -7,16 +10,24 @@
   #:use-module (wlroots types xdg-shell))
 (define test-xdg-shell (make-parameter #f))
 (test-group "xdg-shell"
-  (test-assert "create"
-    (and=> (wlr-xdg-shell-create (wl-display-create) 5)
-           (lambda (x)
-             (test-xdg-shell x)
-             x)))
-  (test-assert "get-slots"
-    (map
-     (lambda (slot)
-       (cons (slot-definition-name slot)
-             ((or (slot-definition-getter slot)
-                  (slot-definition-accessor slot))
-              (test-xdg-shell))))
-     (class-slots <wlr-xdg-shell>))))
+  (let ((w-display (wl-display-create)))
+    (test-assert "create"
+      (and=> (wlr-xdg-shell-create w-display 5)
+             (lambda (x)
+               (test-xdg-shell x)
+               x)))
+    (test-assert "get-slots"
+      (map
+       (lambda (slot)
+         (cons (slot-definition-name slot)
+               ((or (slot-definition-getter slot)
+                    (slot-definition-accessor slot))
+                (test-xdg-shell))))
+       (class-slots <wlr-xdg-shell>)))
+    (let ((destroy? #f))
+      (test-assert "destroy"
+        (begin (wl-signal-add (get-event-signal (test-xdg-shell) 'destroy)
+                              (make-wl-listener (lambda (listener output)
+                                                  (set! destroy? #t))))
+               (wl-display-destroy w-display)
+               destroy?)))))

@@ -1,0 +1,13 @@
+(channel
+ (version 0)
+ (url "https://github.com/Z572/guile-wlroots")
+ (directory ".guix/modules")
+ (dependencies
+  (channel
+   (name guile-wayland)
+   (url "https://github.com/guile-wayland/channel"))))
+
+
+;; Local Variables:
+;; mode: lisp
+;; End:

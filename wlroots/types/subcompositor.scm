@@ -33,10 +33,10 @@
             .resource))
 
 (define-wlr-types-class wlr-subsurface-parent-state ()
-(x #:accessor .x)
-(y #:accessor .y)
-(link #:accessor .link)
-#:descriptor %wlr-subsurface-parent-state-struct)
+  (x #:accessor .x)
+  (y #:accessor .y)
+  (link #:accessor .link)
+  #:descriptor %wlr-subsurface-parent-state-struct)
 
 
 (define-wlr-types-class wlr-subcompositor ()

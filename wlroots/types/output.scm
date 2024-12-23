@@ -188,6 +188,11 @@
   #:descriptor %wlr-output-event-request-state-struct)
 
 (define-wlr-types-class wlr-output-mode ()
+  (width #:getter .width)
+  (height #:getter .height)
+  (refresh #:getter .refresh)
+  (preferred? #:field-name 'preferred #:getter .preferred?)
+  (picture-aspent-ratio #:getter .picture-aspent-ratio)
   #:descriptor %wlr-output-mode-struct)
 
 (define-wlr-procedure (wlr-output-enable output enable)

@@ -205,7 +205,7 @@
       (display #\space file)
       (display (.refresh o) file)
       (display #\space file)
-      (display (number->string (object-address o) 16))
+      (display (number->string (object-address o) 16) file)
       (display #\> file))))
 
 (define-wlr-procedure (wlr-output-enable output enable)

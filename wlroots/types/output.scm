@@ -195,6 +195,19 @@
   (picture-aspent-ratio #:getter .picture-aspent-ratio)
   #:descriptor %wlr-output-mode-struct)
 
+(define-method (write (o <wlr-output-mode>) file)
+  (let ((class (class-of o)))
+    (begin
+      (display "#<" file)
+      (display (class-name class) file)
+      (display #\space file)
+      (display (cons (.width o) (.height o)) file)
+      (display #\space file)
+      (display (.refresh o) file)
+      (display #\space file)
+      (display (number->string (object-address o) 16))
+      (display #\> file))))
+
 (define-wlr-procedure (wlr-output-enable output enable)
   (ffi:void "wlr_output_enable" (list '* ffi:int))
   (% (unwrap-wlr-output output) (if enable 1 0)))

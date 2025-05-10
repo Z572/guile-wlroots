@@ -75,8 +75,12 @@
 
 (define-wlr-procedure (wlr-output-layout-add layout output lx ly)
   ('* "wlr_output_layout_add" (list '* '* ffi:int ffi:int))
+  (assert (wlr-output-layout? layout))
+  (assert (wlr-output? output))
   (wrap-wlr-output-layout-output
-   (% (unwrap-wlr-output-layout layout) output lx ly)))
+   (% (unwrap-wlr-output-layout layout)
+      (unwrap-wlr-output output)
+      lx ly)))
 
 (define-wlr-procedure (wlr-output-layout-remove layout output)
   (ffi:void "wlr_output_layout_remove" '(* *))

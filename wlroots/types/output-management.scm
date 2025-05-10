@@ -32,6 +32,7 @@
             .x
             .y
             .heads
+            .transform
             .manager
             .scale
             .serial
@@ -62,6 +63,7 @@
   (mode #:accessor .mode)
   (x #:accessor .x)
   (y #:accessor .y)
+  (transform #:getter .transform)
   (scale #:accessor .scale)
   #:descriptor %wlr-output-head-v1-state-struct)
 

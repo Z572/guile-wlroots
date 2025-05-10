@@ -304,14 +304,18 @@
 
 (define-wlr-procedure (wlr-scene-node-set-enabled node enabled)
   (ffi:void "wlr_scene_node_set_enabled" (list '* ffi:int))
+  (assert (wlr-scene-node? node))
   (% (unwrap-wlr-scene-node node) (if enabled 1 0)))
 
-(define-wlr-procedure (wlr-scene-node-set-position scene x y)
+(define-wlr-procedure (wlr-scene-node-set-position node x y)
   (ffi:void "wlr_scene_node_set_position" (list '* ffi:int ffi:int))
-  (% (unwrap-wlr-scene-node scene) x y))
+  (assert (wlr-scene-node? node))
+  (% (unwrap-wlr-scene-node node) x y))
 
 (define-wlr-procedure (wlr-scene-set-presentation scene presentation)
   (ffi:void "wlr_scene_set_presentation" '(* *))
+  (assert (wlr-scene? scene))
+  (assert (wlr-presentation? presentation))
   (% (unwrap-wlr-scene scene) (unwrap-wlr-presentation presentation)))
 
 (define-wlr-procedure (wlr-scene-tree-create parent)

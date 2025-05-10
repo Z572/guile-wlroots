@@ -5,6 +5,7 @@
   #:use-module (wayland server display)
   #:use-module (wlroots backend)
   #:use-module (wlroots backend headless)
+  #:use-module (wlroots types presentation-time)
   #:use-module (util572 color)
   #:use-module (srfi srfi-64)
   #:use-module (srfi srfi-71)
@@ -47,6 +48,16 @@
                  (make-wl-listener (lambda (listener output)
                                      (test-output output))))
 
+  (let ((presentation (wlr-presentation-create (test-display) (test-backend))))
+    (test-error "wlr-scene-set-presentation 1"
+                (wlr-scene-set-presentation #f
+                                            presentation))
+    (test-error "wlr-scene-set-presentation 2"
+                (wlr-scene-set-presentation (test-scene)
+                                            #f))
+    (test-assert "wlr-scene-set-presentation 3"
+        (wlr-scene-set-presentation (test-scene)
+                                    presentation)))
   (let ((screen-output #f))
     (test-assert ""
       (begin (wlr-headless-add-output (test-backend) 1920 1080)

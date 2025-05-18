@@ -19,9 +19,12 @@
                  bs:vector
                  make-bytestructure-descriptor))
   #:use-module (oop goops)
-  #:export (wlr->pointer wlr->procedure color->pointer %color-struct)
-  #:re-export (assert)
-  #:export-syntax (define-wlr-procedure define-enumeration))
+  #:export (wlr->pointer
+            wlr->procedure
+            color->pointer
+            %color-struct
+            define-wlr-procedure define-enumeration)
+  #:re-export (assert))
 
 (define <bytestructure> (class-of (bytestructure (bs:pointer '*))))
 

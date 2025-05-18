@@ -1,9 +1,9 @@
 (list (channel
        (name 'guix)
-       (url "https://git.savannah.gnu.org/git/guix.git")
+       (url "https://codeberg.org/guix/guix-mirror")
        (branch "master")
        (commit
-        "2a6d96425eea57dc6dd48a2bec16743046e32e06")
+        "452126f16a2058d10c884f23bfcd5e7775f0f249")
        (introduction
         (make-channel-introduction
          "9edb3f66fd807b096b48283debdcddccfea34bad"
@@ -14,4 +14,9 @@
        (url "https://github.com/guile-wayland/channel")
        (branch "master")
        (commit
-        "6a321022063c749c422bf9dc27720d88fa212342")))
+        "2d728774132c5389cf34ca4edd06cd0af34f8994")
+       (introduction
+        (make-channel-introduction
+         "9e4433fe570d2b74caee0182a2929e4a35ba59fb"
+         (openpgp-fingerprint
+          "7EBE A494 60CE 5E2C 0875  7FDB 3B5A A993 E1A2 DFF0")))))
